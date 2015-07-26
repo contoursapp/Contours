@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Piano">
+        <attr name="key_count" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="ContoursGameView">
+        <attr name="bottomNote" format="integer" />
+        <attr name="topNote" format="integer" />
+    </declare-styleable>
+</resources>

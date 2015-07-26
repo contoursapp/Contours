@@ -1,0 +1,11 @@
+<resources>
+    <color name="black">#ff000000</color>
+    <color name="purple">#ff9C15FF</color>
+    <color name="blue">#ff0034FF</color>
+    <color name="turquoise">#ff00CCE9</color>
+    <color name="lime">#ff00D437</color>
+    <color name="yellow">#ffF9FF00</color>
+    <color name="orange">#ffFCA100</color>
+    <color name="red">#ffD41100</color>
+    <color name="white">#ffffffff</color>
+</resources>

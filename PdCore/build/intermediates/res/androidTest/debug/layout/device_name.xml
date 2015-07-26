@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textSize="18sp"
+    android:padding="5dp"
+/><!-- From: file:/Volumes/G-DRIVE%20slim/keytraining/AndroidMidi/res/layout/device_name.xml --><!-- From: file:/Volumes/G-DRIVE%20slim/keytraining/PdCore/build/intermediates/exploded-aar/keytraining/AndroidMidi/unspecified/res/layout/device_name.xml -->

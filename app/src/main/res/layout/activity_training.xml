@@ -1,0 +1,90 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:Piano="http://schemas.android.com/apk/res-auto"
+    xmlns:Staff="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@android:color/black"
+    android:layout_height="match_parent"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
+    tools:context=".TrainingActivity"
+    android:id="@+id/main_layout">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:id="@+id/linear">
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            android:indeterminate="true"
+            android:text="@string/loading"
+            android:id="@+id/training_loader"/>
+        <LinearLayout
+            android:background="@color/turquoise"
+            android:alpha="70"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="10"
+            android:layout_margin="16dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize ="45sp"
+                android:textColor="@color/white"
+                android:text="@string/score_text" />
+            <TextSwitcher
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize ="45sp"
+                android:textColor="@color/white"
+                android:text="0"
+                android:id="@+id/score_text"/>
+
+            <Chronometer
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:textColor="@color/white"
+                android:id="@+id/chronometer"
+                android:gravity="end"
+                android:textSize="45sp" />
+
+        </LinearLayout>
+
+        <com.trcolgrove.contours.contoursGame.ContoursGameView
+        android:id="@+id/staff"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="60"
+        Staff:bottomNote="48"
+        Staff:topNote="84"
+        />
+        <com.trcolgrove.colorfulPiano.Piano
+            android:id="@+id/piano"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="20"
+            Piano:key_count="37"
+        />
+    </LinearLayout>
+
+</RelativeLayout>
