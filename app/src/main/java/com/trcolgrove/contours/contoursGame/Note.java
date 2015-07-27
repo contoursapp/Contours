@@ -59,12 +59,6 @@ public class Note {
     private int midiValue;
     private int scaleDegree;
 
-    public ContoursGameView getParent() {
-        return parent;
-    }
-
-    private ContoursGameView parent;
-
     public int getRippleRadius() {
         return rippleRadius;
     }
@@ -145,7 +139,7 @@ public class Note {
             }});
 
 
-    public Note(Context context, @NoteName int noteName, int octave, ContoursGameView parent) throws InvalidNoteException {
+    public Note(Context context, @NoteName int noteName, int octave) throws InvalidNoteException {
         if(octave < -2 || octave > 8) {
             throw new InvalidNoteException("note falls outside of acceptable octave range");
         }
@@ -157,7 +151,6 @@ public class Note {
         notePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
         ripplePaint = new Paint();
         this.color = context.getResources().getColor(DrawingUtils.keyColors[scaleDegree]);
-        this.parent = parent;
         this.cursorPaint = new Paint();
 
         cursorPaint.setStrokeWidth(4);
