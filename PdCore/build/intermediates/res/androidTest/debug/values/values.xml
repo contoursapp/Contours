@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/Volumes/G-DRIVE%20slim/keytraining/PdCore/build/intermediates/bundles/debug/res/values/values.xml -->
+    <!-- From: file:/Users/Thomas/Desktop/tufts/Contours/PdCore/build/intermediates/bundles/debug/res/values/values.xml -->
     <eat-comment/>
     <string-array name="inchannels_labels">
 		<item>None</item>
@@ -46,10 +46,10 @@
 		<item>44100</item>
 		<item>48000</item>
 	</string-array>
-    <!-- From: file:/Volumes/G-DRIVE%20slim/keytraining/PdCore/build/intermediates/exploded-aar/keytraining/AndroidMidi/unspecified/res/values/values.xml -->
+    <!-- From: file:/Users/Thomas/Desktop/tufts/Contours/PdCore/build/intermediates/exploded-aar/Contours/AndroidMidi/unspecified/res/values/values.xml -->
     <eat-comment/>
     <string name="none_paired">No paired devices</string>
-    <!-- From: file:/Volumes/G-DRIVE%20slim/keytraining/PdCore/build/intermediates/bundles/debug/res/values/values.xml -->
+    <!-- From: file:/Users/Thomas/Desktop/tufts/Contours/PdCore/build/intermediates/bundles/debug/res/values/values.xml -->
     <eat-comment/>
     <string name="pref_key_inchannels">INPUT_CHANNELS</string>
     <string name="pref_key_outchannels">OUTPUT_CHANNELS</string>
@@ -62,7 +62,7 @@
     <string name="pref_title_inchannels">Input channels</string>
     <string name="pref_title_outchannels">Output channels</string>
     <string name="pref_title_srate">Sample rate</string>
-    <!-- From: file:/Volumes/G-DRIVE%20slim/keytraining/PdCore/build/intermediates/exploded-aar/keytraining/AndroidMidi/unspecified/res/values/values.xml -->
+    <!-- From: file:/Users/Thomas/Desktop/tufts/Contours/PdCore/build/intermediates/exploded-aar/Contours/AndroidMidi/unspecified/res/values/values.xml -->
     <eat-comment/>
     <string name="select_device">Select a device to connect to</string>
     <string name="title_no_paired_devices">No paired Bluetooth devices available</string>
@@ -74,7 +74,7 @@
     <string name="title_select_usb_midi_device">Select USB MIDI device</string>
     <string name="title_select_usb_midi_input">Select USB MIDI input</string>
     <string name="title_select_usb_midi_output">Select USB MIDI output</string>
-    <!-- From: file:/Volumes/G-DRIVE%20slim/keytraining/PdCore/build/intermediates/bundles/debug/res/values/values.xml -->
+    <!-- From: file:/Users/Thomas/Desktop/tufts/Contours/PdCore/build/intermediates/bundles/debug/res/values/values.xml -->
     <eat-comment/>
     <style name="DisableSoundEffects">
         <item name="android:soundEffectsEnabled">false</item>

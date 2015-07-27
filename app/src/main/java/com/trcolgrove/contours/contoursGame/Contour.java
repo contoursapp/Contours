@@ -31,8 +31,6 @@ public class Contour {
         this.cursor = new ContourCursor(0);
     }
 
-  //  private int findBo
-
     public List<Note> getNotes() { return notes; }
 
     public void updateCursor() {

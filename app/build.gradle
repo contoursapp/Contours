@@ -46,6 +46,5 @@ dependencies {
     compile 'jp.kshoji:midi-driver:0.0.3:@aar'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile project(':PdCore')
-    compile files('libs/tween-engine-api.jar')
 }
 

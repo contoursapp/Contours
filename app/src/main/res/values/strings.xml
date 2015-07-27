@@ -10,4 +10,7 @@
     <string name="title_activity_main">Contours</string>
     <string name="score_text">Score:</string>
     <string name="loading">Loading...</string>
+    <string name="zero_text">0</string>
+    <string name="start_multiplier">x1</string>
+    <string name="play_button_text">PLAY</string>
 </resources>

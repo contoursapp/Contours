@@ -49,10 +49,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import aurelienribon.tweenengine.TweenManager;
 import de.greenrobot.event.EventBus;
-
-
 
 public class TrainingActivity extends Activity {
 
@@ -140,10 +137,7 @@ public class TrainingActivity extends Activity {
         public void endBlock() {}
     };
 
-
     private static final int MIN_SAMPLE_RATE = 44100;
-    private TweenManager tweenManager;
-    private boolean isAnimationRunning = true;
 
     final Handler midiInputEventHandler = new Handler(new Handler.Callback() {
         @Override
@@ -169,11 +163,13 @@ public class TrainingActivity extends Activity {
 
     ArrayAdapter<String> midiInputEventAdapter;
     ArrayAdapter<String> midiOutputEventAdapter;
-    Piano pianoView;
-    ContoursGameView gameView;
-    ProgressBar progressBar;
-    Chronometer chronometer;
-    TextSwitcher scoreSwitcher;
+    private Piano pianoView;
+    private ContoursGameView gameView;
+    private ProgressBar progressBar;
+    private Chronometer chronometer;
+    private TextSwitcher scoreSwitcher;
+    private TextSwitcher multiplierSwitcher;
+    private TextView scoreIncrementText;
 
     @Override
     protected void onResume() {
@@ -198,7 +194,25 @@ public class TrainingActivity extends Activity {
     public void onEvent(NoteEvent event) {
         gameView.checkNote(event.midiNote);
     }
-    public void onEvent(ScoreEvent event) { scoreSwitcher.setText(Integer.toString(event.totalScore));}
+
+    public void onEvent(ScoreEvent event) {
+        scoreSwitcher.setText(Integer.toString(event.totalScore));
+        multiplierSwitcher.setText("x" + Integer.toString(event.multiplier));
+        displayScoreIncrement(event.scoreIncrement);
+    }
+
+    private void displayScoreIncrement(int scoreIncrement) {
+        scoreIncrementText.setAlpha(1);
+        if(scoreIncrement > 0) {
+            scoreIncrementText.setText("+" + scoreIncrement);
+            scoreIncrementText.setTextColor(Color.WHITE);
+        } else {
+            scoreIncrementText.setText(Integer.toString(scoreIncrement));
+            scoreIncrementText.setTextColor(Color.RED);
+        }
+        scoreIncrementText.animate().alpha(1).setDuration(500).start();
+        scoreIncrementText.animate().alpha(0).setStartDelay(500).setDuration(500).start();
+    }
 
     private void cleanup() {
         // make sure to release all resources
@@ -243,8 +257,11 @@ public class TrainingActivity extends Activity {
         progressBar = (ProgressBar) findViewById(R.id.training_loader);
         chronometer = (Chronometer) findViewById(R.id.chronometer);
         scoreSwitcher = (TextSwitcher) findViewById(R.id.score_text);
+        multiplierSwitcher = (TextSwitcher) findViewById(R.id.multiplier);
+        scoreIncrementText = (TextView) findViewById(R.id.score_increment);
 
-        scoreSwitcher.setFactory(mFactory);
+        scoreSwitcher.setFactory(scoreTextFactory);
+        multiplierSwitcher.setFactory(multiplierTextFactory);
 
         Animation in = AnimationUtils.loadAnimation(this,
                 android.R.anim.fade_in);
@@ -252,14 +269,17 @@ public class TrainingActivity extends Activity {
                 android.R.anim.fade_out);
         scoreSwitcher.setInAnimation(in);
         scoreSwitcher.setOutAnimation(out);
+        multiplierSwitcher.setInAnimation(in);
+        multiplierSwitcher.setOutAnimation(out);
+
+        multiplierSwitcher.setCurrentText("x1");
+        scoreSwitcher.setCurrentText("0");
 
         try {
             initPd();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //progressBar.setVisibility(View.GONE);
 
         UsbMidiDevice.installBroadcastHandler(this, new UsbBroadcastHandler() {
 
@@ -368,8 +388,6 @@ public class TrainingActivity extends Activity {
             PdDispatcher dispatcher = new PdUiDispatcher();
             PdBase.setReceiver(dispatcher);
             PdBase.openPatch(patchFile.getAbsolutePath());
-
-
     }
 
 
@@ -423,19 +441,36 @@ public class TrainingActivity extends Activity {
         cleanup();
     }
 
-    private ViewSwitcher.ViewFactory mFactory = new ViewSwitcher.ViewFactory() {
+    private ViewSwitcher.ViewFactory scoreTextFactory = new ViewSwitcher.ViewFactory() {
 
         @Override
         public View makeView() {
+            // Create a new TextView
+            TextView t = new TextView(TrainingActivity.this);
+            t.setGravity(Gravity.TOP | Gravity.START);
+            t.setTextAppearance(TrainingActivity.this, android.R.style.TextAppearance_Large);
+            t.setTextColor(Color.WHITE);
+            t.setTextSize(TypedValue.COMPLEX_UNIT_SP, 45);
+            t.setMinEms(4);
+            t.setMaxEms(4);
+            return t;
+        }
+    };
 
+    private ViewSwitcher.ViewFactory multiplierTextFactory = new ViewSwitcher.ViewFactory() {
+
+        @Override
+        public View makeView() {
             // Create a new TextView
             TextView t = new TextView(TrainingActivity.this);
             t.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
             t.setTextAppearance(TrainingActivity.this, android.R.style.TextAppearance_Large);
             t.setTextColor(Color.WHITE);
             t.setTextSize(TypedValue.COMPLEX_UNIT_SP, 45);
+            t.setMaxEms(2);
             return t;
         }
     };
+
 
 }

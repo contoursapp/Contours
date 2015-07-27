@@ -35,15 +35,14 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Text"
                 android:id="@+id/textView"
                 android:layout_gravity="center_horizontal" />
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="45dp"
-                android:text="PLAY"
+                android:textSize="45sp"
+                android:text="@string/play_button_text"
                 android:onClick="playButtonClicked"
                 android:id="@+id/play_button" />
             <TextView

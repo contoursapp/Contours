@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/Volumes/G-DRIVE%20slim/keytraining/AndroidMidi/build/intermediates/bundles/debug/res/values/values.xml -->
+    <!-- From: file:/Users/Thomas/Desktop/tufts/Contours/AndroidMidi/build/intermediates/bundles/debug/res/values/values.xml -->
     <eat-comment/>
     <string name="none_paired">No paired devices</string>
     <string name="select_device">Select a device to connect to</string>

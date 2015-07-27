@@ -45,8 +45,6 @@ public class ContoursGameView extends SurfaceView {
     private int spaceHeight; //the height of space between each staff line
     private Contour contour;
 
-    //TODO: replace with Value animators
-
     //default staff values
     private static final int defaultBottomNote = 48;
     private static final int defaultTopNote = 84;
@@ -222,6 +220,7 @@ public class ContoursGameView extends SurfaceView {
         scrollStaff(newStaffYOffset);
     }
 
+    //These are used by the ScrollAnimator do not remove!
     public void setScrollOffsetY(int offset) {
         this.scrollOffsetY = offset;
     }
@@ -270,7 +269,6 @@ public class ContoursGameView extends SurfaceView {
     public void onDraw(Canvas canvas){
         super.onDraw(canvas);
         canvas.drawARGB(255, 0, 0, 0);
-
         drawStaff(canvas);
 
         try {
@@ -321,8 +319,9 @@ public class ContoursGameView extends SurfaceView {
 
         for(int i = 0; i < staffPositionCount/2; i++) {
             int yVal = getStaffPositionYCoordinate(i*2);
-            canvas.drawText(Integer.toString(i*2), 75, yVal , staffPaint);
-            canvas.drawText(Integer.toString(i*2 + 1), 75, yVal - spaceHeight/2, staffPaint);
+            //drawText for debug only
+            //canvas.drawText(Integer.toString(i*2), 75, yVal , staffPaint);
+            //canvas.drawText(Integer.toString(i*2 + 1), 75, yVal - spaceHeight/2, staffPaint);
             canvas.drawLine(0, yVal, getWidth(), yVal, staffPaint);
         }
     }

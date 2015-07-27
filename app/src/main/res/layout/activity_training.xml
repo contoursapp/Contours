@@ -31,7 +31,7 @@
             android:indeterminate="true"
             android:text="@string/loading"
             android:id="@+id/training_loader"/>
-        <LinearLayout
+        <RelativeLayout
             android:background="@color/turquoise"
             android:alpha="70"
             android:layout_width="match_parent"
@@ -41,43 +41,113 @@
             android:orientation="horizontal">
             <TextView
                 android:layout_marginLeft="24dp"
-                android:layout_marginRight="24dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:gravity="top"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize ="45sp"
                 android:textColor="@color/white"
-                android:text="@string/score_text" />
+                android:text="@string/score_text"
+                android:id="@+id/score_label"/>
+
+            <TextSwitcher
+                android:layout_toRightOf="@id/score_label"
+                android:layout_toEndOf="@id/score_label"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:textSize ="45sp"
+                android:textColor="@color/white"
+                android:text="@string/zero_text"
+                android:id="@+id/score_text"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize ="45sp"
+                android:textColor="@color/white"
+                android:text=""
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:maxEms="3"
+                android:minEms="3"
+                android:layout_toRightOf="@id/score_text"
+                android:layout_toEndOf="@id/score_text"
+                android:id="@+id/score_increment"/>
+
             <TextSwitcher
                 android:layout_marginLeft="24dp"
                 android:layout_marginRight="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/score_increment"
+                android:layout_toEndOf="@id/score_increment"
+                android:gravity="center"
                 android:textSize ="45sp"
-                android:textColor="@color/white"
-                android:text="0"
-                android:id="@+id/score_text"/>
+                android:text="@string/start_multiplier"
+                android:background="@drawable/multiplierbg_1"
+                android:id="@+id/multiplier"
+            />
+
+            <View style="@style/VerticalDivider"
+                android:layout_toRightOf="@id/score_increment"
+                android:layout_toEndOf="@id/score_increment"
+                android:layout_margin="8dp"
+                android:id="@+id/score_bar_divider" />
 
             <Chronometer
-                android:layout_marginLeft="24dp"
+                android:layout_marginLeft="0dp"
                 android:layout_marginRight="24dp"
-                android:layout_width="0dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="8dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="33"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:textColor="@color/white"
                 android:id="@+id/chronometer"
                 android:gravity="end"
                 android:textSize="45sp" />
 
-        </LinearLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_toStartOf="@id/chronometer"
+                android:layout_toLeftOf="@id/chronometer"
+                android:src="@drawable/clock"/>
+
+        </RelativeLayout>
 
         <com.trcolgrove.contours.contoursGame.ContoursGameView
-        android:id="@+id/staff"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="60"
-        Staff:bottomNote="48"
-        Staff:topNote="84"
+            android:id="@+id/staff"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="60"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            Staff:bottomNote="48"
+            Staff:topNote="84"
         />
+        <View style="@style/KeyboardDivider" />
         <com.trcolgrove.colorfulPiano.Piano
             android:id="@+id/piano"
             android:layout_width="match_parent"

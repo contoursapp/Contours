@@ -12,4 +12,4 @@
 		android:entryValues="@array/outchannels_values" android:entries="@array/outchannels_labels"
 		android:title="@string/pref_title_outchannels" android:summary="@string/pref_sum_outchannels"></ListPreference>
 </PreferenceScreen>
-<!-- From: file:/Volumes/G-DRIVE%20slim/keytraining/PdCore/res/xml/preferences.xml --><!-- From: file:/Volumes/G-DRIVE%20slim/keytraining/PdCore/build/intermediates/bundles/debug/res/xml/preferences.xml -->
+<!-- From: file:/Users/Thomas/Desktop/tufts/Contours/PdCore/res/xml/preferences.xml --><!-- From: file:/Users/Thomas/Desktop/tufts/Contours/PdCore/build/intermediates/bundles/debug/res/xml/preferences.xml -->

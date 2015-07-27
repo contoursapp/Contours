@@ -51,7 +51,8 @@ public abstract class PianoKey {
         key_positions.put(11, 6);
     }
 
-    private static int[] keyColors = {R.color.purple, R.color.blue, R.color.turquoise, R.color.lime, R.color.yellow,
+    private static int[] keyColors = {R.color.purple, R.color.blue, R.color.turquoise, R.color.lime,
+            R.color.yellow,
             R.color.orange, R.color.red};
 
     protected Piano piano;

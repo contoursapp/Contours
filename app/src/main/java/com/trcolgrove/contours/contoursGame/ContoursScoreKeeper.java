@@ -49,7 +49,7 @@ public class ContoursScoreKeeper implements ScoreKeeper {
 
     private int noteMiss() {
         multiplier = 1;
-        return -20;
+        return -100;
     }
 
     private int noteHit() {
@@ -59,12 +59,12 @@ public class ContoursScoreKeeper implements ScoreKeeper {
     }
 
     private int contourComplete() {
-        int scoreIncrement = (int)(2000/((SystemClock.elapsedRealtime() - baseTime) / 1000));
+        int scoreIncrement = (int)((10000/((SystemClock.elapsedRealtime() - baseTime) / 10000)))*multiplier;
         incrementMultiplier();
         return scoreIncrement;
     }
     private void incrementMultiplier() {
-        if(multiplier < 10) {
+        if(multiplier < 8) {
             multiplier++;
         }
     }
