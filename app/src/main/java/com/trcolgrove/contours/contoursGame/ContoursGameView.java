@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import com.trcolgrove.contours.R;
+import com.trcolgrove.contours.util.DrawingUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +60,7 @@ public class ContoursGameView extends SurfaceView {
     private int topMidiNote;
     private static final int lineStrokeWidth = 5;
     private Paint staffPaint = new Paint();
+
 
     private List<Contour> contours; //The contours for this particular game activity
 
@@ -238,7 +241,8 @@ public class ContoursGameView extends SurfaceView {
      */
     private void scrollStaff(int newScrollOffsetY) {
         ValueAnimator scrollAnimator = ObjectAnimator.ofInt(this, "scrollOffsetY", scrollOffsetY, newScrollOffsetY);
-        scrollAnimator.setDuration(500);
+        int duration = Math.abs(newScrollOffsetY-scrollOffsetY);
+        scrollAnimator.setDuration(duration);
         scrollAnimator.start();
     }
 
@@ -272,6 +276,13 @@ public class ContoursGameView extends SurfaceView {
     public void onDraw(Canvas canvas){
         super.onDraw(canvas);
         canvas.drawARGB(255, 0, 0, 0);
+        Drawable bg = getResources().getDrawable(R.drawable.gradient_background);
+        bg.setBounds(0, getHeight() - spaceHeight * (staffPositionCount / 2) + scrollOffsetY, canvas.getWidth(),
+                getHeight() + scrollOffsetY);
+        bg.draw(canvas);
+
+
+
         drawStaff(canvas);
 
         try {
@@ -325,7 +336,10 @@ public class ContoursGameView extends SurfaceView {
             //drawText for debug only
             //canvas.drawText(Integer.toString(i*2), 75, yVal , staffPaint);
             //canvas.drawText(Integer.toString(i*2 + 1), 75, yVal - spaceHeight/2, staffPaint);
-            canvas.drawLine(0, yVal, getWidth(), yVal, staffPaint);
+            int staffLineMargin = DrawingUtils.dpToPixels(16, getContext());
+            if((yVal < getHeight() - 40) && (yVal > 40) ) {
+                canvas.drawLine(staffLineMargin, yVal, getWidth() - staffLineMargin, yVal, staffPaint);
+            }
         }
     }
 

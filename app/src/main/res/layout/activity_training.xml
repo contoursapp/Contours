@@ -35,9 +35,12 @@
             android:background="@color/turquoise"
             android:alpha="70"
             android:layout_width="match_parent"
-            android:layout_height="0dip"
+            android:layout_height="0dp"
             android:layout_weight="10"
-            android:layout_margin="16dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
             android:orientation="horizontal">
             <TextView
                 android:layout_marginLeft="24dp"
@@ -132,18 +135,18 @@
                 android:layout_toStartOf="@id/chronometer"
                 android:layout_toLeftOf="@id/chronometer"
                 android:src="@drawable/clock"/>
-
         </RelativeLayout>
 
         <com.trcolgrove.contours.contoursGame.ContoursGameView
             android:id="@+id/staff"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="0dp"
             android:layout_weight="60"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginLeft="0dp"
             Staff:bottomNote="48"
             Staff:topNote="84"
         />

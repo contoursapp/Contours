@@ -1,5 +1,6 @@
 package com.trcolgrove.contours.util;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -65,5 +66,16 @@ public class DrawingUtils {
         path.close();
 
         canvas.drawPath(path, paint);
+    }
+
+    /**
+     * convert hardcoded density independent pixel value into a raw pixel value
+     * @param dps an int specifying number of dps
+     * @param context the context in which to calculate the correct number of pixels
+     * @return number of pixels for the specified dps value
+     */
+    public static int dpToPixels(int dps, Context context) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dps * scale + 0.5f);
     }
 }
