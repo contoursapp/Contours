@@ -18,7 +18,6 @@ import android.view.View;
 import com.trcolgrove.contours.R;
 import com.trcolgrove.contours.util.DrawingUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +80,7 @@ public class ContoursGameView extends SurfaceView {
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         scrollOffsetY = 0;
+        spaceHeight = getHeight()/(notesDisplayedOnScreen/2);
 
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ContoursGameView, 0, 0);
@@ -91,7 +91,6 @@ public class ContoursGameView extends SurfaceView {
 
         initGameLoop();
         initStaff();
-        initializeContours(context);
 
         String[] contourStrings = getResources().getStringArray(R.array.contours);
         contours = ContourFactory.getContoursFromStringArray(contourStrings, context);
@@ -110,51 +109,6 @@ public class ContoursGameView extends SurfaceView {
         setContour(contours.get(contourIndex));
     }
 
-    private void initializeContours(Context context) throws InvalidNoteException {
-        Contour contour1 = new Contour(
-                new Note(context, Note.C, 3),
-                new Note(context, Note.E, 3),
-                new Note(context, Note.G, 3),
-                new Note(context, Note.C, 4),
-                new Note(context, Note.G, 3),
-                new Note(context, Note.E, 3),
-                new Note(context, Note.C, 3));
-
-        Contour contour2 = new Contour(
-                new Note(context, Note.C, 2),
-                new Note(context, Note.D, 2),
-                new Note(context, Note.E, 2),
-                new Note(context, Note.F, 2),
-                new Note(context, Note.G, 2),
-                new Note(context, Note.A, 2),
-                new Note(context, Note.B, 2),
-                new Note(context, Note.A, 2));
-
-        Contour contour3 = new Contour(
-                new Note(context, Note.C, 3),
-                new Note(context, Note.D, 3),
-                new Note(context, Note.F, 3),
-                new Note(context, Note.D, 3),
-                new Note(context, Note.C, 3),
-                new Note(context, Note.E, 3),
-                new Note(context, Note.C, 3));
-
-        Contour contour4 = new Contour(
-                new Note(context, Note.C, 4),
-                new Note(context, Note.B, 3),
-                new Note(context, Note.A, 3),
-                new Note(context, Note.G, 3),
-                new Note(context, Note.F, 3),
-                new Note(context, Note.E, 3),
-                new Note(context, Note.D, 3),
-                new Note(context, Note.C, 3));
-
-        contours = new ArrayList<>();
-        contours.add(contour1);
-        contours.add(contour2);
-        contours.add(contour3);
-        contours.add(contour4);
-    }
 
     /**
      * initialize the main game loop
@@ -327,7 +281,6 @@ public class ContoursGameView extends SurfaceView {
      * @param canvas the canvas on which to draw the staff
      */
     private void drawStaff(Canvas canvas) {
-        spaceHeight = getHeight()/(notesDisplayedOnScreen/2);
         staffPaint.setColor(Color.WHITE); //TODO: make this customizable ?
         staffPaint.setStrokeWidth(lineStrokeWidth);
 

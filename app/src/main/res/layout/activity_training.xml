@@ -150,7 +150,7 @@
             Staff:bottomNote="48"
             Staff:topNote="84"
         />
-        <View style="@style/KeyboardDivider" />
+        <View style="@style/KeyboardDivider"/>
         <com.trcolgrove.colorfulPiano.Piano
             android:id="@+id/piano"
             android:layout_width="match_parent"
