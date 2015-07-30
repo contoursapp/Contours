@@ -6,16 +6,20 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.trcolgrove.contours.contoursGame.TrainingActivity;
 
 
 public class MainActivity extends ActionBarActivity {
 
+    private LinearLayout difficultyMenu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        difficultyMenu = (LinearLayout) findViewById(R.id.difficulty_menu);
     }
 
     @Override
@@ -26,6 +30,22 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void playButtonClicked(View view) {
+        difficultyMenu.setAlpha(0);
+        difficultyMenu.setVisibility(View.VISIBLE);
+        difficultyMenu.animate().alpha(1);
+    }
+
+    public void easyButtonClicked(View view) {
+        Intent i = new Intent(getApplicationContext(), TrainingActivity.class);
+        startActivity(i);
+    }
+
+    public void mediumButtonClicked(View view) {
+        Intent i = new Intent(getApplicationContext(), TrainingActivity.class);
+        startActivity(i);
+    }
+
+    public void hardButtonClicked(View view) {
         Intent i = new Intent(getApplicationContext(), TrainingActivity.class);
         startActivity(i);
     }

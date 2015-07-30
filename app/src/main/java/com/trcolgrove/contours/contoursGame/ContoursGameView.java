@@ -31,6 +31,9 @@ public class ContoursGameView extends SurfaceView {
 
     private static String TAG = "ContoursGameView";
 
+
+    boolean firstLoad = true;
+
     //object to keep track of score, multiplier and other performance data
     private static ScoreKeeper scoreKeeper;
 
@@ -80,7 +83,6 @@ public class ContoursGameView extends SurfaceView {
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         scrollOffsetY = 0;
-        spaceHeight = getHeight()/(notesDisplayedOnScreen/2);
 
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ContoursGameView, 0, 0);
@@ -96,7 +98,6 @@ public class ContoursGameView extends SurfaceView {
         contours = ContourFactory.getContoursFromStringArray(contourStrings, context);
 
         this.scoreKeeper = new ContoursScoreKeeper(SystemClock.elapsedRealtime());
-        setContour(contours.get(contourIndex));
     }
 
     /**
@@ -106,7 +107,7 @@ public class ContoursGameView extends SurfaceView {
      */
     private void nextContour() {
         contourIndex++;
-        setContour(contours.get(contourIndex));
+        setContour(contours.get(contourIndex), true);
     }
 
 
@@ -164,7 +165,7 @@ public class ContoursGameView extends SurfaceView {
         }
     }
 
-    public void setContour(Contour contour) {
+    public void setContour(Contour contour, boolean animate) {
         this.contour = contour;
 
         int topNote = contour.getTopMidiVal();
@@ -177,7 +178,7 @@ public class ContoursGameView extends SurfaceView {
         int numSpacesFromBottom = midwayPosition / 2;
 
         int newStaffYOffset = ((getHeight()/2) + (numSpacesFromBottom * spaceHeight) - getHeight());
-        scrollStaff(newStaffYOffset);
+        scrollStaff(newStaffYOffset, animate);
     }
 
     //These are used by the ScrollAnimator do not remove!
@@ -193,11 +194,15 @@ public class ContoursGameView extends SurfaceView {
      * Scroll the staff to the offset defined by newScrollOffsetY
      * @param newScrollOffsetY the offset to which the staff must be scrolled
      */
-    private void scrollStaff(int newScrollOffsetY) {
-        ValueAnimator scrollAnimator = ObjectAnimator.ofInt(this, "scrollOffsetY", scrollOffsetY, newScrollOffsetY);
-        int duration = Math.abs(newScrollOffsetY-scrollOffsetY);
-        scrollAnimator.setDuration(duration);
-        scrollAnimator.start();
+    private void scrollStaff(int newScrollOffsetY, boolean animate) {
+        if(animate) {
+            ValueAnimator scrollAnimator = ObjectAnimator.ofInt(this, "scrollOffsetY", scrollOffsetY, newScrollOffsetY);
+            int duration = Math.abs(newScrollOffsetY - scrollOffsetY);
+            scrollAnimator.setDuration(duration);
+            scrollAnimator.start();
+        } else {
+            scrollOffsetY = newScrollOffsetY;
+        }
     }
 
     public Note checkNote(int midiValue){
@@ -229,6 +234,11 @@ public class ContoursGameView extends SurfaceView {
     @Override
     public void onDraw(Canvas canvas){
         super.onDraw(canvas);
+        //This is a necessary clause because setContour relies on the view having been loaded to work
+        if(firstLoad) {
+            setContour(contours.get(contourIndex), false);
+            firstLoad = false;
+        }
         canvas.drawARGB(255, 0, 0, 0);
         Drawable bg = getResources().getDrawable(R.drawable.gradient_background);
         bg.setBounds(0, getHeight() - spaceHeight * (staffPositionCount / 2) + scrollOffsetY, canvas.getWidth(),
@@ -255,7 +265,7 @@ public class ContoursGameView extends SurfaceView {
         List<Note> notes = contour.getNotes();
         int noteSpacing = getWidth()/(notes.size()+1);
         int radius = spaceHeight /2;
-        // a little extra space for the front/bacl
+        // a little extra space for the front/back
         int noteXPos = noteSpacing;
 
         for(int i = 0; i < notes.size(); i++){
@@ -281,14 +291,14 @@ public class ContoursGameView extends SurfaceView {
      * @param canvas the canvas on which to draw the staff
      */
     private void drawStaff(Canvas canvas) {
+
+        spaceHeight = getHeight()/(notesDisplayedOnScreen/2);
         staffPaint.setColor(Color.WHITE); //TODO: make this customizable ?
         staffPaint.setStrokeWidth(lineStrokeWidth);
 
         for(int i = 0; i < staffPositionCount/2; i++) {
             int yVal = getStaffPositionYCoordinate(i*2);
             //drawText for debug only
-            //canvas.drawText(Integer.toString(i*2), 75, yVal , staffPaint);
-            //canvas.drawText(Integer.toString(i*2 + 1), 75, yVal - spaceHeight/2, staffPaint);
             int staffLineMargin = DrawingUtils.dpToPixels(16, getContext());
             if((yVal < getHeight() - 40) && (yVal > 40) ) {
                 canvas.drawLine(staffLineMargin, yVal, getWidth() - staffLineMargin, yVal, staffPaint);
