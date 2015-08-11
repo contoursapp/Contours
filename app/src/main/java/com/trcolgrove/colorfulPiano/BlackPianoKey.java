@@ -24,6 +24,11 @@ public class BlackPianoKey extends PianoKey {
         colorRect.left = (((noteValue/12)*7) + key_positions.get(noteValue%12) + 1) *
                 whiteKeyWidth - (blackKeyWidth/2);
         colorRect.right = colorRect.left + blackKeyWidth;
+
+        mainRect.top = colorRect.top;
+        mainRect.bottom = colorRect.bottom;
+        mainRect.left = colorRect.left;
+        mainRect.right = colorRect.right;
     }
 
     @Override

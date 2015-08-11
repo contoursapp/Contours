@@ -1,15 +1,13 @@
 package com.trcolgrove.contours.contoursGame;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.support.annotation.IntDef;
-import android.view.animation.LinearInterpolator;
 
+import com.trcolgrove.contours.accessors.NoteAccessor;
 import com.trcolgrove.contours.util.DrawingUtils;
 
 import java.lang.annotation.Retention;
@@ -17,6 +15,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
+
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.equations.Circ;
 
 /**
  * Class representing a single note instance
@@ -201,12 +203,18 @@ public class Note {
     /**
      * This function is called when the note is played when it is selected,
      * i.e. a Note "hit"
+     * @param tweenManager
      */
-    public void hit() {
-        startRipple();
+    public void hit(TweenManager tweenManager) {
+        startRipple(tweenManager);
     }
 
-    private void startRipple() {
+    private void startRipple(TweenManager tweenManager) {
+        Tween.to(this, NoteAccessor.RIPPLE_ALPHA, 0.5f).target(0).ease(Circ.OUT).start(tweenManager);
+        Tween.to(this, NoteAccessor.RIPPLE_RADIUS, 0.5f).target(300).ease(Circ.OUT).start(tweenManager);
+        Tween.set(this, NoteAccessor.RIPPLE_RADIUS).target(radius).delay(0.5f).start(tweenManager);
+
+        /*
         ValueAnimator rippleRadiusAnim = ObjectAnimator.ofInt(this, "rippleRadius", radius, 300);
         rippleRadiusAnim.setInterpolator(new LinearInterpolator());
         rippleRadiusAnim.setDuration(500);
@@ -214,7 +222,7 @@ public class Note {
         ValueAnimator rippleAlphaAnim = ObjectAnimator.ofInt(this, "rippleAlpha", 255, 0);
         rippleAlphaAnim.setInterpolator(new LinearInterpolator());
         rippleAlphaAnim.setDuration(500);
-        rippleAlphaAnim.start();
+        rippleAlphaAnim.start(); */
     }
 
     public void drawRipple(Canvas canvas) {

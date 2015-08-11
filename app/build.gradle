@@ -35,16 +35,20 @@ buildTypes {
 
 repositories {
     maven {
-        url 'https://github.com/kshoji/USB-MIDI-Driver/raw/master/MIDIDriver/snapshots'
+        url 'https://jitpack.io'
     }
     mavenCentral()
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.0.0'
-    compile 'jp.kshoji:midi-driver:0.0.3:@aar'
+    compile 'com.github.kshoji:USB-MIDI-Driver:v0.1.2@aar'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile project(':PdCore')
+    compile files('/Users/Thomas/Desktop/tufts/Contours/libs/tween-engine-api.jar')
+    compile files('/Users/Thomas/Desktop/tufts/Contours/libs/tween-engine-api-sources.jar')
+    compile files('libs/tween-engine-api.jar')
+    compile files('libs/tween-engine-api-sources.jar')
 }
 

@@ -1,13 +1,11 @@
 package com.trcolgrove.contours.contoursGame;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.hardware.usb.UsbDevice;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -23,16 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import com.noisepages.nettoyeur.midi.MidiReceiver;
-import com.noisepages.nettoyeur.usb.ConnectionFailedException;
-import com.noisepages.nettoyeur.usb.DeviceNotConnectedException;
-import com.noisepages.nettoyeur.usb.InterfaceNotAvailableException;
-import com.noisepages.nettoyeur.usb.UsbBroadcastHandler;
-import com.noisepages.nettoyeur.usb.midi.UsbMidiDevice;
-import com.noisepages.nettoyeur.usb.midi.util.UsbMidiInputSelector;
-import com.noisepages.nettoyeur.usb.midi.util.UsbMidiOutputSelector;
-import com.noisepages.nettoyeur.usb.util.AsyncDeviceInfoLookup;
-import com.noisepages.nettoyeur.usb.util.UsbDeviceSelector;
 import com.trcolgrove.colorfulPiano.Piano;
 import com.trcolgrove.contours.R;
 import com.trcolgrove.contours.events.NoteEvent;
@@ -47,122 +35,16 @@ import org.puredata.core.utils.PdDispatcher;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import jp.kshoji.driver.midi.activity.AbstractSingleMidiActivity;
+import jp.kshoji.driver.midi.device.MidiInputDevice;
+import jp.kshoji.driver.midi.device.MidiOutputDevice;
 
-public class TrainingActivity extends Activity {
+public class TrainingActivity extends AbstractSingleMidiActivity {
 
     //TODO: replace current midi implementation with btmidi
-
-    private UsbMidiDevice midiDevice = null;
-    private MidiReceiver midiOut = null;
-    private Toast toast = null;
-
-    private void toast(final String msg) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (toast == null) {
-                    toast = Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT);
-                }
-                toast.setText("Contours: " + msg);
-                toast.show();
-            }
-        });
-    }
-
-    private final MidiReceiver receiver = new MidiReceiver() {
-        @Override
-        public void onNoteOn(int channel, int key, final int velocity) {
-            final int midiVal = key;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (velocity > 0)
-                        pianoView.noteOn(midiVal, velocity);
-                    else
-                        pianoView.noteOff(midiVal, velocity);
-                }
-            });
-        }
-
-        @Override
-        public void onNoteOff(int channel, int key, final int velocity) {
-            final int midiVal = key;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    pianoView.noteOff(midiVal, velocity);
-                }
-            });
-        }
-
-        @Override
-        public void onProgramChange(int channel, int program) {
-            toast("program change: " + channel + ", " + program);
-        }
-
-        @Override
-        public void onPolyAftertouch(int channel, int key, int velocity) {
-            toast("aftertouch: " + channel + ", " + key + ", " + velocity);
-        }
-
-        @Override
-        public void onPitchBend(int channel, int value) {
-            toast("pitch bend: " + channel + ", " + value);
-        }
-
-        @Override
-        public void onControlChange(int channel, int controller, int value) {
-            toast("control change: " + channel + ", " + controller + ", " + value);
-        }
-
-        @Override
-        public void onAftertouch(int channel, int velocity) {
-            toast("aftertouch: " + channel + ", " + velocity);
-        }
-
-        @Override
-        public void onRawByte(byte value) {
-            toast("raw byte: " + value);
-        }
-
-        @Override
-        public boolean beginBlock() {
-            return false;
-        }
-
-        @Override
-        public void endBlock() {}
-    };
-
     private static final int MIN_SAMPLE_RATE = 44100;
-
-    final Handler midiInputEventHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            if (midiInputEventAdapter != null) {
-                midiInputEventAdapter.add((String) msg.obj);
-            }
-            // message handled successfully
-            return true;
-        }
-    });
-
-    final Handler midiOutputEventHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            if (midiOutputEventAdapter != null) {
-                midiOutputEventAdapter.add((String) msg.obj);
-            }
-            // message handled successfully
-            return true;
-        }
-    });
-
-    ArrayAdapter<String> midiInputEventAdapter;
-    ArrayAdapter<String> midiOutputEventAdapter;
     private Piano pianoView;
     private ContoursGameView gameView;
     private ProgressBar progressBar;
@@ -170,6 +52,96 @@ public class TrainingActivity extends Activity {
     private TextSwitcher scoreSwitcher;
     private TextSwitcher multiplierSwitcher;
     private TextView scoreIncrementText;
+
+
+    @Override
+    public void onDeviceAttached(@NonNull UsbDevice usbDevice) {
+        // deprecated method.
+        // do nothing
+    }
+
+    @Override
+    public void onMidiInputDeviceAttached(@NonNull MidiInputDevice midiInputDevice) {
+
+    }
+
+    @Override
+    public void onMidiOutputDeviceAttached(@NonNull final MidiOutputDevice midiOutputDevice) {
+        Toast.makeText(this, "USB MIDI Device " + midiOutputDevice.getUsbDevice().getDeviceName() + " has been attached.", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDeviceDetached(@NonNull UsbDevice usbDevice) {
+        // deprecated method.
+        // do nothing
+    }
+
+    @Override
+    public void onMidiInputDeviceDetached(@NonNull MidiInputDevice midiInputDevice) {
+
+    }
+
+    @Override
+    public void onMidiOutputDeviceDetached(@NonNull final MidiOutputDevice midiOutputDevice) {
+        Toast.makeText(this, "USB MIDI Device " + midiOutputDevice.getUsbDevice().getDeviceName() + " has been detached.", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onMidiNoteOff(@NonNull final MidiInputDevice sender, int cable, int channel, int note, int velocity) {
+        pianoView.noteOff(note, velocity);
+    }
+
+    @Override
+    public void onMidiNoteOn(@NonNull final MidiInputDevice sender, int cable, int channel, int note, int velocity) {
+        pianoView.noteOn(note, velocity);
+    }
+
+    @Override
+    public void onMidiPolyphonicAftertouch(@NonNull final MidiInputDevice sender, int cable, int channel, int note, int pressure) {
+    }
+
+    @Override
+    public void onMidiControlChange(@NonNull final MidiInputDevice sender, int cable, int channel, int function, int value) {
+
+    }
+
+    @Override
+    public void onMidiProgramChange(@NonNull final MidiInputDevice sender, int cable, int channel, int program) {
+
+    }
+
+    @Override
+    public void onMidiChannelAftertouch(@NonNull final MidiInputDevice sender, int cable, int channel, int pressure) {
+    }
+
+    @Override
+    public void onMidiPitchWheel(@NonNull final MidiInputDevice sender, int cable, int channel, int amount) {
+
+    }
+
+    @Override
+    public void onMidiSystemExclusive(@NonNull final MidiInputDevice sender, int cable, final byte[] systemExclusive) {
+    }
+
+    @Override
+    public void onMidiSystemCommonMessage(@NonNull final MidiInputDevice sender, int cable, final byte[] bytes) {
+    }
+
+    @Override
+    public void onMidiSingleByte(@NonNull final MidiInputDevice sender, int cable, int byte1) {
+    }
+
+    @Override
+    public void onMidiMiscellaneousFunctionCodes(@NonNull final MidiInputDevice sender, int cable, int byte1, int byte2, int byte3) {
+
+    }
+
+    @Override
+    public void onMidiCableEvents(@NonNull final MidiInputDevice sender, int cable, int byte1, int byte2, int byte3) {
+    }
+
+    ArrayAdapter<String> midiInputEventAdapter;
+    ArrayAdapter<String> midiOutputEventAdapter;
 
     @Override
     protected void onResume() {
@@ -191,8 +163,12 @@ public class TrainingActivity extends Activity {
         EventBus.getDefault().unregister(this);
     }
 
-    public void onEvent(NoteEvent event) {
-        gameView.checkNote(event.midiNote);
+    public void onEvent(final NoteEvent event) {
+        this.runOnUiThread(new Runnable() {
+            public void run() {
+                gameView.checkNote(event.midiNote);
+            }
+        });
     }
 
     public void onEvent(ScoreEvent event) {
@@ -281,80 +257,6 @@ public class TrainingActivity extends Activity {
             e.printStackTrace();
         }
 
-        UsbMidiDevice.installBroadcastHandler(this, new UsbBroadcastHandler() {
-
-            @Override
-            public void onPermissionGranted(UsbDevice device) {
-                if (midiDevice == null || !midiDevice.matches(device)) return;
-                try {
-                    midiDevice.open(TrainingActivity.this);
-                } catch (ConnectionFailedException e) {
-                    toast("USB connection failed");
-                    midiDevice = null;
-                    return;
-                }
-                final UsbMidiOutputSelector outputSelector = new UsbMidiOutputSelector(midiDevice) {
-
-                    @Override
-                    protected void onOutputSelected(UsbMidiDevice.UsbMidiOutput output, UsbMidiDevice device, int iface,
-                                                    int index) {
-                        toast("Output selection: Interface " + iface + ", Output " + index);
-                        try {
-                            midiOut = output.getMidiOut();
-                        } catch (DeviceNotConnectedException e) {
-                            toast("MIDI device has been disconnected");
-                        } catch (InterfaceNotAvailableException e) {
-                            toast("MIDI interface is unavailable");
-                        }
-                    }
-
-                    @Override
-                    protected void onNoSelection(UsbMidiDevice device) {
-                        toast("No output selected");
-                    }
-                };
-                new UsbMidiInputSelector(midiDevice) {
-
-                    @Override
-                    protected void onInputSelected(UsbMidiDevice.UsbMidiInput input, UsbMidiDevice device, int iface,
-                                                   int index) {
-                        toast("Input selection: Interface " + iface + ", Input " + index);
-                        input.setReceiver(receiver);
-                        try {
-                            input.start();
-                        } catch (DeviceNotConnectedException e) {
-                            toast("MIDI device has been disconnected");
-                            return;
-                        } catch (InterfaceNotAvailableException e) {
-                            toast("MIDI interface is unavailable");
-                            return;
-                        }
-                        outputSelector.show(getFragmentManager(), null);
-                    }
-
-                    @Override
-                    protected void onNoSelection(UsbMidiDevice device) {
-                        toast("No input selected");
-                        outputSelector.show(getFragmentManager(), null);
-                    }
-                }.show(getFragmentManager(), null);
-            }
-
-            @Override
-            public void onPermissionDenied(UsbDevice device) {
-                if (midiDevice == null || !midiDevice.matches(device)) return;
-                toast("Permission denied for device " + midiDevice.getCurrentDeviceInfo());
-                midiDevice = null;
-            }
-
-            @Override
-            public void onDeviceDetached(UsbDevice device) {
-                if (midiDevice == null || !midiDevice.matches(device)) return;
-                midiDevice.close();
-                midiDevice = null;
-                toast("MIDI device disconnected");
-            }
-        });
 
     }
 
@@ -371,7 +273,6 @@ public class TrainingActivity extends Activity {
     }
 
     public void setStrings(View view) {
-        chooseMidiDevice();
     }
 
     public void setBanjo(View view) {
@@ -413,28 +314,7 @@ public class TrainingActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void chooseMidiDevice() {
-        final List<UsbMidiDevice> devices = UsbMidiDevice.getMidiDevices(this);
-        new AsyncDeviceInfoLookup() {
 
-            @Override
-            protected void onLookupComplete() {
-                new UsbDeviceSelector<UsbMidiDevice>(devices) {
-
-                    @Override
-                    protected void onDeviceSelected(UsbMidiDevice device) {
-                        midiDevice = device;
-                        midiDevice.requestPermission(TrainingActivity.this);
-                    }
-
-                    @Override
-                    protected void onNoSelection() {
-                        toast("No device selected");
-                    }
-                }.show(getFragmentManager(), null);
-            }
-        }.execute(devices.toArray(new UsbMidiDevice[devices.size()]));
-    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -471,6 +351,8 @@ public class TrainingActivity extends Activity {
             return t;
         }
     };
+
+
 
 
 }

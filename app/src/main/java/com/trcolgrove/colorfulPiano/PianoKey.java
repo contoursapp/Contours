@@ -51,9 +51,9 @@ public abstract class PianoKey {
         key_positions.put(11, 6);
     }
 
-    private static int[] keyColors = {R.color.purple, R.color.blue, R.color.turquoise, R.color.lime,
-            R.color.yellow,
-            R.color.orange, R.color.red};
+    private static int[] keyColors = {R.color.purple, R.color.blue,
+            R.color.turquoise, R.color.lime, R.color.yellow, R.color.orange,
+            R.color.red};
 
     protected Piano piano;
     protected static int outline_width = 14;
@@ -65,7 +65,7 @@ public abstract class PianoKey {
     protected int darkColor;
     // The area this key occupies.
     protected Rect colorRect;
-    protected Rect whiteRect;
+    protected Rect mainRect;
 
     // Objects for subclasses to use for painting, just so they don't have to reallocate every time.
     protected Paint fillPaint;
@@ -81,7 +81,7 @@ public abstract class PianoKey {
         color = context.getResources().getColor(keyColors[key_positions.get(noteValue%12)]);
         darkColor = darker(color, 0.7);
         colorRect = new Rect();
-        whiteRect = new Rect();
+        mainRect = new Rect();
 
         fillPaint = new Paint();
         borderPaint = new Paint();

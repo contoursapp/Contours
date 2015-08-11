@@ -85,11 +85,15 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 21 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="midi-driver-0.0.3" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.0.0" level="project" />
     <orderEntry type="library" exported="" name="eventbus-2.4.0" level="project" />
+    <orderEntry type="library" exported="" name="tween-engine-api-sources" level="project" />
+    <orderEntry type="library" exported="" name="1_tween-engine-api-sources" level="project" />
+    <orderEntry type="library" exported="" name="tween-engine-api" level="project" />
+    <orderEntry type="library" exported="" name="1_tween-engine-api" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.0.0" level="project" />
+    <orderEntry type="library" exported="" name="USB-MIDI-Driver-v0.1.2" level="project" />
     <orderEntry type="module" module-name="PdCore" exported="" />
   </component>
 </module>

@@ -4,6 +4,7 @@
     xmlns:Staff="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:background="@android:color/black"
+    android:hardwareAccelerated="true"
     android:layout_height="match_parent"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
@@ -142,7 +143,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="0dp"
-            android:layout_weight="60"
+            android:layout_weight="62"
             android:layout_marginEnd="0dp"
             android:layout_marginStart="0dp"
             android:layout_marginRight="0dp"
@@ -155,7 +156,7 @@
             android:id="@+id/piano"
             android:layout_width="match_parent"
             android:layout_height="0dip"
-            android:layout_weight="20"
+            android:layout_weight="18"
             Piano:key_count="37"
         />
     </LinearLayout>

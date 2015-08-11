@@ -28,10 +28,10 @@ public class WhitePianoKey extends PianoKey {
                 whiteKeyWidth;
         colorRect.right = colorRect.left + whiteKeyWidth;
 
-        whiteRect.top = colorRect.top + outline_width;
-        whiteRect.bottom = colorRect.bottom - outline_width;
-        whiteRect.left = colorRect.left + outline_width;
-        whiteRect.right = colorRect.right - outline_width;
+        mainRect.top = colorRect.top + outline_width;
+        mainRect.bottom = colorRect.bottom - outline_width;
+        mainRect.left = colorRect.left + outline_width;
+        mainRect.right = colorRect.right - outline_width;
     }
 
     @Override
@@ -52,8 +52,6 @@ public class WhitePianoKey extends PianoKey {
         } else {
             fillPaint.setColor(Color.WHITE);
         }
-        canvas.drawRect(whiteRect, fillPaint);
+        canvas.drawRect(mainRect, fillPaint);
     }
-
-
 }
