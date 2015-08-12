@@ -13,7 +13,15 @@
     <color name="teal">#ff2a8a97</color>
     <color name="indigo">#ff443b7c</color>
     <color name="dkRed">#ff800a18</color>
-    <color name="multiplier_1">#b621365d</color>
+    <color name="multiplier_1">#b63f1f5d</color>
+    <color name="multiplier_2">#b63a5892</color>
+    <color name="multiplier_3">#b6185d5a</color>
+    <color name="multiplier_4">#b632e51a</color>
+    <color name="multiplier_5">#b6fffa46</color>
+    <color name="multiplier_6">#b6ff761f</color>
+    <color name="multiplier_7">#b6ff0e15</color>
+    <color name="multiplier_8">#b6ff32ae</color>
+
     <color name="light_grey">#8c8b8b8b</color>
     <color name="purple_transparent">#509c15ff</color>
     <color name="blue_transparent">#720034ff</color>

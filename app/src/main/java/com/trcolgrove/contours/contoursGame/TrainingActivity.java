@@ -43,6 +43,11 @@ import jp.kshoji.driver.midi.device.MidiOutputDevice;
 
 public class TrainingActivity extends AbstractSingleMidiActivity {
 
+    private int[] multiplierBackgrounds = {R.drawable.multiplierbg_1, R.drawable.multiplierbg_2,
+                                            R.drawable.multiplierbg_3, R.drawable.multiplierbg_4,
+                                            R.drawable.multiplierbg_5, R.drawable.multiplierbg_6,
+                                            R.drawable.multiplierbg_7, R.drawable.multiplierbg_8};
+
     //TODO: replace current midi implementation with btmidi
     private static final int MIN_SAMPLE_RATE = 44100;
     private Piano pianoView;
@@ -174,6 +179,9 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     public void onEvent(ScoreEvent event) {
         scoreSwitcher.setText(Integer.toString(event.totalScore));
         multiplierSwitcher.setText("x" + Integer.toString(event.multiplier));
+        if(android.os.Build.VERSION.SDK_INT > 16) {
+            multiplierSwitcher.setBackground(getResources().getDrawable(multiplierBackgrounds[event.multiplier - 1]));
+        }
         displayScoreIncrement(event.scoreIncrement);
     }
 
@@ -350,8 +358,5 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
             return t;
         }
     };
-
-
-
 
 }

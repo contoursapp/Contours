@@ -336,13 +336,10 @@ public class ContoursGameView extends SurfaceView {
         textPaint.setAntiAlias(true);
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setColor(Color.WHITE);
-        textPaint.setTextSize(250f);
+        textPaint.setTextSize(225f);
         textPaint.setAlpha(congratsTextAlpha);
         canvas.drawText(congratsMessage, x, y, textPaint);
-
-        Log.d(TAG, "printing congratsMessage: " + congratsTextAlpha);
     }
-
 
     private void drawOctaveDividers(Canvas canvas) {
         for(int i = 0; i < 3; i++) {
@@ -396,14 +393,10 @@ public class ContoursGameView extends SurfaceView {
 
         spaceHeight = getSpaceHeight();
         staffPaint.setStrokeWidth(lineStrokeWidth);
-        staffPaint.setAlpha(200);
         staffPaint.setColor(Color.WHITE);
 
         for(int i = 0; i < staffPositionCount/2; i++) {
             int yVal = getStaffPositionYCoordinate(i * 2);
-            //drawText for debug only
-            //staffPaint.setColor(octaveDivideColor);
-            //staffPaint.setAlpha(255);
             canvas.drawLine(staffMargin, yVal, getWidth() - staffMargin, yVal, staffPaint);
         }
 
