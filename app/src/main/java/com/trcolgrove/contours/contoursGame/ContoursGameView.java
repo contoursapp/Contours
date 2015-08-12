@@ -1,5 +1,9 @@
 package com.trcolgrove.contours.contoursGame;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -12,6 +16,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.trcolgrove.contours.R;
 import com.trcolgrove.contours.accessors.NoteAccessor;
@@ -20,6 +25,7 @@ import com.trcolgrove.contours.util.DrawingUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
@@ -34,25 +40,27 @@ public class ContoursGameView extends SurfaceView {
     private static String TAG = "ContoursGameView";
 
     private int staffMargin = DrawingUtils.dpToPixels(32, getContext());
-    private int octaveDivideColor = getContext().getResources().getColor(R.color.turquoise);
 
-    private Drawable[] octaveDrawables = {getResources().getDrawable(R.drawable.octave_1), getResources().getDrawable(R.drawable.octave_2),
+    private Drawable[] octaveDividerDrawables = {getResources().getDrawable(R.drawable.octave_1), getResources().getDrawable(R.drawable.octave_2),
             getResources().getDrawable(R.drawable.octave_3)};
 
-    private int octaveOneColor = getContext().getResources().getColor(R.color.purple);
-    private int octaveTwoColor = getContext().getResources().getColor(R.color.blue);
-    private int octaveThreeColor = getContext().getResources().getColor(R.color.turquoise);
-
-    boolean firstLoad = true;
 
     //object to keep track of score, multiplier and other performance data
     private static ScoreKeeper scoreKeeper;
 
+
+    private int congratsTextAlpha = 0;
+    private int noteAlpha = 255;
+
     // midi-poisition mapping. For now only C major supported. Essentially this is a util to
     // figure out where on the staff each midi note should map... needs more robust implementation
     // if we decide to support accidentals
-    protected static final int[] noteValToPosition = {0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6};
+    private static final int[] noteValToPosition = {0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6};
+    private static final String[] congratsMessages = {"Good Job", "You Did It!", "Rock On!", "Excellent!",
+            "BOOM", "WE DID IT REDDIT!", "Awesome!" , "WOO!", "Good Fuckn Yard"};
 
+    private static final int transitionMilis = 2500;
+    private String congratsMessage = "dope";
     // a direct map from midiValue to staff location, with the bottom line being position 0,
     // this is important because often multiple notes map to the same staff location, ie C and Csharp
     protected static Map<Integer, Integer> midiValToStaffLoc;
@@ -73,7 +81,7 @@ public class ContoursGameView extends SurfaceView {
     private int topMidiNote;
     private static final int lineStrokeWidth = 3;
     private Paint staffPaint = new Paint();
-    private Paint borderPaint = new Paint();
+    private Paint textPaint = new Paint();
 
     private TweenManager tweenManager;
     //using the tween library instead of animators so I dont have to invoke the uithread?
@@ -81,6 +89,8 @@ public class ContoursGameView extends SurfaceView {
     private List<Contour> contours; //The contours for this particular game activity
 
     private GameLoopThread gameLoopThread; //Game Loop
+
+    private boolean transitioning = false; //indicates whether or not we are transitioning between contours
 
     public ContoursGameView(Context context) throws InvalidNoteException {
         this(context, null);
@@ -118,7 +128,7 @@ public class ContoursGameView extends SurfaceView {
         this.setDrawingCacheEnabled(true);
         this.buildDrawingCache();
 
-        setContour(contours.get(contourIndex), false);
+        setContour(contours.get(contourIndex));
     }
 
     /**
@@ -126,11 +136,48 @@ public class ContoursGameView extends SurfaceView {
      * Instantiates the next contour in the sequence and calls other
      * animations and effects.
      */
-    private void nextContour() {
-        contourIndex++;
-        setContour(contours.get(contourIndex), true);
-    }
 
+    public void nextContour() {
+        transitioning = true;
+
+        Random rand = new Random();
+        int msgIndex = rand.nextInt(congratsMessages.length);
+        congratsMessage = congratsMessages[msgIndex];
+        AnimatorSet transitionAnims = new AnimatorSet();
+
+        ValueAnimator textAnim = ObjectAnimator.ofInt(this, "congratsTextAlpha", 0, 255, 0);
+        textAnim.setDuration(transitionMilis);
+        ValueAnimator noteAnimOut = ObjectAnimator.ofInt(this, "noteAlpha", 255, 0);
+        noteAnimOut.setDuration(transitionMilis/2);
+        ValueAnimator noteAnimIn = ObjectAnimator.ofInt(this, "noteAlpha", 0, 255);
+        noteAnimIn.setDuration(transitionMilis/2);
+
+        transitionAnims.setInterpolator(new AccelerateDecelerateInterpolator());
+        transitionAnims.playTogether(textAnim, noteAnimOut);
+        transitionAnims.play(noteAnimIn).after(noteAnimOut);
+
+        noteAnimOut.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                contourIndex++;
+                setContour(contours.get(contourIndex));
+                transitioning = false;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        transitionAnims.start();
+    }
 
     /**
      * initialize the main game loop
@@ -168,6 +215,11 @@ public class ContoursGameView extends SurfaceView {
         });
     }
 
+    /**
+     * Initialize the staff's properties. Specifically,
+     * create the mapping from midiValue to location on the staff,
+     * based on the bottomMidiNote and the topMidiNote
+     */
     private void initStaff() {
         midiValToStaffLoc = new HashMap<>();
         int staffPosition = 0;
@@ -187,29 +239,9 @@ public class ContoursGameView extends SurfaceView {
         }
     }
 
-    public void setContour(Contour contour, boolean animate) {
+    /* Set the game screen's contour */
+    public void setContour(Contour contour) {
         this.contour = contour;
-
-        int topNote = contour.getTopMidiVal();
-        int topPosition = midiValToStaffLoc.get(topNote);
-
-        int bottomNote = contour.getBottomMidiVal();
-        int bottomPosition = midiValToStaffLoc.get(bottomNote);
-
-        int midwayPosition = (topPosition + bottomPosition) / 2;
-        int numSpacesFromBottom = midwayPosition / 2;
-
-        int newStaffYOffset = ((getHeight()/2) + (numSpacesFromBottom * spaceHeight) - getHeight());
-        scrollStaff(newStaffYOffset, animate);
-    }
-
-    //These are used by the ScrollAnimator do not remove!
-    public void setScrollOffsetY(int offset) {
-        this.scrollOffsetY = offset;
-    }
-
-    public int getScrollOffsetY() {
-        return this.scrollOffsetY;
     }
 
     /**
@@ -218,7 +250,6 @@ public class ContoursGameView extends SurfaceView {
      * @param newScrollOffsetY the offset to which the staff must be scrolled
      */
     private void scrollStaff(int newScrollOffsetY, boolean animate) {
-        /*
         if(animate) {
             ValueAnimator scrollAnimator = ObjectAnimator.ofInt(this, "scrollOffsetY", scrollOffsetY, newScrollOffsetY);
             int duration = Math.abs(newScrollOffsetY - scrollOffsetY);
@@ -227,12 +258,22 @@ public class ContoursGameView extends SurfaceView {
         } else {
             this.scrollOffsetY = newScrollOffsetY;
         }
-        */
     }
 
-    public Note checkNote(int midiValue){
-        List<Note> notes = contour.getNotes();
+    /**
+     * Process midi input from the midikeyboard or a touch event
+     * Compares midiValue to the midiValue of the selected note in the contour
+     * and updates the game state accordingly
+     * @param midiValue the midiValue being compared to
+     */
+    public void processMidiInput(int midiValue){
 
+        if(transitioning) {
+            scoreKeeper.updateScore(ContoursScoreKeeper.NOTE_MISS);
+            return;
+        }
+
+        List<Note> notes = contour.getNotes();
         Note first = notes.get(contour.getCursorPosition());
         if(first.getMidiValue() ==  midiValue){
             if((notes.size() - 1) == contour.getCursorPosition()) {
@@ -240,47 +281,80 @@ public class ContoursGameView extends SurfaceView {
                     nextContour();
                 }
                 scoreKeeper.updateScore(ContoursScoreKeeper.CONTOUR_COMPLETE);
-                return first;
             } else {
                 scoreKeeper.updateScore(ContoursScoreKeeper.NOTE_HIT);
                 contour.updateCursor();
                 first.hit(tweenManager);
-                return first;
             }
         } else {
             scoreKeeper.updateScore(ContoursScoreKeeper.NOTE_MISS);
         }
-
-        return null;
     }
 
+    /** Retrieve the y coordinate of a specific staffPosition, with position
+     * 0 indicating the bottom of the staff.
+     * @param staffPosition a position on the staff. For example '0' is the bottom line
+     *                      of the staff. The next space is 1, and the next line is 2.
+     * @return a y coordinate indicating the vertical placement of staffPosition on the screen
+     */
     private int getStaffPositionYCoordinate(int staffPosition) {
         return ((getHeight()) - ((staffPosition*(spaceHeight/2)))) - staffMargin;
     }
 
     /* for use with scrolling staff implementation.
-     * At present the scrolling staff implementation has been nixed.
-     * I'm keeping this method if we want to reintroduce this ui component.
-     */
+    * At present the scrolling staff implementation has been nixed.
+    * I'm keeping this method if we want to reintroduce this ui component.
+    */
     private int getScrolledStaffPositionYCoordinate(int staffPosition) {
         return getStaffPositionYCoordinate(staffPosition) + scrollOffsetY;
     }
 
+
+    /* Main drawing functions */
     @Override
     public void onDraw(Canvas canvas) {
-
         super.onDraw(canvas);
         canvas.drawARGB(255, 0, 0, 0);
         Drawable bg = getResources().getDrawable(R.drawable.gradient_background);
         bg.setBounds(0, 0, getWidth(), getHeight());
         bg.draw(canvas);
+
+        drawOctaveDividers(canvas);
         drawStaff(canvas);
         try {
             drawContour(canvas);
         } catch (LayoutException e) {
             e.printStackTrace();
         }
+        drawCongratsText(canvas);
     }
+
+    private void drawCongratsText(Canvas canvas) {
+        int x = canvas.getWidth()/2;
+        int y = canvas.getHeight()/2;
+
+        textPaint.setAntiAlias(true);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextSize(250f);
+        textPaint.setAlpha(congratsTextAlpha);
+        canvas.drawText(congratsMessage, x, y, textPaint);
+
+        Log.d(TAG, "printing congratsMessage: " + congratsTextAlpha);
+    }
+
+
+    private void drawOctaveDividers(Canvas canvas) {
+        for(int i = 0; i < 3; i++) {
+            int yValBottom = getStaffPositionYCoordinate(i*7);
+            int yValTop = getStaffPositionYCoordinate((i+1)*7);
+            Drawable octaveDrawable = octaveDividerDrawables[i];
+            octaveDrawable.setAlpha(150);
+            octaveDrawable.setBounds(0, yValTop, getWidth(), yValBottom);
+            octaveDrawable.draw(canvas);
+        }
+    }
+
 
     /**
      * Draw the current contour on the canvas
@@ -295,6 +369,7 @@ public class ContoursGameView extends SurfaceView {
 
         for(int i = 0; i < notes.size(); i++){
             Note note = notes.get(i);
+            note.setAlpha(noteAlpha);
             boolean isSelected = false;
             if(i == contour.getCursorPosition()) {
                 isSelected = true;
@@ -324,25 +399,60 @@ public class ContoursGameView extends SurfaceView {
         staffPaint.setAlpha(200);
         staffPaint.setColor(Color.WHITE);
 
-        //draw octave dividers
-        for(int i = 0; i < 3; i++) {
-            int yValBottom = getStaffPositionYCoordinate(i*7);
-            int yValTop = getStaffPositionYCoordinate((i+1)*7);
-            Drawable octaveDrawable = octaveDrawables[i];
-            octaveDrawable.setAlpha(150);
-            octaveDrawable.setBounds(0, yValTop, getWidth(), yValBottom);
-            octaveDrawable.draw(canvas);
-        }
-
         for(int i = 0; i < staffPositionCount/2; i++) {
-            int yVal = getStaffPositionYCoordinate(i*2);
+            int yVal = getStaffPositionYCoordinate(i * 2);
             //drawText for debug only
             //staffPaint.setColor(octaveDivideColor);
             //staffPaint.setAlpha(255);
-
             canvas.drawLine(staffMargin, yVal, getWidth() - staffMargin, yVal, staffPaint);
         }
 
     }
 
+
+    /* The following functions were used in the old ui as means of scrolling the staff
+     * This is not relevant to the new ui as all the notes are displayed at the same time.
+     * I am keeping these functions for now in case we need them again...
+     */
+
+    /* used to calculate the midpoint of a contour and scroll the staff accordingly
+     * in scrolling implementation. Not currently used */
+    private void setStaffYOffset(boolean animate) {
+        int topNote = contour.getTopMidiVal();
+        int topPosition = midiValToStaffLoc.get(topNote);
+
+        int bottomNote = contour.getBottomMidiVal();
+        int bottomPosition = midiValToStaffLoc.get(bottomNote);
+
+        int midwayPosition = (topPosition + bottomPosition) / 2;
+        int numSpacesFromBottom = midwayPosition / 2;
+
+        int newStaffYOffset = ((getHeight()/2) + (numSpacesFromBottom * spaceHeight) - getHeight());
+        scrollStaff(newStaffYOffset, animate);
+    }
+
+    //These are used by the ScrollAnimator do not remove!
+    public void setScrollOffsetY(int offset) {
+        this.scrollOffsetY = offset;
+    }
+
+    public int getScrollOffsetY() {
+        return this.scrollOffsetY;
+    }
+
+    public int getCongratsTextAlpha() {
+        return congratsTextAlpha;
+    }
+
+    public void setCongratsTextAlpha(int congratsTextAlpha) {
+        this.congratsTextAlpha = congratsTextAlpha;
+    }
+
+    public int getNoteAlpha() {
+        return noteAlpha;
+    }
+
+    public void setNoteAlpha(int noteAlpha) {
+        this.noteAlpha = noteAlpha;
+    }
 }

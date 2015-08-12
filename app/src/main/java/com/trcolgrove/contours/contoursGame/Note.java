@@ -58,26 +58,10 @@ public class Note {
     private int noteVal;
     private int octave;
 
-    private int midiValue;
-    private int scaleDegree;
-
-    public int getRippleRadius() {
-        return rippleRadius;
-    }
-
-    public void setRippleRadius(int rippleRadius) {
-        this.rippleRadius = rippleRadius;
-    }
-
     private int rippleRadius = 0;
 
-    public int getRippleAlpha() {
-        return rippleAlpha;
-    }
-
-    public void setRippleAlpha(int rippleAlpha) {
-        this.rippleAlpha = rippleAlpha;
-    }
+    private int midiValue;
+    private int scaleDegree;
 
     private int rippleAlpha = 0xFF;
     private int alpha = 0x00;
@@ -185,8 +169,10 @@ public class Note {
         }
 
         notePaint.setColor(color);
+        notePaint.setAlpha(alpha);
 
         if(isSelected) {
+            cursorPaint.setAlpha(alpha);
             DrawingUtils.drawTriangle(canvas, new Point(xPos - radius, yPos - (radius * 2)),
                     new Point(xPos, yPos - radius),
                     new Point(xPos + radius, yPos - (radius * 2)), cursorPaint);
@@ -194,7 +180,7 @@ public class Note {
 
         canvas.drawCircle(xPos, yPos, radius, notePaint);
         notePaint.setColor(DrawingUtils.lighter(color, 0.7));
-
+        notePaint.setAlpha(alpha);
         canvas.drawCircle(xPos, yPos, ((radius * 2) / 3), notePaint);
 
         drawRipple(canvas);
@@ -213,7 +199,6 @@ public class Note {
         Tween.to(this, NoteAccessor.RIPPLE_ALPHA, 0.5f).target(0).ease(Circ.OUT).start(tweenManager);
         Tween.to(this, NoteAccessor.RIPPLE_RADIUS, 0.5f).target(300).ease(Circ.OUT).start(tweenManager);
         Tween.set(this, NoteAccessor.RIPPLE_RADIUS).target(radius).delay(0.5f).start(tweenManager);
-
         /*
         ValueAnimator rippleRadiusAnim = ObjectAnimator.ofInt(this, "rippleRadius", radius, 300);
         rippleRadiusAnim.setInterpolator(new LinearInterpolator());
@@ -224,6 +209,7 @@ public class Note {
         rippleAlphaAnim.setDuration(500);
         rippleAlphaAnim.start(); */
     }
+
 
     public void drawRipple(Canvas canvas) {
         ripplePaint.setStrokeWidth(2);
@@ -253,5 +239,21 @@ public class Note {
 
     public void setAlpha(int alpha) {
         this.alpha = alpha;
+    }
+
+    public int getRippleRadius() {
+        return rippleRadius;
+    }
+
+    public void setRippleRadius(int rippleRadius) {
+        this.rippleRadius = rippleRadius;
+    }
+
+    public int getRippleAlpha() {
+        return rippleAlpha;
+    }
+
+    public void setRippleAlpha(int rippleAlpha) {
+        this.rippleAlpha = rippleAlpha;
     }
 }

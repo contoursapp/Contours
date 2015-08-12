@@ -166,7 +166,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     public void onEvent(final NoteEvent event) {
         this.runOnUiThread(new Runnable() {
             public void run() {
-                gameView.checkNote(event.midiNote);
+                gameView.processMidiInput(event.midiNote);
             }
         });
     }
@@ -243,6 +243,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
                 android.R.anim.fade_in);
         Animation out = AnimationUtils.loadAnimation(this,
                 android.R.anim.fade_out);
+
         scoreSwitcher.setInAnimation(in);
         scoreSwitcher.setOutAnimation(out);
         multiplierSwitcher.setInAnimation(in);
@@ -256,8 +257,6 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void setPiano(View view) {
