@@ -54,7 +54,6 @@ public class ContoursScoreKeeper implements ScoreKeeper {
 
     private int noteHit() {
         int scoreIncrement = (100 * multiplier);
-        incrementMultiplier();
         return scoreIncrement;
     }
 

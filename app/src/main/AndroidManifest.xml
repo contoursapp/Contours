@@ -13,13 +13,18 @@
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name="com.trcolgrove.contours.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.trcolgrove.keytraining.EndReportActivity"
+            android:label="@string/title_activity_end_report" >
         </activity>
     </application>
 

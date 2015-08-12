@@ -16,4 +16,7 @@
     <string name="easy_difficulty_text">easy</string>
     <string name="medium_difficulty_text">medium</string>
     <string name="hard_difficulty_text">hard</string>
+    <string name="title_activity_end_report">EndReport</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>

@@ -265,22 +265,27 @@ public class ContoursGameView extends SurfaceView {
      * Compares midiValue to the midiValue of the selected note in the contour
      * and updates the game state accordingly
      * @param midiValue the midiValue being compared to
+     * @return true if the user has completed the activity
      */
-    public void processMidiInput(int midiValue){
+    public boolean processMidiInput(int midiValue){
 
         if(transitioning) {
             scoreKeeper.updateScore(ContoursScoreKeeper.NOTE_MISS);
-            return;
+            return false;
         }
 
         List<Note> notes = contour.getNotes();
         Note first = notes.get(contour.getCursorPosition());
         if(first.getMidiValue() ==  midiValue){
             if((notes.size() - 1) == contour.getCursorPosition()) {
-                if(contourIndex < contours.size()) {
-                    nextContour();
-                }
                 scoreKeeper.updateScore(ContoursScoreKeeper.CONTOUR_COMPLETE);
+                if(contourIndex < contours.size()-1) {
+                    nextContour();
+                } else {
+                    gameLoopThread.setRunning(false);
+                    gameLoopThread.interrupt();
+                    return true;
+                }
             } else {
                 scoreKeeper.updateScore(ContoursScoreKeeper.NOTE_HIT);
                 contour.updateCursor();
@@ -289,6 +294,7 @@ public class ContoursGameView extends SurfaceView {
         } else {
             scoreKeeper.updateScore(ContoursScoreKeeper.NOTE_MISS);
         }
+        return false;
     }
 
     /** Retrieve the y coordinate of a specific staffPosition, with position

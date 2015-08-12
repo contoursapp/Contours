@@ -1,5 +1,6 @@
 package com.trcolgrove.contours.contoursGame;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.usb.UsbDevice;
 import android.os.AsyncTask;
@@ -25,6 +26,7 @@ import com.trcolgrove.colorfulPiano.Piano;
 import com.trcolgrove.contours.R;
 import com.trcolgrove.contours.events.NoteEvent;
 import com.trcolgrove.contours.events.ScoreEvent;
+import com.trcolgrove.keytraining.EndReportActivity;
 
 import org.puredata.android.io.AudioParameters;
 import org.puredata.android.io.PdAudio;
@@ -48,7 +50,6 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
                                             R.drawable.multiplierbg_5, R.drawable.multiplierbg_6,
                                             R.drawable.multiplierbg_7, R.drawable.multiplierbg_8};
 
-    //TODO: replace current midi implementation with btmidi
     private static final int MIN_SAMPLE_RATE = 44100;
     private Piano pianoView;
     private ContoursGameView gameView;
@@ -169,9 +170,14 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     }
 
     public void onEvent(final NoteEvent event) {
+
         this.runOnUiThread(new Runnable() {
             public void run() {
-                gameView.processMidiInput(event.midiNote);
+                boolean isFinished = gameView.processMidiInput(event.midiNote);
+                if(isFinished) {
+                    Intent i = new Intent(getApplicationContext(), EndReportActivity.class);
+                    startActivity(i);
+                }
             }
         });
     }
@@ -199,7 +205,6 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     }
 
     private void cleanup() {
-        // make sure to release all resources
         PdAudio.release();
         PdBase.release();
     }
