@@ -83,6 +83,7 @@ public class ContoursGameView extends SurfaceView {
     private static final int lineStrokeWidth = 3;
     private Paint staffPaint = new Paint();
     private Paint textPaint = new Paint();
+    private Paint keySelectPaint = new Paint();
     private final Rect textBounds = new Rect();
 
     private TweenManager tweenManager;
@@ -150,7 +151,7 @@ public class ContoursGameView extends SurfaceView {
         ValueAnimator textAnim = ObjectAnimator.ofInt(this, "congratsTextAlpha", 0, 255, 0);
         textAnim.setDuration(transitionMilis);
         ValueAnimator noteAnimOut = ObjectAnimator.ofInt(this, "noteAlpha", 255, 0);
-        noteAnimOut.setDuration(transitionMilis/2);
+        noteAnimOut.setDuration(transitionMilis / 2);
         ValueAnimator noteAnimIn = ObjectAnimator.ofInt(this, "noteAlpha", 0, 255);
         noteAnimIn.setDuration(transitionMilis/2);
 
@@ -317,6 +318,15 @@ public class ContoursGameView extends SurfaceView {
         return getStaffPositionYCoordinate(staffPosition) + scrollOffsetY;
     }
 
+    /**
+     *
+     * @return the x coordinate of the specified key
+     */
+    private int getKeyXCoordinate(int staffPosition) {
+        int keyWidth = getWidth()/staffPositionCount;
+        return keyWidth * staffPosition + (keyWidth/2);
+    }
+
 
     /* Main drawing functions */
     @Override
@@ -329,12 +339,32 @@ public class ContoursGameView extends SurfaceView {
 
         drawOctaveDividers(canvas);
         drawStaff(canvas);
+
         try {
             drawContour(canvas);
         } catch (LayoutException e) {
             e.printStackTrace();
         }
         drawCongratsText(canvas);
+
+        if(contour.getCursorPosition() == 0) {
+            keySelectPaint.setColor(Color.RED);
+            keySelectPaint.setAlpha(noteAlpha);
+            keySelectPaint.setStyle(Paint.Style.FILL);
+            Note firstNote = contour.getNotes().get(0);
+            int midiValue = firstNote.getMidiValue();
+            int staffLoc = midiValToStaffLoc.get(midiValue);
+            int keySelectorX = getKeyXCoordinate(staffLoc);
+            int triangleOffset = spaceHeight/2;
+            Log.d(TAG, "x: " + keySelectorX);
+            DrawingUtils.drawArrow(canvas,
+                    keySelectorX,
+                    getHeight(),
+                    80,
+                    spaceHeight,
+                    keySelectPaint
+            );
+        }
     }
 
     private void drawCongratsText(Canvas canvas) {
@@ -382,7 +412,6 @@ public class ContoursGameView extends SurfaceView {
             boolean isSelected = false;
             if(i == contour.getCursorPosition()) {
                 isSelected = true;
-
             }
             int notePostion = midiValToStaffLoc.get(note.getMidiValue());
             int noteYPos = getStaffPositionYCoordinate(notePostion);
