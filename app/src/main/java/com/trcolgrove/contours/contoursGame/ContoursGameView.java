@@ -9,6 +9,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 import android.util.AttributeSet;
@@ -82,6 +83,7 @@ public class ContoursGameView extends SurfaceView {
     private static final int lineStrokeWidth = 3;
     private Paint staffPaint = new Paint();
     private Paint textPaint = new Paint();
+    private final Rect textBounds = new Rect();
 
     private TweenManager tweenManager;
     //using the tween library instead of animators so I dont have to invoke the uithread?
@@ -337,14 +339,18 @@ public class ContoursGameView extends SurfaceView {
 
     private void drawCongratsText(Canvas canvas) {
         int x = canvas.getWidth()/2;
-        int y = canvas.getHeight()/2;
+        int y = getStaffPositionYCoordinate(notesDisplayedOnScreen/2);
+
+        textPaint.getTextBounds(congratsMessage, 0, congratsMessage.length(), textBounds);
 
         textPaint.setAntiAlias(true);
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(225f);
         textPaint.setAlpha(congratsTextAlpha);
-        canvas.drawText(congratsMessage, x, y, textPaint);
+
+        textPaint.setShadowLayer(25f, 10, 10, Color.BLACK);
+        canvas.drawText(congratsMessage, x, y - textBounds.exactCenterY(), textPaint);
     }
 
     private void drawOctaveDividers(Canvas canvas) {
@@ -388,7 +394,7 @@ public class ContoursGameView extends SurfaceView {
     }
 
     private int getSpaceHeight() {
-        return (getHeight())/(notesDisplayedOnScreen/2);
+        return (getHeight()-staffMargin)/(notesDisplayedOnScreen/2);
     }
 
     /**
@@ -405,7 +411,6 @@ public class ContoursGameView extends SurfaceView {
             int yVal = getStaffPositionYCoordinate(i * 2);
             canvas.drawLine(staffMargin, yVal, getWidth() - staffMargin, yVal, staffPaint);
         }
-
     }
 
 

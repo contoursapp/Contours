@@ -173,6 +173,7 @@ public class Note {
 
         if(isSelected) {
             cursorPaint.setAlpha(alpha);
+            notePaint.setShadowLayer(25, 0, 0, color);
             DrawingUtils.drawTriangle(canvas, new Point(xPos - radius, yPos - (radius * 2)),
                     new Point(xPos, yPos - radius),
                     new Point(xPos + radius, yPos - (radius * 2)), cursorPaint);
@@ -184,6 +185,7 @@ public class Note {
         canvas.drawCircle(xPos, yPos, ((radius * 2) / 3), notePaint);
 
         drawRipple(canvas);
+        notePaint.clearShadowLayer();
     }
 
     /**
