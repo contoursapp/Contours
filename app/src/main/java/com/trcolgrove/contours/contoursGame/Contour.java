@@ -9,9 +9,10 @@ import java.util.List;
 public class Contour {
 
     private List<Note> notes;
-    private ContourCursor cursor;
+    private int cursorPosition;
     private int topMidiVal;
     private int bottomMidiVal;
+    private String TAG = "Contour";
 
     public Contour(Note... notes) {
         int bottomNote = 128;
@@ -28,7 +29,7 @@ public class Contour {
         this.topMidiVal = topNote;
         this.bottomMidiVal = bottomNote;
         this.notes = Arrays.asList(notes);
-        this.cursor = new ContourCursor(0);
+        cursorPosition = 0;
     }
 
     //TODO: clean this class
@@ -47,17 +48,26 @@ public class Contour {
         this.topMidiVal = topNote;
         this.bottomMidiVal = bottomNote;
         this.notes = notes;
-        this.cursor = new ContourCursor(0);
     }
 
     public List<Note> getNotes() { return notes; }
 
-    public void updateCursor() {
-        cursor.incrementPosition();
+    public void incrementCursorPosition() {
+        cursorPosition++;
+    }
+
+    public void setCursorPosition(int i) {
+        if(cursorPosition >= notes.size()) {
+            throw new IndexOutOfBoundsException(
+                    "cursor position cannot be set to be greater than the size of the contour");
+        }
+        else {
+             cursorPosition = i;
+        }
     }
 
     public int getCursorPosition() {
-        return cursor.getPosition();
+        return cursorPosition;
     }
 
     public int getBottomMidiVal() {

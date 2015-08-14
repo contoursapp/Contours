@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.graphics.RectF;
 
 import com.trcolgrove.contours.R;
 
@@ -70,29 +69,15 @@ public class DrawingUtils {
     }
 
     public static void drawArrow(Canvas canvas, int x, int y, int height, int width, Paint paint) {
-        //TODO: make dis work
-
         int triOffset = width/2;
         Point a = new Point(x, y);
         Point b = new Point(x + triOffset, y - triOffset);
         Point c = new Point(x - triOffset, y - triOffset);
 
         drawTriangle(canvas, a, b ,c, paint);
-
-        Path arrowPath = new Path();
-        final RectF arrowOval = new RectF();
-        arrowOval.set((x - (width/4)),
-                y-height,
-                (x + (width/4)),
-                y-height);
-
-        //add the oval to path
-        arrowPath.addArc(arrowOval, 180, -180);
-        arrowPath.close();
-        canvas.drawPath(arrowPath, paint);
-
-
     }
+
+
     /**
      * convert hardcoded density independent pixel value into a raw pixel value
      * @param dps an int specifying number of dps

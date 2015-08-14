@@ -57,11 +57,12 @@ public class ContoursGameView extends SurfaceView {
     // figure out where on the staff each midi note should map... needs more robust implementation
     // if we decide to support accidentals
     private static final int[] noteValToPosition = {0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6};
-    private static final String[] congratsMessages = {"Good Job", "You Did It!", "Rock On!", "Excellent!",
-            "BOOM", "WE DID IT REDDIT!", "Awesome!" , "WOO!", "Good Fuckn Yard"};
+    private static final String[] congratsMessages = {"Good Job!", "Rock On!", "Excellent!",
+            "BOOM", "Awesome!" , "Woo!", "Great Work!", "SUCCESS!"};
+    private static final String[] failureMessages = {"Try Again", "Whoops!", "Oops"};
 
     private static final int transitionMilis = 2500;
-    private String congratsMessage = "dope";
+    private String gameUpdateText = "dope";
     // a direct map from midiValue to staff location, with the bottom line being position 0,
     // this is important because often multiple notes map to the same staff location, ie C and Csharp
     protected static Map<Integer, Integer> midiValToStaffLoc;
@@ -134,18 +135,51 @@ public class ContoursGameView extends SurfaceView {
         setContour(contours.get(contourIndex));
     }
 
+
+    public void resetContourOnFailure() {
+        Random rand = new Random();
+        int msgIndex = rand.nextInt(failureMessages.length);
+        gameUpdateText = failureMessages[msgIndex];
+        ValueAnimator textAnim = ObjectAnimator.ofInt(this, "congratsTextAlpha", 0, 255, 0);
+        textAnim.setDuration(transitionMilis);
+        textAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+        transitioning = true;
+        textPaint.setColor(Color.RED);
+
+        textAnim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                transitioning = false;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        textAnim.start();
+    }
+
+
     /**
      * This function is called when the player completes a contour
      * Instantiates the next contour in the sequence and calls other
      * animations and effects.
      */
-
     public void nextContour() {
         transitioning = true;
 
+        textPaint.setColor(Color.WHITE);
         Random rand = new Random();
         int msgIndex = rand.nextInt(congratsMessages.length);
-        congratsMessage = congratsMessages[msgIndex];
+        gameUpdateText = congratsMessages[msgIndex];
         AnimatorSet transitionAnims = new AnimatorSet();
 
         ValueAnimator textAnim = ObjectAnimator.ofInt(this, "congratsTextAlpha", 0, 255, 0);
@@ -291,10 +325,12 @@ public class ContoursGameView extends SurfaceView {
                 }
             } else {
                 scoreKeeper.updateScore(ContoursScoreKeeper.NOTE_HIT);
-                contour.updateCursor();
+                contour.incrementCursorPosition();
                 first.hit(tweenManager);
             }
         } else {
+            resetContourOnFailure();
+            contour.setCursorPosition(0);
             scoreKeeper.updateScore(ContoursScoreKeeper.NOTE_MISS);
         }
         return false;
@@ -348,7 +384,7 @@ public class ContoursGameView extends SurfaceView {
         drawCongratsText(canvas);
 
         if(contour.getCursorPosition() == 0) {
-            keySelectPaint.setColor(Color.RED);
+            keySelectPaint.setColor(getResources().getColor(R.color.red));
             keySelectPaint.setAlpha(noteAlpha);
             keySelectPaint.setStyle(Paint.Style.FILL);
             Note firstNote = contour.getNotes().get(0);
@@ -356,12 +392,13 @@ public class ContoursGameView extends SurfaceView {
             int staffLoc = midiValToStaffLoc.get(midiValue);
             int keySelectorX = getKeyXCoordinate(staffLoc);
             int triangleOffset = spaceHeight/2;
-            Log.d(TAG, "x: " + keySelectorX);
+            int arrowWidth = spaceHeight;
+            int arrowHeight = spaceHeight * 2;
             DrawingUtils.drawArrow(canvas,
                     keySelectorX,
                     getHeight(),
-                    80,
-                    spaceHeight,
+                    arrowHeight,
+                    arrowWidth,
                     keySelectPaint
             );
         }
@@ -371,16 +408,14 @@ public class ContoursGameView extends SurfaceView {
         int x = canvas.getWidth()/2;
         int y = getStaffPositionYCoordinate(notesDisplayedOnScreen/2);
 
-        textPaint.getTextBounds(congratsMessage, 0, congratsMessage.length(), textBounds);
-
+        textPaint.getTextBounds(gameUpdateText, 0, gameUpdateText.length(), textBounds);
         textPaint.setAntiAlias(true);
         textPaint.setTextAlign(Paint.Align.CENTER);
-        textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(225f);
         textPaint.setAlpha(congratsTextAlpha);
 
         textPaint.setShadowLayer(25f, 10, 10, Color.BLACK);
-        canvas.drawText(congratsMessage, x, y - textBounds.exactCenterY(), textPaint);
+        canvas.drawText(gameUpdateText, x, y - textBounds.exactCenterY(), textPaint);
     }
 
     private void drawOctaveDividers(Canvas canvas) {
