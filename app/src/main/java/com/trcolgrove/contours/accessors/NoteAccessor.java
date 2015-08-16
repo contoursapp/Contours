@@ -42,6 +42,7 @@ public class NoteAccessor implements TweenAccessor<Note> {
         switch(tweenType) {
             case RIPPLE_ALPHA:
                 target.setRippleAlpha((int)newValues[0]);
+                return;
             case RIPPLE_RADIUS:
                 target.setRippleRadius((int)newValues[0]);
         }

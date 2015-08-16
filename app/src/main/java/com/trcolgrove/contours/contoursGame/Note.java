@@ -27,6 +27,8 @@ import aurelienribon.tweenengine.equations.Circ;
  */
 public class Note {
 
+    private static final String TAG = "Note";
+
     @IntDef({B_SHARP, C, C_SHARP, D_FLAT, D, D_SHARP, E_FLAT, E, F_FLAT, E_SHARP, F, F_SHARP,
             G_FLAT, G, G_SHARP, A_FLAT, A, A_SHARP, B_FLAT, B, C_FLAT})
     @Retention(RetentionPolicy.SOURCE)
@@ -68,9 +70,9 @@ public class Note {
     private int xPos = -1;
     private int yPos = -1;
     private int radius = -1;
-    private Paint notePaint;
-    private Paint ripplePaint;
-    private Paint cursorPaint;
+    private Paint notePaint = new Paint();
+    private Paint ripplePaint = new Paint();
+    private Paint cursorPaint = new Paint();
 
     private int color;
 
@@ -131,18 +133,22 @@ public class Note {
         }
         this.octave = octave;
         this.noteVal = noteName;
-        this.midiValue = 24 + (octave * 12) + noteScalePosition.get(noteName);
-        this.scaleDegree = noteScaleDegs.get(noteName);
-        this.notePaint = new Paint();
+        midiValue = 24 + (octave * 12) + noteScalePosition.get(noteName);
+        scaleDegree = noteScaleDegs.get(noteName);
+
+        notePaint = new Paint();
         notePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        ripplePaint = new Paint();
-        this.color = context.getResources().getColor(DrawingUtils.keyColors[scaleDegree]);
-        this.cursorPaint = new Paint();
+
+        color = context.getResources().getColor(DrawingUtils.keyColors[scaleDegree]);
 
         cursorPaint.setStrokeWidth(4);
         cursorPaint.setColor(Color.WHITE);
         cursorPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         cursorPaint.setAntiAlias(true);
+
+        ripplePaint.setStrokeWidth(2);
+        ripplePaint.setStyle(Paint.Style.STROKE);
+        ripplePaint.setColor(color);
     }
 
     public void layout(int x, int y, int radius) {
@@ -151,21 +157,13 @@ public class Note {
         this.radius = radius;
     }
 
-    public boolean inBounds(Point p) {
-        if((p.x > (xPos-radius)) && (p.x < (xPos+radius))
-                && (p.y > (yPos-radius)) && (p.y < (yPos+radius))) {
-            return true;
-        }
-        return false;
-    }
-
     public int getColor() {
         return color;
     }
 
     public void draw(Canvas canvas, boolean isSelected) throws LayoutException {
         if(xPos == -1 || yPos == -1 || radius == -1) {
-            throw new LayoutException("Error: attempted to draw note without laying it out");
+            throw new LayoutException("Error: attempted to draw note without call to layout");
         }
 
         notePaint.setColor(color);
@@ -198,9 +196,11 @@ public class Note {
     }
 
     private void startRipple(TweenManager tweenManager) {
-        Tween.to(this, NoteAccessor.RIPPLE_ALPHA, 0.5f).target(0).ease(Circ.OUT).start(tweenManager);
-        Tween.to(this, NoteAccessor.RIPPLE_RADIUS, 0.5f).target(300).ease(Circ.OUT).start(tweenManager);
-        Tween.set(this, NoteAccessor.RIPPLE_RADIUS).target(radius).delay(0.5f).start(tweenManager);
+        rippleAlpha = 255;
+        rippleRadius = radius;
+        Tween.to(this, NoteAccessor.RIPPLE_ALPHA, 1f).target(0).ease(Circ.OUT).start(tweenManager);
+        Tween.to(this, NoteAccessor.RIPPLE_RADIUS, 1f).target(300).ease(Circ.OUT).start(tweenManager);
+
         /*
         ValueAnimator rippleRadiusAnim = ObjectAnimator.ofInt(this, "rippleRadius", radius, 300);
         rippleRadiusAnim.setInterpolator(new LinearInterpolator());
@@ -213,10 +213,11 @@ public class Note {
     }
 
 
-    public void drawRipple(Canvas canvas) {
-        ripplePaint.setStrokeWidth(2);
-        ripplePaint.setStyle(Paint.Style.STROKE);
-        ripplePaint.setColor(color);
+    /**
+     * Draw the ripple effect for this note object
+     * @param canvas The canvas on which to draw the ripple
+     */
+    private void drawRipple(Canvas canvas) {
         ripplePaint.setAlpha(rippleAlpha);
         canvas.drawCircle(xPos, yPos, rippleRadius, ripplePaint);
     }
