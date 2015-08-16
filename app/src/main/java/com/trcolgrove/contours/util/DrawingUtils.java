@@ -71,8 +71,8 @@ public class DrawingUtils {
     public static void drawArrow(Canvas canvas, int x, int y, int height, int width, Paint paint) {
         int triOffset = width/2;
         Point a = new Point(x, y);
-        Point b = new Point(x + triOffset, y - triOffset);
-        Point c = new Point(x - triOffset, y - triOffset);
+        Point b = new Point(x + triOffset, y - height);
+        Point c = new Point(x - triOffset, y - height);
 
         drawTriangle(canvas, a, b ,c, paint);
     }

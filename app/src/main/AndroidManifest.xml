@@ -24,7 +24,8 @@
         </activity>
         <activity
             android:name="com.trcolgrove.keytraining.EndReportActivity"
-            android:label="@string/title_activity_end_report" >
+            android:label="@string/title_activity_end_report"
+            android:screenOrientation="landscape">
         </activity>
     </application>
 

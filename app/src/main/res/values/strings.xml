@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">keytraining</string>
+    <string name="app_name">Contours</string>
     <string name="action_settings">Settings</string>
     <string name="keyboard_description">a simple keyboard widget</string>
     <string name="pianoButton">Piano</string>
@@ -16,7 +16,12 @@
     <string name="easy_difficulty_text">easy</string>
     <string name="medium_difficulty_text">medium</string>
     <string name="hard_difficulty_text">hard</string>
-    <string name="title_activity_end_report">EndReport</string>
+    <string name="title_activity_end_report">End Report</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+    <string name="difficulty_question">How difficult was the task?</string>
+    <string name="difference_question">How different do the contours sound?</string>
+    <string name="improving_question">Do you think you are improving at the task?</string>
 </resources>

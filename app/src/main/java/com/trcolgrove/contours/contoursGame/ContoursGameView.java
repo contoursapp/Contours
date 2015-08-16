@@ -393,7 +393,7 @@ public class ContoursGameView extends SurfaceView {
             int keySelectorX = getKeyXCoordinate(staffLoc);
             int triangleOffset = spaceHeight/2;
             int arrowWidth = spaceHeight;
-            int arrowHeight = spaceHeight * 2;
+            int arrowHeight = spaceHeight/2;
             DrawingUtils.drawArrow(canvas,
                     keySelectorX,
                     getHeight(),
