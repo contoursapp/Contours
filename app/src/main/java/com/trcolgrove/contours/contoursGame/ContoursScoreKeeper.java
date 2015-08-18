@@ -7,6 +7,7 @@ import com.trcolgrove.contours.events.ScoreEvent;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 
@@ -89,6 +90,10 @@ public class ContoursScoreKeeper implements ScoreKeeper {
 
     public int getMultiplier() {
         return this.multiplier;
+    }
+
+    public Map<String,Object> getScoreMap() {
+        return null;
     }
 
 }
