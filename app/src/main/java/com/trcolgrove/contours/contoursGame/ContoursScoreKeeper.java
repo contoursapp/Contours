@@ -72,7 +72,6 @@ public class ContoursScoreKeeper implements ScoreKeeper {
     }
 
     private int contourComplete() {
-        //TODO: fix arithmetic exception here!
         int scoreIncrement = (int)((10000/((SystemClock.elapsedRealtime() - baseTime) / 10000)))*multiplier;
         incrementMultiplier();
         return scoreIncrement;
@@ -89,6 +88,26 @@ public class ContoursScoreKeeper implements ScoreKeeper {
 
     public int getMultiplier() {
         return this.multiplier;
+    }
+
+    public int getNotesHit() {
+        return notesHit;
+    }
+
+    public int getNotesMissed() {
+        return notesMissed;
+    }
+
+    public int getStreak() {
+        return streak;
+    }
+
+    public int getLongestStreak() {
+        return longestStreak;
+    }
+
+    public int getAverageStreak() {
+        return averageStreak;
     }
 
 }
