@@ -110,7 +110,7 @@ public class ContoursScoreKeeper implements ScoreKeeper {
     public int getAverageStreak() {
         return averageStreak;
     }
-    
+
     public Map<String,Object> getScoreMap() {
         return null;
     }
