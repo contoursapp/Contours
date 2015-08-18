@@ -19,6 +19,13 @@ public class ContoursScoreKeeper implements ScoreKeeper {
     private int multiplier;
     private long baseTime;
 
+    private int notesHit = 0;
+    private int notesMissed = 0;
+
+    private int streak = 0;
+    private int longestStreak = 0;
+    private int averageStreak = 0;
+
     @IntDef({NOTE_HIT, NOTE_MISS, CONTOUR_COMPLETE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface GameEvent {}
@@ -49,11 +56,18 @@ public class ContoursScoreKeeper implements ScoreKeeper {
 
     private int noteMiss() {
         multiplier = 1;
+        notesMissed++;
+        streak = 0;
         return -100;
     }
 
     private int noteHit() {
         int scoreIncrement = (100 * multiplier);
+        notesHit++;
+        streak++;
+        if(streak > longestStreak) {
+            longestStreak = streak;
+        }
         return scoreIncrement;
     }
 

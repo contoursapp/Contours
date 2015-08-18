@@ -202,6 +202,23 @@ public class ContoursGameView extends SurfaceView {
             public void onAnimationEnd(Animator animation) {
                 contourIndex++;
                 setContour(contours.get(contourIndex));
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        noteAnimIn.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
                 transitioning = false;
             }
 
@@ -307,7 +324,6 @@ public class ContoursGameView extends SurfaceView {
     public boolean processMidiInput(int midiValue){
 
         if(transitioning) {
-            scoreKeeper.updateScore(ContoursScoreKeeper.NOTE_MISS);
             return false;
         }
 
