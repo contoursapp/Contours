@@ -24,6 +24,7 @@ import android.widget.ViewSwitcher;
 
 import com.trcolgrove.colorfulPiano.Piano;
 import com.trcolgrove.contours.R;
+import com.trcolgrove.contours.events.GameCompleteEvent;
 import com.trcolgrove.contours.events.NoteEvent;
 import com.trcolgrove.contours.events.ScoreEvent;
 import com.trcolgrove.contours.activities.EndReportActivity;
@@ -170,14 +171,9 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     }
 
     public void onEvent(final NoteEvent event) {
-
         this.runOnUiThread(new Runnable() {
             public void run() {
                 boolean isFinished = gameView.processMidiInput(event.midiNote);
-                if(isFinished) {
-                    Intent i = new Intent(getApplicationContext(), EndReportActivity.class);
-                    startActivity(i);
-                }
             }
         });
     }
@@ -189,6 +185,12 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
             multiplierSwitcher.setBackground(getResources().getDrawable(multiplierBackgrounds[event.multiplier - 1]));
         }
         displayScoreIncrement(event.scoreIncrement);
+    }
+
+    public void onEvent(GameCompleteEvent gce) {
+        Intent i = new Intent(getApplicationContext(), EndReportActivity.class);
+        i.putExtras(gce.scoreBundle);
+        startActivity(i);
     }
 
     private void displayScoreIncrement(int scoreIncrement) {

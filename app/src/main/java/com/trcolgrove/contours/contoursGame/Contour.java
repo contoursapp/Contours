@@ -50,20 +50,20 @@ public class Contour {
         this.notes = notes;
     }
 
-    public List<Note> getNotes() { return notes; }
-
-    public void incrementCursorPosition() {
-        cursorPosition++;
-    }
-
     public void setCursorPosition(int i) {
         if(cursorPosition >= notes.size()) {
             throw new IndexOutOfBoundsException(
                     "cursor position cannot be set to be greater than the size of the contour");
         }
         else {
-             cursorPosition = i;
+            cursorPosition = i;
         }
+    }
+
+    public List<Note> getNotes() { return notes; }
+
+    public void incrementCursorPosition() {
+        cursorPosition++;
     }
 
     public int getCursorPosition() {

@@ -21,6 +21,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.trcolgrove.contours.R;
 import com.trcolgrove.contours.accessors.NoteAccessor;
+import com.trcolgrove.contours.events.GameCompleteEvent;
 import com.trcolgrove.contours.util.DrawingUtils;
 
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import java.util.Random;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
+import de.greenrobot.event.EventBus;
 
 /**
  * Main Game View for an instance of the Contours training application
@@ -337,6 +339,8 @@ public class ContoursGameView extends SurfaceView {
                 } else {
                     gameLoopThread.setRunning(false);
                     gameLoopThread.interrupt();
+                    EventBus.getDefault().post(
+                            new GameCompleteEvent(scoreKeeper.getScoreBundle()));
                     return true;
                 }
             } else {

@@ -1,6 +1,7 @@
 package com.trcolgrove.contours.contoursGame;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
  * Created by Thomas on 7/11/15.
  */
 public class ContourFactory {
+    private static final String TAG = "ContourFactory" ;
 
     //TODO: implement this class, allow for easy definition of contours
 
@@ -19,7 +21,6 @@ public class ContourFactory {
     public Contour createContour(String noteNames) {
         String[] noteStrings = noteNames.split(",");
         for(String noteString : noteStrings) {
-
         }
         return null;
     }
@@ -60,6 +61,8 @@ public class ContourFactory {
                     case "B" :
                         notes.add(new Note(context, Note.B, octave));
                         break;
+                    default:
+                        Log.e(TAG, "Invalid note, " + letter + ", skipping instantiation");
                 }
             }
             contours.add(new Contour(notes));

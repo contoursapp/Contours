@@ -1,5 +1,6 @@
 package com.trcolgrove.contours.contoursGame;
 
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.IntDef;
 
@@ -7,7 +8,6 @@ import com.trcolgrove.contours.events.ScoreEvent;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 
@@ -111,8 +111,23 @@ public class ContoursScoreKeeper implements ScoreKeeper {
         return averageStreak;
     }
 
-    public Map<String,Object> getScoreMap() {
-        return null;
+    /**
+     * Returns the information kept in the ScoreKeeper object
+     * as a Map. For example, the map might contain
+     * the pair "total_score" -> 9000(int) "total_time"->3.56(Duration)
+     *
+     * @return a map representing the score keepers metrics and their values
+     */
+    public Bundle getScoreBundle() {
+        Bundle scoreBundle = new Bundle();
+
+        scoreBundle.putInt("total_score", score);
+        scoreBundle.putLong("total_time", SystemClock.elapsedRealtime() - baseTime);
+        scoreBundle.putInt("longest_streak", longestStreak);
+        scoreBundle.putInt("notes_hit", notesHit);
+        scoreBundle.putInt("notes_missed", notesMissed);
+
+        return scoreBundle;
     }
 
 }

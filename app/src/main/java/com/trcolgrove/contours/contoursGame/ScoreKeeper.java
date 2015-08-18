@@ -1,6 +1,6 @@
 package com.trcolgrove.contours.contoursGame;
 
-import java.util.Map;
+import android.os.Bundle;
 
 /**
  * Basic, simple interface for scorekeeping system
@@ -22,5 +22,5 @@ public interface ScoreKeeper {
      *
      * @return a map representing the score keepers metrics and their values
      */
-    Map<String,Object> getScoreMap();
+    Bundle getScoreBundle();
 }
