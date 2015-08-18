@@ -26,7 +26,7 @@ import com.trcolgrove.colorfulPiano.Piano;
 import com.trcolgrove.contours.R;
 import com.trcolgrove.contours.events.NoteEvent;
 import com.trcolgrove.contours.events.ScoreEvent;
-import com.trcolgrove.keytraining.EndReportActivity;
+import com.trcolgrove.contours.activities.EndReportActivity;
 
 import org.puredata.android.io.AudioParameters;
 import org.puredata.android.io.PdAudio;

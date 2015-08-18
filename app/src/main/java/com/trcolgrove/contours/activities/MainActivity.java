@@ -1,13 +1,14 @@
-package com.trcolgrove.contours;
+package com.trcolgrove.contours.activities;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.trcolgrove.contours.R;
 import com.trcolgrove.contours.contoursGame.TrainingActivity;
 
 

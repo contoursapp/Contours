@@ -125,7 +125,7 @@ public class ContoursGameView extends SurfaceView {
         initGameLoop();
         initStaff();
 
-        String[] contourStrings = getResources().getStringArray(R.array.contours);
+        String[] contourStrings = getResources().getStringArray(R.array.easy_contours);
         contours = ContourFactory.getContoursFromStringArray(contourStrings, context);
 
         this.scoreKeeper = new ContoursScoreKeeper(SystemClock.elapsedRealtime());

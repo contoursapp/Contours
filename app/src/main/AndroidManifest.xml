@@ -13,7 +13,7 @@
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/title_activity_main"
             android:screenOrientation="landscape" >
             <intent-filter>
@@ -23,9 +23,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.trcolgrove.keytraining.EndReportActivity"
+            android:name=".activities.EndReportActivity"
             android:label="@string/title_activity_end_report"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat">
         </activity>
     </application>
 

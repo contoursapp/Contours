@@ -1,148 +1,236 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:theme="@style/Theme.AppCompat"
+    android:background="@drawable/gradient_background"
+    tools:context="com.trcolgrove.contours.activities.EndReportActivity"
+    android:orientation="vertical">
 
-    android:background="@color/background_material_dark"
-    tools:context="com.trcolgrove.keytraining.EndReportActivity">
-
+    <TextView android:id="@+id/success_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/success_text"
+        android:textColor="@color/white"
+        android:textSize="55sp"
+        android:textStyle="bold"
+        android:alpha="0"
+        android:layout_marginBottom="24dp"/>
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="70"
         android:orientation="vertical"
-        android:padding="0dp"
-        android:layout_margin="0dp" >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Success!"
-            android:textColor="@color/white"
-            android:textSize="30dp"
-            android:textStyle="bold"/>
-        <LinearLayout
+        >
+        <RelativeLayout android:id="@+id/total_score_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="70"
-            android:orientation="vertical"
-            >
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="Total Score:"
-                    android:textSize="45sp"/>
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="Total Time:"
-                    android:textSize="45sp"/>
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="Notes Hit:"
-                    android:textSize="45sp"/>
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="Accuracy:"
-                    android:textSize="45sp"/>
-            </RelativeLayout>
-
-        </LinearLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="30"
-            android:padding="16dp"
-            android:background="@color/teal"
-            android:id="@+id/survey"
-            android:elevation="25dp">
-            <TextView
+            android:layout_weight="1">
+            <ImageView android:id="@+id/purple_note"
+                android:layout_width="45dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="12dp"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="purple note image"
+                android:src="@drawable/purple_note"
+                android:scaleType="fitStart"
+                />
+            <TextView android:id="@+id/total_score_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                android:text="@string/improving_question"
-                android:textStyle="bold"
-                android:textSize="36sp"
-                android:id="@+id/question_text"/>
-            <RadioGroup
+                android:text="@string/total_string_text"
+                android:textSize="38sp"
+                android:layout_toRightOf="@id/purple_note"
+                android:layout_toEndOf="@id/purple_note"
+                />
+            <TextView android:id="@+id/total_score_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:layout_below="@id/question_text"
-                android:clickable="true"
-                android:layout_marginTop="30dp"
-                android:gravity="center_vertical">
-                <RadioButton android:id="@+id/radio1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="36dp"
-                    android:layout_marginEnd="36dp"
-                    android:textSize="28sp"
-                    android:text="1"
-                    android:onClick="onRadioButtonClicked"/>
-                <RadioButton android:id="@+id/radio2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="36dp"
-                    android:layout_marginEnd="36dp"
-                    android:textSize="28sp"
-                    android:text="2"
-                    android:onClick="onRadioButtonClicked"/>
-                <RadioButton android:id="@+id/radio3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="36dp"
-                    android:layout_marginEnd="36dp"
-                    android:textSize="28sp"
-                    android:text="3"
-                    android:onClick="onRadioButtonClicked"/>
-                <RadioButton android:id="@+id/radio4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="36dp"
-                    android:layout_marginEnd="36dp"
-                    android:textSize="28sp"
-                    android:text="4"
-                    android:onClick="onRadioButtonClicked"/>
-                <RadioButton android:id="@+id/radio5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="36dp"
-                    android:layout_marginEnd="36dp"
-                    android:textSize="28sp"
-                    android:text="5"
-                    android:onClick="onRadioButtonClicked"/>
-            </RadioGroup>
+                android:textColor="@color/white"
+                android:text="150493"
+                android:textSize="38sp"
+                android:layout_toRightOf="@id/total_score_label"
+                android:layout_toEndOf="@id/total_score_label"
+                />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/total_score_label"
+                android:layout_toLeftOf="@+id/total_score_value"
+                android:layout_toStartOf="@+id/total_score_value"
+                android:layout_marginRight="110dp"
+                android:layout_marginEnd="110dp"></LinearLayout>
+        </RelativeLayout>
+        <RelativeLayout android:id="@+id/total_time_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <ImageView android:id="@+id/blue_note"
+                android:layout_width="45dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="12dp"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="blue note image"
+                android:src="@drawable/blue_note"
+                android:scaleType="fitStart"
+                />
+            <TextView android:id="@+id/total_time_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/total_time_text"
+                android:textSize="38sp"
+                android:layout_toRightOf="@id/blue_note"
+                android:layout_toEndOf="@id/blue_note"/>
+            <TextView android:id="@+id/total_time_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="3.56"
+                android:textSize="38sp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/total_time_label"
+                android:layout_toEndOf="@id/total_time_label" />
+        </RelativeLayout>
+        <RelativeLayout android:id="@+id/notes_hit_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <ImageView android:id="@+id/green_note"
+                android:layout_width="45dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="12dp"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="green note image"
+                android:src="@drawable/green_note"
+                android:scaleType="fitStart"
+                />
+            <TextView android:id="@+id/notes_hit_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/notes_hit_text"
+                android:textSize="38sp"
+                android:layout_toRightOf="@id/green_note"
+                android:layout_toEndOf="@id/green_note"/>
+            <TextView android:id="@+id/notes_hit_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="67"
+                android:textSize="38sp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/notes_hit_label"
+                android:layout_toEndOf="@id/notes_hit_label" />
+        </RelativeLayout>
+        <RelativeLayout android:id="@+id/accuracy_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <ImageView android:id="@+id/red_note"
+                android:layout_width="45dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="12dp"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="red note image"
+                android:src="@drawable/red_note"
+                android:scaleType="fitStart"
+                />
+            <TextView android:id="@+id/accuracy_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/accuracy_text"
+                android:textSize="38sp"
+                android:layout_toRightOf="@id/red_note"
+                android:layout_toEndOf="@id/red_note"/>
+            <TextView android:id="@+id/accuracy_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="89%"
+                android:textSize="38sp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/accuracy_label"
+                android:layout_toEndOf="@id/accuracy_label" />
+
         </RelativeLayout>
     </LinearLayout>
 
+    <RelativeLayout android:id="@+id/survey"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="30"
+        android:padding="8dp"
+        android:background="@color/teal"
+        android:elevation="25dp">
+        <TextSwitcher
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/question_text"/>
+        <RadioGroup android:id="@+id/survey_rg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_below="@id/question_text"
+            android:clickable="true"
+            android:layout_marginTop="30dp"
+            android:gravity="center_vertical">
+            <RadioButton android:id="@+id/radio1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="64dp"
+                android:layout_marginEnd="64dp"
+                android:textSize="28sp"
+                android:text="1" />
+            <RadioButton android:id="@+id/radio2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="64dp"
+                android:layout_marginEnd="64dp"
+                android:textSize="28sp"
+                android:text="2" />
+            <RadioButton android:id="@+id/radio3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="64dp"
+                android:layout_marginEnd="64dp"
+                android:textSize="28sp"
+                android:text="3" />
+            <RadioButton android:id="@+id/radio4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="64dp"
+                android:layout_marginEnd="64dp"
+                android:textSize="28sp"
+                android:text="4" />
+            <RadioButton android:id="@+id/radio5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="64dp"
+                android:layout_marginEnd="64dp"
+                android:textSize="28sp"
+                android:text="5" />
+        </RadioGroup>
+        <Button android:id="@+id/next_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@string/survey_next_text"
+            android:background="@color/turquoise"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:onClick="onNextButtonClicked"
+            />
+    </RelativeLayout>
+</LinearLayout>
 
-</RelativeLayout>
+
