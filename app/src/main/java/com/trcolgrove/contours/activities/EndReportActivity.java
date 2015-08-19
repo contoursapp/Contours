@@ -96,8 +96,9 @@ public class EndReportActivity extends ActionBarActivity {
     private void logPreviousData() {
         List<ScoreSet> scoreSets = dm.scoreSetDao.queryBuilder().list();
         for(ScoreSet sc : scoreSets) {
-            Log.i(TAG, "DATE: " + sc.getDate() + "/ SCORE: " + sc.getTotal_score());
+            Log.i(TAG, "ID: " + sc.getId() + " DATE: " + sc.getDate() + ", SCORE: " + sc.getTotal_score());
         }
+
 
     }
 

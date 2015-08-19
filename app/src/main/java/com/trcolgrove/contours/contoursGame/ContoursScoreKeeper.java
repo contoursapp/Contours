@@ -19,6 +19,7 @@ public class ContoursScoreKeeper implements ScoreKeeper {
     private int score;
     private int multiplier;
     private long baseTime;
+    private long timeSinceContourStart;
 
     private int notesHit = 0;
     private int notesMissed = 0;
@@ -38,6 +39,7 @@ public class ContoursScoreKeeper implements ScoreKeeper {
         this.score = 0;
         this.multiplier = 1;
         this.baseTime = baseTime;
+        timeSinceContourStart = baseTime;
     }
 
     public void updateScore(@GameEvent int gameInfo) {
@@ -73,10 +75,13 @@ public class ContoursScoreKeeper implements ScoreKeeper {
     }
 
     private int contourComplete() {
-        int scoreIncrement = (int)((10000/((SystemClock.elapsedRealtime() - baseTime) / 10000)))*multiplier;
+        int scoreIncrement = Math.max(0, ((int)(((10000)) -
+                ((SystemClock.elapsedRealtime() - timeSinceContourStart)/1000)*250) * multiplier));
         incrementMultiplier();
+        timeSinceContourStart = SystemClock.elapsedRealtime();
         return scoreIncrement;
     }
+
     private void incrementMultiplier() {
         if(multiplier < 8) {
             multiplier++;

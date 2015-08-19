@@ -32,7 +32,6 @@ public class Contour {
         cursorPosition = 0;
     }
 
-    //TODO: clean this class
     public Contour(List<Note> notes) {
         int bottomNote = 128;
         int topNote = -1;
