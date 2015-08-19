@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
@@ -20,27 +22,38 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.trcolgrove.contours.R;
+import com.trcolgrove.contours.contoursGame.DataManager;
+import com.trcolgrove.daoentries.ScoreSet;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Date;
+import java.util.List;
 
 
 public class EndReportActivity extends ActionBarActivity {
 
+    private static final String TAG = "EndReportActivity";
     private RadioGroup surveyRg; //radio group for survey questions
 
     private TextSwitcher questionText; //text representing the current survey question
 
     private String[] surveyQuestions; //An array of the questions to be asked.
 
-    private int surveyIndex = 0; // The index of the next survey question to be displayed
+    private int surveyIndex = 0; // The index of the survey question being displayed
 
     private Button nextButton; // Element representing the nextButton in the survey panel
+
+    private Date completionDate = new Date();
+
+    private DataManager dm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end_report);
+
+        dm = new DataManager(getApplicationContext());
 
         setScoreValues();
 
@@ -57,7 +70,7 @@ public class EndReportActivity extends ActionBarActivity {
                 return myText;
             }
         });
-        questionText.setText(surveyQuestions[surveyIndex++]);
+        questionText.setText(surveyQuestions[surveyIndex]);
         Animation in = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left);
         Animation out = AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right);
         questionText.setInAnimation(in);
@@ -67,7 +80,7 @@ public class EndReportActivity extends ActionBarActivity {
         surveyRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if(group.getCheckedRadioButtonId() != -1) {
+                if (group.getCheckedRadioButtonId() != -1) {
                     nextButton.setEnabled(true);
                 }
                 //TODO: implement
@@ -77,6 +90,15 @@ public class EndReportActivity extends ActionBarActivity {
         nextButton.setEnabled(false);
 
         performIntroAnimations();
+
+    }
+
+    private void logPreviousData() {
+        List<ScoreSet> scoreSets = dm.scoreSetDao.queryBuilder().list();
+        for(ScoreSet sc : scoreSets) {
+            Log.i(TAG, "DATE: " + sc.getDate() + "/ SCORE: " + sc.getTotal_score());
+        }
+
     }
 
     private void performIntroAnimations() {
@@ -106,13 +128,14 @@ public class EndReportActivity extends ActionBarActivity {
         successText.animate().alpha(1f).setDuration(2000);
     }
 
-
-
     /**
      * Private method to set the score values based the intent passed from the TrainingActivity
      * Should be called in onCreate()
      */
     private void setScoreValues() {
+        String difficulty = getIntent().getStringExtra("difficulty");
+        difficulty = "easy";
+
         int totalScore = getIntent().getIntExtra("total_score", -1);
         TextView totalScoreValue = (TextView) findViewById(R.id.total_score_value);
         totalScoreValue.setText(Integer.toString(totalScore));
@@ -131,7 +154,17 @@ public class EndReportActivity extends ActionBarActivity {
         df.setRoundingMode(RoundingMode.CEILING);
         TextView accuracyValue = (TextView) findViewById(R.id.accuracy_value);
         accuracyValue.setText(df.format(accuracy) + "%");
+
+        int longestStreak = getIntent().getIntExtra("longest_streak", -1);
+
+        int averageStreak = getIntent().getIntExtra("average_streak", -1);
+
+        dm.storeScoreSet(difficulty, totalScore,totalTime, longestStreak, averageStreak,
+                notesHit, notesMissed, completionDate);
+
+        logPreviousData();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -159,9 +192,10 @@ public class EndReportActivity extends ActionBarActivity {
      * Display the next research survey question
      */
     private void displayNextSurveyQuestion() {
-        questionText.setText(surveyQuestions[surveyIndex++]);
+        surveyIndex++;
+        questionText.setText(surveyQuestions[surveyIndex]);
         nextButton.setEnabled(false);
-        if(surveyIndex == surveyQuestions.length) {
+        if(surveyIndex == surveyQuestions.length - 1) {
             nextButton.setText("DONE>");
         }
     }
@@ -171,7 +205,12 @@ public class EndReportActivity extends ActionBarActivity {
      * @param view
      */
     public void onNextButtonClicked(View view) {
-        if(surveyIndex < surveyQuestions.length) {
+        int rbId = surveyRg.getCheckedRadioButtonId();
+        RadioButton selected = (RadioButton) findViewById(rbId);
+        int response = Integer.parseInt(selected.getText().toString());
+        dm.storeSurveyResponse(surveyQuestions[surveyIndex], response, completionDate);
+
+        if (surveyIndex < surveyQuestions.length - 1) {
             displayNextSurveyQuestion();
             surveyRg.clearCheck();
             nextButton.setEnabled(false);
