@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/Contours.iml" filepath="$PROJECT_DIR$/Contours.iml" />
       <module fileurl="file://$PROJECT_DIR$/PdCore/PdCore.iml" filepath="$PROJECT_DIR$/PdCore/PdCore.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/greendaogenerator/greendaogenerator.iml" filepath="$PROJECT_DIR$/greendaogenerator/greendaogenerator.iml" />
     </modules>
   </component>
 </project>

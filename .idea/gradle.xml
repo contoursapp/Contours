@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/AndroidMidi" />
             <option value="$PROJECT_DIR$/PdCore" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/greendaogenerator" />
           </set>
         </option>
       </GradleProjectSettings>
