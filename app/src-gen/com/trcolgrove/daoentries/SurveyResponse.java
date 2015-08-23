@@ -10,6 +10,7 @@ public class SurveyResponse {
     private String question;
     private Integer response;
     private java.util.Date date;
+    private boolean uploaded;
 
     public SurveyResponse() {
     }
@@ -18,11 +19,12 @@ public class SurveyResponse {
         this.id = id;
     }
 
-    public SurveyResponse(Long id, String question, Integer response, java.util.Date date) {
+    public SurveyResponse(Long id, String question, Integer response, java.util.Date date, boolean uploaded) {
         this.id = id;
         this.question = question;
         this.response = response;
         this.date = date;
+        this.uploaded = uploaded;
     }
 
     public Long getId() {
@@ -55,6 +57,14 @@ public class SurveyResponse {
 
     public void setDate(java.util.Date date) {
         this.date = date;
+    }
+
+    public boolean getUploaded() {
+        return uploaded;
+    }
+
+    public void setUploaded(boolean uploaded) {
+        this.uploaded = uploaded;
     }
 
 }

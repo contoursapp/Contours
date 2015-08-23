@@ -15,6 +15,7 @@ public class ScoreSet {
     private Integer longest_streak;
     private Integer average_streak;
     private java.util.Date date;
+    private boolean uploaded;
 
     public ScoreSet() {
     }
@@ -23,7 +24,7 @@ public class ScoreSet {
         this.id = id;
     }
 
-    public ScoreSet(Long id, String difficulty, int total_score, Long elapsed_time, Integer notes_hit, Integer notes_missed, Integer longest_streak, Integer average_streak, java.util.Date date) {
+    public ScoreSet(Long id, String difficulty, int total_score, Long elapsed_time, Integer notes_hit, Integer notes_missed, Integer longest_streak, Integer average_streak, java.util.Date date, boolean uploaded) {
         this.id = id;
         this.difficulty = difficulty;
         this.total_score = total_score;
@@ -33,6 +34,7 @@ public class ScoreSet {
         this.longest_streak = longest_streak;
         this.average_streak = average_streak;
         this.date = date;
+        this.uploaded = uploaded;
     }
 
     public Long getId() {
@@ -105,6 +107,14 @@ public class ScoreSet {
 
     public void setDate(java.util.Date date) {
         this.date = date;
+    }
+
+    public boolean getUploaded() {
+        return uploaded;
+    }
+
+    public void setUploaded(boolean uploaded) {
+        this.uploaded = uploaded;
     }
 
 }

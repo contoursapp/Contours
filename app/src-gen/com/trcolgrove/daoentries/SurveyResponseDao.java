@@ -27,6 +27,7 @@ public class SurveyResponseDao extends AbstractDao<SurveyResponse, Long> {
         public final static Property Question = new Property(1, String.class, "question", false, "QUESTION");
         public final static Property Response = new Property(2, Integer.class, "response", false, "RESPONSE");
         public final static Property Date = new Property(3, java.util.Date.class, "date", false, "DATE");
+        public final static Property Uploaded = new Property(4, boolean.class, "uploaded", false, "UPLOADED");
     };
 
 
@@ -45,7 +46,8 @@ public class SurveyResponseDao extends AbstractDao<SurveyResponse, Long> {
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"QUESTION\" TEXT," + // 1: question
                 "\"RESPONSE\" INTEGER," + // 2: response
-                "\"DATE\" INTEGER);"); // 3: date
+                "\"DATE\" INTEGER," + // 3: date
+                "\"UPLOADED\" INTEGER NOT NULL );"); // 4: uploaded
     }
 
     /** Drops the underlying database table. */
@@ -78,6 +80,7 @@ public class SurveyResponseDao extends AbstractDao<SurveyResponse, Long> {
         if (date != null) {
             stmt.bindLong(4, date.getTime());
         }
+        stmt.bindLong(5, entity.getUploaded() ? 1L: 0L);
     }
 
     /** @inheritdoc */
@@ -93,7 +96,8 @@ public class SurveyResponseDao extends AbstractDao<SurveyResponse, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // question
             cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // response
-            cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)) // date
+            cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)), // date
+            cursor.getShort(offset + 4) != 0 // uploaded
         );
         return entity;
     }
@@ -105,6 +109,7 @@ public class SurveyResponseDao extends AbstractDao<SurveyResponse, Long> {
         entity.setQuestion(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setResponse(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
         entity.setDate(cursor.isNull(offset + 3) ? null : new java.util.Date(cursor.getLong(offset + 3)));
+        entity.setUploaded(cursor.getShort(offset + 4) != 0);
      }
     
     /** @inheritdoc */

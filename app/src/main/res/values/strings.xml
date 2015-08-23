@@ -30,5 +30,7 @@
     <string name="accuracy_text">Accuracy =&#160;</string>
     <string name="success_text">Success!</string>
     <string name="survey_next_text"><![CDATA[next>]]></string>
-    <string name="servAddr">127.0.0.1</string>
+    <string name="serv_addr">http://contours.herokuapp.com</string>
+    <string name="add_score_set">addScoreSet</string>
+    <string name="add_survey_response">addSurveyResponse</string>
 </resources>

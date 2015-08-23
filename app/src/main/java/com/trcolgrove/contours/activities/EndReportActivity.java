@@ -23,7 +23,9 @@ import android.widget.ViewSwitcher;
 
 import com.trcolgrove.contours.R;
 import com.trcolgrove.contours.contoursGame.DataManager;
+import com.trcolgrove.contours.contoursGame.ServerUtil;
 import com.trcolgrove.daoentries.ScoreSet;
+import com.trcolgrove.daoentries.SurveyResponse;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -46,6 +48,8 @@ public class EndReportActivity extends ActionBarActivity {
 
     private Date completionDate = new Date();
 
+    private ServerUtil serverUtil;
+
     private DataManager dm;
 
     @Override
@@ -54,6 +58,7 @@ public class EndReportActivity extends ActionBarActivity {
         setContentView(R.layout.activity_end_report);
 
         dm = new DataManager(getApplicationContext());
+        serverUtil = new ServerUtil(getApplicationContext());
 
         setScoreValues();
 
@@ -160,8 +165,9 @@ public class EndReportActivity extends ActionBarActivity {
 
         int averageStreak = getIntent().getIntExtra("average_streak", -1);
 
-        dm.storeScoreSet(difficulty, totalScore,totalTime, longestStreak, averageStreak,
-                notesHit, notesMissed, completionDate);
+        ScoreSet sc = new ScoreSet(null, difficulty, totalScore, totalTime,
+                notesHit, notesMissed, longestStreak, null, completionDate, false);
+        dm.storeScoreSet(sc);
 
         logPreviousData();
     }
@@ -209,7 +215,9 @@ public class EndReportActivity extends ActionBarActivity {
         int rbId = surveyRg.getCheckedRadioButtonId();
         RadioButton selected = (RadioButton) findViewById(rbId);
         int response = Integer.parseInt(selected.getText().toString());
-        dm.storeSurveyResponse(surveyQuestions[surveyIndex], response, completionDate);
+        SurveyResponse sr = new SurveyResponse(null, surveyQuestions[surveyIndex], response, completionDate, false);
+
+        serverUtil.postSurveyResponse(sr);
 
         if (surveyIndex < surveyQuestions.length - 1) {
             displayNextSurveyQuestion();

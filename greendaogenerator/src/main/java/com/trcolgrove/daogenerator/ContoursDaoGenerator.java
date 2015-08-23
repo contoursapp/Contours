@@ -24,6 +24,7 @@ public class ContoursDaoGenerator {
         scoreSet.addIntProperty("longest_streak");
         scoreSet.addIntProperty("average_streak");
         scoreSet.addDateProperty("date");
+        scoreSet.addBooleanProperty("uploaded").notNull();
     }
 
     private static void addSurveyResponse(Schema schema) {
@@ -32,6 +33,7 @@ public class ContoursDaoGenerator {
         surveyResponse.addStringProperty("question");
         surveyResponse.addIntProperty("response");
         surveyResponse.addDateProperty("date");
+        surveyResponse.addBooleanProperty("uploaded").notNull();
     }
 
 }

@@ -32,6 +32,7 @@ public class ScoreSetDao extends AbstractDao<ScoreSet, Long> {
         public final static Property Longest_streak = new Property(6, Integer.class, "longest_streak", false, "LONGEST_STREAK");
         public final static Property Average_streak = new Property(7, Integer.class, "average_streak", false, "AVERAGE_STREAK");
         public final static Property Date = new Property(8, java.util.Date.class, "date", false, "DATE");
+        public final static Property Uploaded = new Property(9, boolean.class, "uploaded", false, "UPLOADED");
     };
 
 
@@ -55,7 +56,8 @@ public class ScoreSetDao extends AbstractDao<ScoreSet, Long> {
                 "\"NOTES_MISSED\" INTEGER," + // 5: notes_missed
                 "\"LONGEST_STREAK\" INTEGER," + // 6: longest_streak
                 "\"AVERAGE_STREAK\" INTEGER," + // 7: average_streak
-                "\"DATE\" INTEGER);"); // 8: date
+                "\"DATE\" INTEGER," + // 8: date
+                "\"UPLOADED\" INTEGER NOT NULL );"); // 9: uploaded
     }
 
     /** Drops the underlying database table. */
@@ -109,6 +111,7 @@ public class ScoreSetDao extends AbstractDao<ScoreSet, Long> {
         if (date != null) {
             stmt.bindLong(9, date.getTime());
         }
+        stmt.bindLong(10, entity.getUploaded() ? 1L: 0L);
     }
 
     /** @inheritdoc */
@@ -129,7 +132,8 @@ public class ScoreSetDao extends AbstractDao<ScoreSet, Long> {
             cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // notes_missed
             cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // longest_streak
             cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // average_streak
-            cursor.isNull(offset + 8) ? null : new java.util.Date(cursor.getLong(offset + 8)) // date
+            cursor.isNull(offset + 8) ? null : new java.util.Date(cursor.getLong(offset + 8)), // date
+            cursor.getShort(offset + 9) != 0 // uploaded
         );
         return entity;
     }
@@ -146,6 +150,7 @@ public class ScoreSetDao extends AbstractDao<ScoreSet, Long> {
         entity.setLongest_streak(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
         entity.setAverage_streak(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
         entity.setDate(cursor.isNull(offset + 8) ? null : new java.util.Date(cursor.getLong(offset + 8)));
+        entity.setUploaded(cursor.getShort(offset + 9) != 0);
      }
     
     /** @inheritdoc */
