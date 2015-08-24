@@ -166,10 +166,8 @@ public class EndReportActivity extends ActionBarActivity {
         int averageStreak = getIntent().getIntExtra("average_streak", -1);
 
         ScoreSet sc = new ScoreSet(null, difficulty, totalScore, totalTime,
-                notesHit, notesMissed, longestStreak, null, completionDate, false);
-        dm.storeScoreSet(sc);
-
-        logPreviousData();
+                notesHit, notesMissed, longestStreak, averageStreak, completionDate, false);
+        serverUtil.postScoreSet(sc);
     }
 
 
@@ -216,7 +214,6 @@ public class EndReportActivity extends ActionBarActivity {
         RadioButton selected = (RadioButton) findViewById(rbId);
         int response = Integer.parseInt(selected.getText().toString());
         SurveyResponse sr = new SurveyResponse(null, surveyQuestions[surveyIndex], response, completionDate, false);
-
         serverUtil.postSurveyResponse(sr);
 
         if (surveyIndex < surveyQuestions.length - 1) {

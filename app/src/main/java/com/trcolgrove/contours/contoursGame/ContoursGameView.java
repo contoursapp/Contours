@@ -47,10 +47,8 @@ public class ContoursGameView extends SurfaceView {
     private Drawable[] octaveDividerDrawables = {getResources().getDrawable(R.drawable.octave_1), getResources().getDrawable(R.drawable.octave_2),
             getResources().getDrawable(R.drawable.octave_3)};
 
-
     //object to keep track of score, multiplier and other performance data
     private static ScoreKeeper scoreKeeper;
-
 
     private int congratsTextAlpha = 0;
     private int noteAlpha = 255;

@@ -3,9 +3,9 @@
     <string-array name="easy_contours">
         <item>C2,D2,E2,F2,G2,A2,B2,C3</item>
         <item>D4,E4,F4,E4,C4,B3,C4</item>
-        <item>D3,C3,B2,A2,G2,F2,E2</item>
+        <!--<item>D3,C3,B2,A2,G2,F2,E2</item>
         <item>C3,D3,E3,F3,A3,C4,E3</item>
-        <item>C2,E2,G2,F2,E2,C2</item>
+        <item>C2,E2,G2,F2,E2,C2</item>-->
     </string-array>
 
     <string-array name="survey_questions">
