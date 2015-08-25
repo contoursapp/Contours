@@ -12,14 +12,14 @@ import com.trcolgrove.contours.R;
 import com.trcolgrove.contours.contoursGame.DataManager;
 import com.trcolgrove.contours.contoursGame.ServerUtil;
 import com.trcolgrove.contours.contoursGame.TrainingActivity;
-import com.trcolgrove.daoentries.ScoreSet;
-import com.trcolgrove.daoentries.ScoreSetDao;
 
-import java.util.List;
-
-import de.greenrobot.dao.query.QueryBuilder;
-
-
+/**
+ * MainActivity
+ *
+ * The main activity for the contours app.
+ * Displays a simple interface that presents the user with
+ * the option to play the game at various difficulty settings
+ */
 public class MainActivity extends ActionBarActivity {
 
     private LinearLayout difficultyMenu; // Select difficulty menu
@@ -29,7 +29,9 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         difficultyMenu = (LinearLayout) findViewById(R.id.difficulty_menu);
-        uploadPendingData();
+        DataManager dm = new DataManager(getApplicationContext());
+        ServerUtil serverUtil = new ServerUtil(getApplicationContext());
+        serverUtil.uploadPendingData();
     }
 
     @Override
@@ -75,28 +77,5 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Attempt to upload ScoreSet and Survey which have not yet been uploaded to the server
-     * If the tablet is connected to the internet this function will locate
-     * unuploaded Data and attempt to upload it
-     */
-    public void uploadPendingData() {
-        ServerUtil serverUtil = new ServerUtil(getApplicationContext());
-        if(serverUtil.isConnected()) {
-            DataManager dm = new DataManager(getApplicationContext());
-            QueryBuilder qb = dm.scoreSetDao.queryBuilder().where(ScoreSetDao.Properties.Uploaded.eq(false));
-            List<ScoreSet> pendingUpload = qb.list();
-            for (ScoreSet sc : pendingUpload) {
-                serverUtil.postScoreSet(sc);
-            }
-            qb = dm.surveyResponseDao.queryBuilder().where(ScoreSetDao.Properties.Uploaded.eq(false));
-            pendingUpload = qb.list();
-            for (ScoreSet sc : pendingUpload) {
-                serverUtil.postScoreSet(sc);
-            }
-        }
-
     }
 }
