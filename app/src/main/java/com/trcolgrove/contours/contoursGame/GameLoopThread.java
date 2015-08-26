@@ -29,6 +29,7 @@ public class GameLoopThread extends Thread {
     @SuppressLint("WrongCall")
     @Override
     public void run() {
+
         long ticksPS = 1000 / FPS;
         long startTime;
         long sleepTime;
@@ -50,10 +51,12 @@ public class GameLoopThread extends Thread {
             }
             sleepTime = ticksPS-(System.currentTimeMillis() - startTime);
             try {
-                if (sleepTime > 0)
+                if (sleepTime > 0) {
                     sleep(sleepTime);
-                else
+                }
+                else {
                     sleep(10);
+                }
             } catch (Exception e) {}
             lastTime = startTime;
         }

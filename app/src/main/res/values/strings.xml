@@ -33,4 +33,5 @@
     <string name="serv_addr">http://contours.herokuapp.com</string>
     <string name="add_score_set">addScoreSet</string>
     <string name="add_survey_response">addSurveyResponse</string>
+    <string name="contours_logo_img_desc">contours logo</string>
 </resources>

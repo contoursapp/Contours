@@ -128,7 +128,7 @@ public class ContoursGameView extends SurfaceView {
         String[] contourStrings = getResources().getStringArray(R.array.easy_contours);
         contours = ContourFactory.getContoursFromStringArray(contourStrings, context);
 
-        this.scoreKeeper = new ContoursScoreKeeper(SystemClock.elapsedRealtime());
+        scoreKeeper = new ContoursScoreKeeper(SystemClock.elapsedRealtime());
         this.setDrawingCacheEnabled(true);
         this.buildDrawingCache();
 
@@ -386,6 +386,7 @@ public class ContoursGameView extends SurfaceView {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
         canvas.drawARGB(255, 0, 0, 0);
         Drawable bg = getResources().getDrawable(R.drawable.gradient_background);
         bg.setBounds(0, 0, getWidth(), getHeight());
@@ -394,11 +395,13 @@ public class ContoursGameView extends SurfaceView {
         drawOctaveDividers(canvas);
         drawStaff(canvas);
 
+
         try {
             drawContour(canvas);
         } catch (LayoutException e) {
             e.printStackTrace();
         }
+
         drawCongratsText(canvas);
 
         if(contour.getCursorPosition() == 0) {
@@ -420,6 +423,7 @@ public class ContoursGameView extends SurfaceView {
                     keySelectPaint
             );
         }
+
     }
 
     private void drawCongratsText(Canvas canvas) {

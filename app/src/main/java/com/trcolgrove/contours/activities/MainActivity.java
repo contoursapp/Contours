@@ -52,16 +52,19 @@ public class MainActivity extends ActionBarActivity {
     public void easyButtonClicked(View view) {
         Intent i = new Intent(getApplicationContext(), TrainingActivity.class);
         startActivity(i);
+        this.finish();
     }
 
     public void mediumButtonClicked(View view) {
         Intent i = new Intent(getApplicationContext(), TrainingActivity.class);
         startActivity(i);
+        this.finish();
     }
 
     public void hardButtonClicked(View view) {
         Intent i = new Intent(getApplicationContext(), TrainingActivity.class);
         startActivity(i);
+        this.finish();
     }
 
     @Override
@@ -78,4 +81,5 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

@@ -10,6 +10,8 @@ import com.trcolgrove.daoentries.ScoreSetDao;
 import com.trcolgrove.daoentries.SurveyResponse;
 import com.trcolgrove.daoentries.SurveyResponseDao;
 
+import java.util.concurrent.Semaphore;
+
 /**
  * Singleton class implementing simple localized data storage
  * through greenDao implementation.
@@ -20,21 +22,24 @@ import com.trcolgrove.daoentries.SurveyResponseDao;
  */
 public class DataManager {
 
+    private static final String TAG = "DataManager";
     private SQLiteDatabase db;
 
     private DaoMaster daoMaster;
     private DaoSession daoSession;
+    private DaoMaster.DevOpenHelper helper;
+    private Context context;
+    private Integer activeRequests;
+    private final Semaphore available = new Semaphore(1);
+
 
     public ScoreSetDao scoreSetDao;
     public SurveyResponseDao surveyResponseDao;
 
+
     public DataManager(Context context) {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "scores-db", null);
-        db = helper.getWritableDatabase();
-        daoMaster = new DaoMaster(db);
-        daoSession = daoMaster.newSession();
-        scoreSetDao = daoSession.getScoreSetDao();
-        surveyResponseDao = daoSession.getSurveyResponseDao();
+        this.context = context;
+        activeRequests = 0;
     }
 
 
@@ -44,5 +49,42 @@ public class DataManager {
 
     public void storeSurveyResponse(SurveyResponse sr) {
         surveyResponseDao.insert(sr);
+    }
+
+    public void close() {
+        daoMaster.getDatabase().close();
+        daoSession.getDatabase().close();
+        db.close();
+        helper.close();
+        daoSession.clear();
+        db=null;
+        //helper=null;
+        daoSession=null;
+    }
+
+    public void open() {
+        helper = new DaoMaster.DevOpenHelper(context, "scores-db", null);
+        db = helper.getWritableDatabase();
+        daoMaster = new DaoMaster(db);
+        daoSession = daoMaster.newSession();
+        scoreSetDao = daoSession.getScoreSetDao();
+        surveyResponseDao = daoSession.getSurveyResponseDao();
+    }
+
+    public boolean isOpen() {
+        return (db != null);
+    }
+
+    //Functions for concurrent access
+
+    public void incrementActiveRequests() {
+        activeRequests++;
+    }
+    public void decrementActiveRequests() {
+        activeRequests--;
+    }
+
+    public int getActiveRequests() {
+        return activeRequests;
     }
 }

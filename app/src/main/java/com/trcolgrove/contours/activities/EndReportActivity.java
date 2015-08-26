@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +21,6 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.trcolgrove.contours.R;
-import com.trcolgrove.contours.contoursGame.DataManager;
 import com.trcolgrove.contours.contoursGame.ServerUtil;
 import com.trcolgrove.daoentries.ScoreSet;
 import com.trcolgrove.daoentries.SurveyResponse;
@@ -30,7 +28,6 @@ import com.trcolgrove.daoentries.SurveyResponse;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Date;
-import java.util.List;
 
 
 public class EndReportActivity extends ActionBarActivity {
@@ -50,14 +47,11 @@ public class EndReportActivity extends ActionBarActivity {
 
     private ServerUtil serverUtil;
 
-    private DataManager dm;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end_report);
 
-        dm = new DataManager(getApplicationContext());
         serverUtil = new ServerUtil(getApplicationContext());
 
         setScoreValues();
@@ -95,15 +89,6 @@ public class EndReportActivity extends ActionBarActivity {
         nextButton.setEnabled(false);
 
         performIntroAnimations();
-
-    }
-
-    private void logPreviousData() {
-        List<ScoreSet> scoreSets = dm.scoreSetDao.queryBuilder().list();
-        for(ScoreSet sc : scoreSets) {
-            Log.i(TAG, "ID: " + sc.getId() + " DATE: " + sc.getDate() + ", SCORE: " + sc.getTotal_score());
-        }
-
 
     }
 
@@ -223,6 +208,7 @@ public class EndReportActivity extends ActionBarActivity {
         } else {
             Intent i = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(i);
+            this.finish();
         }
     }
 }

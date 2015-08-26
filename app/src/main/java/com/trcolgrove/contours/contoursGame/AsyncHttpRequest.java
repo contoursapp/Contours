@@ -45,7 +45,6 @@ public class AsyncHttpRequest extends AsyncTask<NameValuePair, Integer, Integer>
         void onFinished(int statusCode);
     }
 
-
     public AsyncHttpRequest(String uri, @HttpMethod int method) {
         this.uri = uri;
         this.method = method;

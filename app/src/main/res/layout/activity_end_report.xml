@@ -56,16 +56,6 @@
                 android:layout_toRightOf="@id/total_score_label"
                 android:layout_toEndOf="@id/total_score_label"
                 />
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignBottom="@+id/total_score_label"
-                android:layout_toLeftOf="@+id/total_score_value"
-                android:layout_toStartOf="@+id/total_score_value"
-                android:layout_marginRight="110dp"
-                android:layout_marginEnd="110dp"></LinearLayout>
         </RelativeLayout>
         <RelativeLayout android:id="@+id/total_time_layout"
             android:layout_width="match_parent"

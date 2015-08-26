@@ -59,6 +59,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     private TextSwitcher scoreSwitcher;
     private TextSwitcher multiplierSwitcher;
     private TextView scoreIncrementText;
+    private String patchFilePath;
 
 
     @Override
@@ -165,8 +166,8 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
 
     @Override
     protected void onStop() {
-        PdAudio.stopAudio();
         super.onStop();
+        PdAudio.stopAudio();
         EventBus.getDefault().unregister(this);
     }
 
@@ -191,6 +192,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         Intent i = new Intent(getApplicationContext(), EndReportActivity.class);
         i.putExtras(gce.scoreBundle);
         startActivity(i);
+        this.finish();
     }
 
     private void displayScoreIncrement(int scoreIncrement) {
@@ -219,6 +221,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
 
         @Override
         protected Void doInBackground(File... dirs) {
+
             for(File dir : dirs) {
                 try {
                     IoUtils.extractZipResource(getResources().openRawResource(R.raw.testpatch), dir, true);
@@ -227,6 +230,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
                 }
             }
             return null;
+
         }
 
         protected void onPostExecute(Void v) {
@@ -302,7 +306,8 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
             new resourcesLoader().execute(dir);
             PdDispatcher dispatcher = new PdUiDispatcher();
             PdBase.setReceiver(dispatcher);
-            PdBase.openPatch(patchFile.getAbsolutePath());
+            patchFilePath = patchFile.getAbsolutePath();
+            PdBase.openPatch(patchFilePath);
     }
 
 

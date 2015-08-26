@@ -16,6 +16,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import de.greenrobot.dao.query.QueryBuilder;
 
@@ -34,6 +35,8 @@ public class ServerUtil {
     protected Context context;
 
     private static String TAG = "ServerUtil";
+
+    private final Semaphore available = new Semaphore(1);
 
     public ServerUtil(Context context) {
         dm = new DataManager(context);
@@ -57,6 +60,9 @@ public class ServerUtil {
      * @param scoreSet
      */
     public void postScoreSet(final ScoreSet scoreSet) {
+
+        openDataManagerIfClosed();
+
         NameValuePair userId, totalScore, elapsedTime, notesHit, notesMissed, longestStreak, averageStreak, date;
         if (isConnected()) {
             try {
@@ -83,6 +89,7 @@ public class ServerUtil {
                         scoreSet.setUploaded(false);
                         dm.scoreSetDao.insertOrReplace(scoreSet);
                     }
+                    closeDataManagerIfFinished();
                 }
             });
             request.execute(userId, totalScore, elapsedTime, notesHit, notesMissed, longestStreak,
@@ -90,6 +97,7 @@ public class ServerUtil {
         } else {
             scoreSet.setUploaded(false);
             dm.scoreSetDao.insertOrReplace(scoreSet);
+            closeDataManagerIfFinished();
         }
     }
 
@@ -99,6 +107,9 @@ public class ServerUtil {
      * @param surveyResponse
      */
     public void postSurveyResponse(final SurveyResponse surveyResponse) {
+
+        openDataManagerIfClosed();
+
         if(isConnected()) {
             NameValuePair userId = new BasicNameValuePair("user_id", "android_man");
             NameValuePair question = new BasicNameValuePair("question", surveyResponse.getQuestion());
@@ -116,12 +127,14 @@ public class ServerUtil {
                         surveyResponse.setUploaded(false);
                         dm.surveyResponseDao.insertOrReplace(surveyResponse);
                     }
+                    closeDataManagerIfFinished();
                 }
             });
             request.execute(userId, question, response, date);
         } else {
             surveyResponse.setUploaded(false);
             dm.surveyResponseDao.insertOrReplace(surveyResponse);
+            closeDataManagerIfFinished();
         }
     }
 
@@ -131,6 +144,32 @@ public class ServerUtil {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return (activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting());
+    }
+
+    private void openDataManagerIfClosed() {
+        try {
+            available.acquire();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Interrupted!");
+        }
+        if(!dm.isOpen()) {
+            dm.open();
+        }
+        dm.incrementActiveRequests();
+        available.release();
+    }
+
+    private void closeDataManagerIfFinished() {
+        try {
+            available.acquire();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Interrupted!");
+        }
+        dm.decrementActiveRequests();
+        if(dm.getActiveRequests() == 0) {
+            dm.close();
+        }
+        available.release();
     }
 
     public boolean postUser() {
@@ -144,18 +183,18 @@ public class ServerUtil {
      * unuploaded Data and attempt to upload it
      */
     public void uploadPendingData() {
-
         if(isConnected()) {
-            DataManager dm = new DataManager(context);
+            openDataManagerIfClosed();
             QueryBuilder qb = dm.scoreSetDao.queryBuilder().where(ScoreSetDao.Properties.Uploaded.eq(false));
             List<ScoreSet> scPendingUpload = qb.list();
+            qb = dm.surveyResponseDao.queryBuilder().where(SurveyResponseDao.Properties.Uploaded.eq(false));
+            List<SurveyResponse> srPendingUpload = qb.list();
+            closeDataManagerIfFinished();
+
             for (ScoreSet sc : scPendingUpload) {
                 postScoreSet(sc);
             }
-            qb = dm.surveyResponseDao.queryBuilder().where(SurveyResponseDao.Properties.Uploaded.eq(false));
 
-            List<SurveyResponse> srPendingUpload = qb.list();
-            srPendingUpload = qb.list();
             for (SurveyResponse sr : srPendingUpload) {
                 postSurveyResponse(sr);
             }
