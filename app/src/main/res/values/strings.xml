@@ -34,4 +34,6 @@
     <string name="add_score_set">addScoreSet</string>
     <string name="add_survey_response">addSurveyResponse</string>
     <string name="contours_logo_img_desc">contours logo</string>
+    <string name="footer_text">Developed by Thomas Colgrove</string>
+    <string name="tufts_logo_description">tufts logo</string>
 </resources>
