@@ -15,7 +15,7 @@ import aurelienribon.tweenengine.TweenManager;
 public class GameLoopThread extends Thread {
     private ContoursGameView contoursGameView;
     private boolean running = false;
-    static final long FPS = 60;
+    static final long FPS = 48;
     private TweenManager tweenManager;
 
     public GameLoopThread(ContoursGameView contoursGameView, TweenManager tweenManager) {

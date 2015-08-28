@@ -60,6 +60,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     private TextSwitcher multiplierSwitcher;
     private TextView scoreIncrementText;
     private String patchFilePath;
+    private MidiInputDevice midiIn;
 
 
     @Override
@@ -70,7 +71,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
 
     @Override
     public void onMidiInputDeviceAttached(@NonNull MidiInputDevice midiInputDevice) {
-
+        midiIn = midiInputDevice;
     }
 
     @Override
@@ -338,6 +339,10 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(midiIn != null) {
+            midiIn.suspend();
+            midiIn = null;
+        }
         cleanup();
     }
 

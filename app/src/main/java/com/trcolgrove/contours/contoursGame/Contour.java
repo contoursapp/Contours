@@ -14,6 +14,8 @@ public class Contour {
     private int bottomMidiVal;
     private String TAG = "Contour";
 
+    private boolean isLaidOut = false;
+
     public Contour(Note... notes) {
         int bottomNote = 128;
         int topNote = -1;
@@ -76,4 +78,13 @@ public class Contour {
     public int getTopMidiVal() {
         return topMidiVal;
     }
+
+    public boolean isLaidOut() {
+        return isLaidOut;
+    }
+
+    public void setIsLaidOut(boolean isLaidOut) {
+        this.isLaidOut = isLaidOut;
+    }
+
 }

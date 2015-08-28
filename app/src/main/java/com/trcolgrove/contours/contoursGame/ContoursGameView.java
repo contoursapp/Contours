@@ -10,7 +10,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -43,9 +42,6 @@ public class ContoursGameView extends SurfaceView {
     private static String TAG = "ContoursGameView";
 
     private int staffMargin = DrawingUtils.dpToPixels(32, getContext());
-
-
-    Drawable bg = getResources().getDrawable(R.drawable.gradient_background);
 
     //object to keep track of score, multiplier and other performance data
     private static ScoreKeeper scoreKeeper;
@@ -113,12 +109,12 @@ public class ContoursGameView extends SurfaceView {
 
         scrollOffsetY = 0;
 
-        keySelectPaint.setColor(getResources().getColor(R.color.red));
+        keySelectPaint.setColor(getResources().getColor(R.color.pink));
         keySelectPaint.setAlpha(noteAlpha);
         keySelectPaint.setStyle(Paint.Style.FILL);
 
         octavePaint = new Paint();
-        octavePaint.setColor(getResources().getColor(R.color.indigo));
+        octavePaint.setColor(getResources().getColor(R.color.octaveStripe));
 
         staffPaint.setStrokeWidth(lineStrokeWidth);
         staffPaint.setColor(Color.WHITE);
@@ -143,8 +139,8 @@ public class ContoursGameView extends SurfaceView {
         this.setDrawingCacheEnabled(true);
         this.buildDrawingCache();
 
+        this.contour = contours.get(contourIndex);
 
-        setContour(contours.get(contourIndex));
     }
 
 
@@ -250,6 +246,7 @@ public class ContoursGameView extends SurfaceView {
      */
     private void initGameLoop(){
         gameLoopThread = new GameLoopThread(this, tweenManager);
+        gameLoopThread.setPriority(Thread.MAX_PRIORITY);
         SurfaceHolder holder = getHolder();
         holder.addCallback(new SurfaceHolder.Callback() {
 
@@ -307,6 +304,7 @@ public class ContoursGameView extends SurfaceView {
 
     /* Set the game screen's contour */
     public void setContour(Contour contour) {
+
         this.contour = contour;
     }
 
@@ -376,13 +374,6 @@ public class ContoursGameView extends SurfaceView {
         return ((getHeight()) - ((staffPosition*(spaceHeight/2)))) - staffMargin;
     }
 
-    /* for use with scrolling staff implementation.
-    * At present the scrolling staff implementation has been nixed.
-    * I'm keeping this method if we want to reintroduce this ui component.
-    */
-    private int getScrolledStaffPositionYCoordinate(int staffPosition) {
-        return getStaffPositionYCoordinate(staffPosition) + scrollOffsetY;
-    }
 
     /**
      *
@@ -399,20 +390,20 @@ public class ContoursGameView extends SurfaceView {
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        bg.setBounds(0, 0, getWidth(), getHeight());
-        bg.draw(canvas);
+        canvas.drawARGB(0xFF,0 ,0 ,0);
 
         drawOctaveDividers(canvas);
         drawStaff(canvas);
 
-
         try {
             drawContour(canvas);
         } catch (LayoutException e) {
-            e.printStackTrace();
+            contour.setIsLaidOut(false);
         }
 
-        drawCongratsText(canvas);
+        if(congratsTextAlpha != 0) {
+            drawCongratsText(canvas);
+        }
 
         if(contour.getCursorPosition() == 0) {
             drawKeySelector(canvas);
@@ -423,10 +414,10 @@ public class ContoursGameView extends SurfaceView {
     private void drawKeySelector(Canvas canvas) {
 
         Note firstNote = contour.getNotes().get(0);
+        keySelectPaint.setAlpha(noteAlpha);
         int midiValue = firstNote.getMidiValue();
         int staffLoc = midiValToStaffLoc.get(midiValue);
         int keySelectorX = getKeyXCoordinate(staffLoc);
-        int triangleOffset = spaceHeight/2;
         int arrowWidth = spaceHeight;
         int arrowHeight = spaceHeight/2;
         DrawingUtils.drawArrow(canvas,
@@ -477,13 +468,15 @@ public class ContoursGameView extends SurfaceView {
             if(i == contour.getCursorPosition()) {
                 isSelected = true;
             }
-            int notePostion = midiValToStaffLoc.get(note.getMidiValue());
-            int noteYPos = getStaffPositionYCoordinate(notePostion);
-            note.layout(noteXPos, noteYPos, noteRadius);
+            if(!contour.isLaidOut()) {
+                int notePostion = midiValToStaffLoc.get(note.getMidiValue());
+                int noteYPos = getStaffPositionYCoordinate(notePostion);
+                note.layout(noteXPos, noteYPos, noteRadius);
+            }
             note.draw(canvas, isSelected);
-
             noteXPos += noteSpacing;
         }
+        contour.setIsLaidOut(true);
     }
 
     private int getSpaceHeight() {
@@ -504,36 +497,6 @@ public class ContoursGameView extends SurfaceView {
         }
     }
 
-
-    /* The following functions were used in the old ui as means of scrolling the staff
-     * This is not relevant to the new ui as all the notes are displayed at the same time.
-     * I am keeping these functions for now in case we need them again...
-     */
-
-    /* used to calculate the midpoint of a contour and scroll the staff accordingly
-     * in scrolling implementation. Not currently used */
-    private void setStaffYOffset(boolean animate) {
-        int topNote = contour.getTopMidiVal();
-        int topPosition = midiValToStaffLoc.get(topNote);
-
-        int bottomNote = contour.getBottomMidiVal();
-        int bottomPosition = midiValToStaffLoc.get(bottomNote);
-
-        int midwayPosition = (topPosition + bottomPosition) / 2;
-        int numSpacesFromBottom = midwayPosition / 2;
-
-        int newStaffYOffset = ((getHeight()/2) + (numSpacesFromBottom * spaceHeight) - getHeight());
-        scrollStaff(newStaffYOffset, animate);
-    }
-
-    //These are used by the ScrollAnimator do not remove!
-    public void setScrollOffsetY(int offset) {
-        this.scrollOffsetY = offset;
-    }
-
-    public int getScrollOffsetY() {
-        return this.scrollOffsetY;
-    }
 
     public int getCongratsTextAlpha() {
         return congratsTextAlpha;

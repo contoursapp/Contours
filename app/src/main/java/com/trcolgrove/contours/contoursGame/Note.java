@@ -1,10 +1,12 @@
 package com.trcolgrove.contours.contoursGame;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.support.annotation.IntDef;
 
 import com.trcolgrove.contours.accessors.NoteAccessor;
@@ -73,8 +75,10 @@ public class Note {
     private Paint notePaint = new Paint();
     private Paint ripplePaint = new Paint();
     private Paint cursorPaint = new Paint();
+    private Rect noteRect;
 
     private int color;
+    private Bitmap noteBitmap;
 
     private static final Map<Integer, Integer> noteScaleDegs = Collections.unmodifiableMap(
             new TreeMap<Integer, Integer>() {{
@@ -137,7 +141,6 @@ public class Note {
         scaleDegree = noteScaleDegs.get(noteName);
 
         notePaint = new Paint();
-        notePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
 
         color = context.getResources().getColor(DrawingUtils.keyColors[scaleDegree]);
 
@@ -155,6 +158,8 @@ public class Note {
         this.xPos = x;
         this.yPos = y;
         this.radius = radius;
+        noteBitmap = getNoteBitMap(radius);
+        noteRect = new Rect(x-radius, y-radius, x+radius, y+radius);
     }
 
     public int getColor() {
@@ -175,15 +180,15 @@ public class Note {
             DrawingUtils.drawTriangle(canvas, new Point(xPos - radius, yPos - (radius * 2)),
                     new Point(xPos, yPos - radius),
                     new Point(xPos + radius, yPos - (radius * 2)), cursorPaint);
+            if(alpha == 255) {
+                canvas.drawCircle(xPos, yPos, radius, notePaint);
+            }
         }
 
-        canvas.drawCircle(xPos, yPos, radius, notePaint);
-        notePaint.setColor(DrawingUtils.lighter(color, 0.7));
-        notePaint.setAlpha(alpha);
-        canvas.drawCircle(xPos, yPos, ((radius * 2) / 3), notePaint);
+        notePaint.clearShadowLayer();
+        canvas.drawBitmap(noteBitmap, null, noteRect, notePaint);
 
         drawRipple(canvas);
-        notePaint.clearShadowLayer();
     }
 
     /**
@@ -212,7 +217,6 @@ public class Note {
         rippleAlphaAnim.start(); */
     }
 
-
     /**
      * Draw the ripple effect for this note object
      * @param canvas The canvas on which to draw the ripple
@@ -220,6 +224,29 @@ public class Note {
     private void drawRipple(Canvas canvas) {
         ripplePaint.setAlpha(rippleAlpha);
         canvas.drawCircle(xPos, yPos, rippleRadius, ripplePaint);
+    }
+
+    /* Maintain a bitmap of the note for optomization
+     * avoid expensive anti-alias calls */
+    private Bitmap getNoteBitMap(int radius) {
+        final Bitmap output = Bitmap.createBitmap(radius*2,
+                radius*2, Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(output);
+
+        notePaint.setAntiAlias(true);
+
+        int x = canvas.getWidth()/2;
+        int y = canvas.getHeight()/2;
+        notePaint.setColor(color);
+        notePaint.setAlpha(255);
+
+        canvas.drawCircle(x, y, radius, notePaint);
+        notePaint.setColor(DrawingUtils.lighter(color, 0.7));
+        notePaint.setAlpha(255);
+        canvas.drawCircle(x, y, ((radius * 2) / 3), notePaint);
+
+        notePaint.setAntiAlias(false);
+        return output;
     }
 
     public int getMidiValue() {
