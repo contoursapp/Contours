@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.PathShape;
 
 import com.trcolgrove.contours.R;
 
@@ -75,6 +77,28 @@ public class DrawingUtils {
         Point c = new Point(x - triOffset, y - height);
 
         drawTriangle(canvas, a, b ,c, paint);
+    }
+
+    public static ShapeDrawable getParallogramDrawable(int color) {
+        Path shapePath = new Path();
+        shapePath.moveTo(0, 200);
+        shapePath.lineTo(500, 200);
+        shapePath.lineTo(600, 0);
+        shapePath.lineTo(100, 0);
+        shapePath.lineTo(0, 200);
+        shapePath.close();
+
+
+        PathShape parallelogram = new PathShape(shapePath, 600, 200);
+        ShapeDrawable paraDrawable = new ShapeDrawable(parallelogram);
+
+        Paint paraPaint = new Paint();
+        paraPaint.setColor(color);
+        paraPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+
+        paraDrawable.getPaint().set(paraPaint);
+
+        return paraDrawable;
     }
 
 

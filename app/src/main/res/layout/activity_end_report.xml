@@ -23,8 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="70"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
         <RelativeLayout android:id="@+id/total_score_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -42,15 +41,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
+                android:textStyle="italic"
                 android:text="@string/total_string_text"
                 android:textSize="38sp"
                 android:layout_toRightOf="@id/purple_note"
-                android:layout_toEndOf="@id/purple_note"
-                />
+                android:layout_toEndOf="@id/purple_note" />
             <TextView android:id="@+id/total_score_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
+                android:textStyle="italic"
                 android:text="150493"
                 android:textSize="38sp"
                 android:layout_toRightOf="@id/total_score_label"
@@ -73,16 +73,18 @@
             <TextView android:id="@+id/total_time_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:text="@string/total_time_text"
-                android:textSize="38sp"
                 android:layout_toRightOf="@id/blue_note"
-                android:layout_toEndOf="@id/blue_note"/>
+                android:layout_toEndOf="@id/blue_note"
+                android:textColor="@color/white"
+                android:textStyle="italic"
+                android:text="@string/total_time_text"
+                android:textSize="38sp" />
             <TextView android:id="@+id/total_time_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:text="3.56"
+                android:textStyle="italic"
                 android:textSize="38sp"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@id/total_time_label"
@@ -101,23 +103,25 @@
                 android:src="@drawable/green_note"
                 android:scaleType="fitStart"
                 />
-            <TextView android:id="@+id/notes_hit_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:text="@string/notes_hit_text"
-                android:textSize="38sp"
-                android:layout_toRightOf="@id/green_note"
-                android:layout_toEndOf="@id/green_note"/>
-            <TextView android:id="@+id/notes_hit_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:text="67"
-                android:textSize="38sp"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@id/notes_hit_label"
-                android:layout_toEndOf="@id/notes_hit_label" />
+                <TextView android:id="@+id/notes_hit_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="@string/notes_hit_text"
+                    android:textSize="38sp"
+                    android:textStyle="italic"
+                    android:layout_toRightOf="@id/green_note"
+                    android:layout_toEndOf="@id/green_note"/>
+                <TextView android:id="@+id/notes_hit_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="67"
+                    android:textSize="38sp"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@id/notes_hit_label"
+                    android:layout_toEndOf="@id/notes_hit_label"
+                    android:textStyle="italic"/>
         </RelativeLayout>
         <RelativeLayout android:id="@+id/accuracy_layout"
             android:layout_width="match_parent"
@@ -138,6 +142,7 @@
                 android:textColor="@color/white"
                 android:text="@string/accuracy_text"
                 android:textSize="38sp"
+                android:textStyle="italic"
                 android:layout_toRightOf="@id/red_note"
                 android:layout_toEndOf="@id/red_note"/>
             <TextView android:id="@+id/accuracy_value"
@@ -148,8 +153,8 @@
                 android:textSize="38sp"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@id/accuracy_label"
-                android:layout_toEndOf="@id/accuracy_label" />
-
+                android:layout_toEndOf="@id/accuracy_label"
+                android:textStyle="italic"/>
         </RelativeLayout>
     </LinearLayout>
 

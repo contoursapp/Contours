@@ -1,8 +1,10 @@
 package com.trcolgrove.contours.activities;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.TypedValue;
@@ -92,6 +94,7 @@ public class EndReportActivity extends ActionBarActivity {
 
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void performIntroAnimations() {
         RelativeLayout totalScoreLayout = (RelativeLayout) findViewById(R.id.total_score_layout);
         RelativeLayout totalTimeLayout = (RelativeLayout) findViewById(R.id.total_time_layout);

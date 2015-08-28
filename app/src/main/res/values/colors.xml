@@ -25,5 +25,5 @@
     <color name="light_grey">#8c8b8b8b</color>
     <color name="purple_transparent">#509c15ff</color>
     <color name="blue_transparent">#720034ff</color>
-
+    <color name="easy_button_ripple">#ffe37cff</color>
 </resources>

@@ -44,8 +44,8 @@ public class ContoursGameView extends SurfaceView {
 
     private int staffMargin = DrawingUtils.dpToPixels(32, getContext());
 
-    private Drawable[] octaveDividerDrawables = {getResources().getDrawable(R.drawable.octave_1), getResources().getDrawable(R.drawable.octave_2),
-            getResources().getDrawable(R.drawable.octave_3)};
+
+    Drawable bg = getResources().getDrawable(R.drawable.gradient_background);
 
     //object to keep track of score, multiplier and other performance data
     private static ScoreKeeper scoreKeeper;
@@ -86,6 +86,7 @@ public class ContoursGameView extends SurfaceView {
     private Paint textPaint = new Paint();
     private Paint keySelectPaint = new Paint();
     private final Rect textBounds = new Rect();
+    private Paint octavePaint;
 
     private TweenManager tweenManager;
     //using the tween library instead of animators so I dont have to invoke the uithread?
@@ -112,6 +113,16 @@ public class ContoursGameView extends SurfaceView {
 
         scrollOffsetY = 0;
 
+        keySelectPaint.setColor(getResources().getColor(R.color.red));
+        keySelectPaint.setAlpha(noteAlpha);
+        keySelectPaint.setStyle(Paint.Style.FILL);
+
+        octavePaint = new Paint();
+        octavePaint.setColor(getResources().getColor(R.color.indigo));
+
+        staffPaint.setStrokeWidth(lineStrokeWidth);
+        staffPaint.setColor(Color.WHITE);
+
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ContoursGameView, 0, 0);
             topMidiNote = a.getInt(R.styleable.ContoursGameView_topNote, defaultTopNote);
@@ -131,6 +142,7 @@ public class ContoursGameView extends SurfaceView {
         scoreKeeper = new ContoursScoreKeeper(SystemClock.elapsedRealtime());
         this.setDrawingCacheEnabled(true);
         this.buildDrawingCache();
+
 
         setContour(contours.get(contourIndex));
     }
@@ -187,7 +199,7 @@ public class ContoursGameView extends SurfaceView {
         ValueAnimator noteAnimOut = ObjectAnimator.ofInt(this, "noteAlpha", 255, 0);
         noteAnimOut.setDuration(transitionMilis / 2);
         ValueAnimator noteAnimIn = ObjectAnimator.ofInt(this, "noteAlpha", 0, 255);
-        noteAnimIn.setDuration(transitionMilis/2);
+        noteAnimIn.setDuration(transitionMilis / 2);
 
         transitionAnims.setInterpolator(new AccelerateDecelerateInterpolator());
         transitionAnims.playTogether(textAnim, noteAnimOut);
@@ -387,8 +399,6 @@ public class ContoursGameView extends SurfaceView {
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawARGB(255, 0, 0, 0);
-        Drawable bg = getResources().getDrawable(R.drawable.gradient_background);
         bg.setBounds(0, 0, getWidth(), getHeight());
         bg.draw(canvas);
 
@@ -405,25 +415,27 @@ public class ContoursGameView extends SurfaceView {
         drawCongratsText(canvas);
 
         if(contour.getCursorPosition() == 0) {
-            keySelectPaint.setColor(getResources().getColor(R.color.red));
-            keySelectPaint.setAlpha(noteAlpha);
-            keySelectPaint.setStyle(Paint.Style.FILL);
-            Note firstNote = contour.getNotes().get(0);
-            int midiValue = firstNote.getMidiValue();
-            int staffLoc = midiValToStaffLoc.get(midiValue);
-            int keySelectorX = getKeyXCoordinate(staffLoc);
-            int triangleOffset = spaceHeight/2;
-            int arrowWidth = spaceHeight;
-            int arrowHeight = spaceHeight/2;
-            DrawingUtils.drawArrow(canvas,
-                    keySelectorX,
-                    getHeight(),
-                    arrowHeight,
-                    arrowWidth,
-                    keySelectPaint
-            );
-        }
+            drawKeySelector(canvas);
 
+        }
+    }
+
+    private void drawKeySelector(Canvas canvas) {
+
+        Note firstNote = contour.getNotes().get(0);
+        int midiValue = firstNote.getMidiValue();
+        int staffLoc = midiValToStaffLoc.get(midiValue);
+        int keySelectorX = getKeyXCoordinate(staffLoc);
+        int triangleOffset = spaceHeight/2;
+        int arrowWidth = spaceHeight;
+        int arrowHeight = spaceHeight/2;
+        DrawingUtils.drawArrow(canvas,
+                keySelectorX,
+                getHeight(),
+                arrowHeight,
+                arrowWidth,
+                keySelectPaint
+        );
     }
 
     private void drawCongratsText(Canvas canvas) {
@@ -441,14 +453,9 @@ public class ContoursGameView extends SurfaceView {
     }
 
     private void drawOctaveDividers(Canvas canvas) {
-        for(int i = 0; i < 3; i++) {
-            int yValBottom = getStaffPositionYCoordinate(i*7);
-            int yValTop = getStaffPositionYCoordinate((i+1)*7);
-            Drawable octaveDrawable = octaveDividerDrawables[i];
-            octaveDrawable.setAlpha(150);
-            octaveDrawable.setBounds(0, yValTop, getWidth(), yValBottom);
-            octaveDrawable.draw(canvas);
-        }
+        int yValBottom = getStaffPositionYCoordinate(7);
+        int yValTop = getStaffPositionYCoordinate(14);
+        canvas.drawRect(0, yValTop, getWidth(), yValBottom, octavePaint);
     }
 
 
@@ -490,8 +497,6 @@ public class ContoursGameView extends SurfaceView {
     private void drawStaff(Canvas canvas) {
 
         spaceHeight = getSpaceHeight();
-        staffPaint.setStrokeWidth(lineStrokeWidth);
-        staffPaint.setColor(Color.WHITE);
 
         for(int i = 0; i < staffPositionCount/2; i++) {
             int yVal = getStaffPositionYCoordinate(i * 2);

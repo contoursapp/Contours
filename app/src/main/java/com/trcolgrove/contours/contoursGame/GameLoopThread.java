@@ -2,6 +2,7 @@ package com.trcolgrove.contours.contoursGame;
 
 import android.annotation.SuppressLint;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import aurelienribon.tweenengine.TweenManager;
 
@@ -30,13 +31,22 @@ public class GameLoopThread extends Thread {
     @Override
     public void run() {
 
+        int frames = 0;
+        long lastSec = System.currentTimeMillis();
         long ticksPS = 1000 / FPS;
         long startTime;
         long sleepTime;
         long lastTime = 0;
         while (running) {
+            frames++;
             Canvas c = null;
             startTime = System.currentTimeMillis();
+            if(startTime > lastSec + 1000) {
+                Log.i("FPS:", Integer.toString(frames));
+                frames = 0;
+                lastSec = startTime;
+            }
+
             final float delta = (startTime - lastTime)/1000f;
             try {
                 c = contoursGameView.getHolder().lockCanvas();
