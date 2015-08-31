@@ -159,12 +159,12 @@ public abstract class PianoKey {
     }
 
     private void _press(int midiVal) {
-        PdBase.sendList("note", midiVal, 127);
+        PdBase.sendList("note", midiVal, 95);
         EventBus.getDefault().post(new NoteEvent(midiVal));
     }
 
     private void _unpress(int midiVal) {
-        PdBase.sendList("note", midiVal, 0);
+       // PdBase.sendList("note", midiVal, 0);
     }
 
     public int getNoteValue() {

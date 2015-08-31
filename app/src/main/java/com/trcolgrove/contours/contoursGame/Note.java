@@ -201,10 +201,12 @@ public class Note {
     }
 
     private void startRipple(TweenManager tweenManager) {
+
         rippleAlpha = 255;
         rippleRadius = radius;
-        Tween.to(this, NoteAccessor.RIPPLE_ALPHA, 1f).target(0).ease(Circ.OUT).start(tweenManager);
-        Tween.to(this, NoteAccessor.RIPPLE_RADIUS, 1f).target(300).ease(Circ.OUT).start(tweenManager);
+        Tween.to(this, NoteAccessor.RIPPLE_ALPHA, 1.5f).target(0).ease(Circ.OUT).start(tweenManager);
+        Tween.to(this, NoteAccessor.RIPPLE_RADIUS, 1.5f).target(300).ease(Circ.OUT).start(tweenManager);
+
 
         /*
         ValueAnimator rippleRadiusAnim = ObjectAnimator.ofInt(this, "rippleRadius", radius, 300);
@@ -214,7 +216,8 @@ public class Note {
         ValueAnimator rippleAlphaAnim = ObjectAnimator.ofInt(this, "rippleAlpha", 255, 0);
         rippleAlphaAnim.setInterpolator(new LinearInterpolator());
         rippleAlphaAnim.setDuration(500);
-        rippleAlphaAnim.start(); */
+        rippleAlphaAnim.start();
+        */
     }
 
     /**

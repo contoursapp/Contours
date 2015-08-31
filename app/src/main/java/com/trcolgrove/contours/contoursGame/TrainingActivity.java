@@ -1,17 +1,21 @@
 package com.trcolgrove.contours.contoursGame;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.usb.UsbDevice;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
@@ -24,10 +28,10 @@ import android.widget.ViewSwitcher;
 
 import com.trcolgrove.colorfulPiano.Piano;
 import com.trcolgrove.contours.R;
+import com.trcolgrove.contours.activities.EndReportActivity;
 import com.trcolgrove.contours.events.GameCompleteEvent;
 import com.trcolgrove.contours.events.NoteEvent;
 import com.trcolgrove.contours.events.ScoreEvent;
-import com.trcolgrove.contours.activities.EndReportActivity;
 
 import org.puredata.android.io.AudioParameters;
 import org.puredata.android.io.PdAudio;
@@ -62,7 +66,10 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     private String patchFilePath;
     private MidiInputDevice midiIn;
 
+    private PowerManager pm;
+    PowerManager.WakeLock cpuLock;
 
+    private String TAG = "TrainingActivity";
     @Override
     public void onDeviceAttached(@NonNull UsbDevice usbDevice) {
         // deprecated method.
@@ -161,8 +168,13 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         PdAudio.startAudio(this);
         EventBus.getDefault().register(this);
+        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        cpuLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "wake lock");
+        cpuLock.acquire();
     }
 
     @Override
@@ -170,6 +182,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         super.onStop();
         PdAudio.stopAudio();
         EventBus.getDefault().unregister(this);
+        cpuLock.release();
     }
 
     public void onEvent(final NoteEvent event) {
@@ -224,6 +237,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         protected Void doInBackground(File... dirs) {
 
             for(File dir : dirs) {
+                Log.i(TAG, "UNZIPPING BIETCH: " + dir);
                 try {
                     IoUtils.extractZipResource(getResources().openRawResource(R.raw.testpatch), dir, true);
                 } catch (IOException e) {
@@ -235,6 +249,12 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         }
 
         protected void onPostExecute(Void v) {
+
+            try {
+                PdBase.openPatch(patchFilePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             progressBar.setVisibility(View.GONE);
             chronometer.setBase(SystemClock.elapsedRealtime());
             chronometer.start();
@@ -309,7 +329,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
             PdDispatcher dispatcher = new PdUiDispatcher();
             PdBase.setReceiver(dispatcher);
             patchFilePath = patchFile.getAbsolutePath();
-            PdBase.openPatch(patchFilePath);
+
     }
 
 

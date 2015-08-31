@@ -1,7 +1,11 @@
 package com.trcolgrove.contours.contoursGame;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Canvas;
+import android.os.BatteryManager;
 import android.util.Log;
 
 import aurelienribon.tweenengine.TweenManager;
@@ -15,13 +19,24 @@ import aurelienribon.tweenengine.TweenManager;
 public class GameLoopThread extends Thread {
     private ContoursGameView contoursGameView;
     private boolean running = false;
-    static final long FPS = 48;
+    static long FPS = 60;
     private TweenManager tweenManager;
+    private boolean dropNextFrame;
 
     public GameLoopThread(ContoursGameView contoursGameView, TweenManager tweenManager) {
         this.contoursGameView = contoursGameView;
         this.tweenManager = tweenManager;
+        if(!connectedToPower(contoursGameView.getContext())) {
+            FPS = 40;
+        }
     }
+
+    public static boolean connectedToPower(Context context) {
+        Intent intent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+        return plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB;
+    }
+
 
     public void setRunning(boolean run) {
         running = run;
@@ -37,6 +52,7 @@ public class GameLoopThread extends Thread {
         long startTime;
         long sleepTime;
         long lastTime = 0;
+
         while (running) {
             frames++;
             Canvas c = null;
@@ -50,9 +66,14 @@ public class GameLoopThread extends Thread {
             final float delta = (startTime - lastTime)/1000f;
             try {
                 c = contoursGameView.getHolder().lockCanvas();
+
                 synchronized (contoursGameView.getHolder()) {
                     tweenManager.update(delta);
-                    contoursGameView.onDraw(c);
+                    if(contoursGameView != null) {
+                        contoursGameView.onDraw(c);
+                    } else {
+                        return;
+                    }
                 }
             } finally {
                 if (c != null) {
@@ -63,8 +84,7 @@ public class GameLoopThread extends Thread {
             try {
                 if (sleepTime > 0) {
                     sleep(sleepTime);
-                }
-                else {
+                } else {
                     sleep(10);
                 }
             } catch (Exception e) {}

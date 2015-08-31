@@ -14,6 +14,7 @@ import com.trcolgrove.contours.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -41,6 +42,8 @@ public class Piano extends View {
     private ArrayList<PianoKey> drawKeys;
     private TreeMap<Integer, Touch> touches;
     private int keyCount;
+
+    private Map<Integer, MotionEvent> simulatedTouches; //lol
 
     private Rect drawingRect;
     private static final int bottom_note = 48;
@@ -87,6 +90,8 @@ public class Piano extends View {
             }
         }
         drawKeys.addAll(blackKeys);
+
+        simulatedTouches = new TreeMap<>();
     }
 
     private boolean isBlackKey(int note_val){
@@ -123,13 +128,16 @@ public class Piano extends View {
 
     public void noteOn(int midiVal, int velocity) {
         PianoKey key = getPianoKeyByMidiVal(midiVal);
+
         key.press(midiVal);
     }
 
     public void noteOff(int midiVal, int velocity){
         PianoKey key = getPianoKeyByMidiVal(midiVal);
+
         key.unpress();
     }
+
 
     public interface PianoKeyListener{
         public void keyPressed(int id, int action);
@@ -177,11 +185,14 @@ public class Piano extends View {
         }
 
         private void pushKeyDown(MotionEvent event) {
+
             final int action = event.getAction();
             final int pointerIndex = (action & MotionEvent.ACTION_POINTER_INDEX_MASK)
                     >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+
             final int pointerId = event.getPointerId(pointerIndex);
             PianoKey key = isPressingKey(event.getX(pointerIndex), event.getY(pointerIndex));
+
             if (!touches.containsKey(pointerId) && key != null) {
                 Touch touch = new Touch();
                 touch.press(key, bottom_note + key.getNoteValue());

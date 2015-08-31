@@ -52,10 +52,10 @@ public class AsyncHttpRequest extends AsyncTask<NameValuePair, Integer, Integer>
 
     @Override
     protected Integer doInBackground(NameValuePair... params) {
-        return makePostRequest(params);
+        return makeRequest(params);
     }
 
-    private Integer makePostRequest(NameValuePair... params) {
+    private Integer makeRequest(NameValuePair... params) {
         HttpClient httpClient = new DefaultHttpClient();
         HttpUriRequest httpRequest;
 

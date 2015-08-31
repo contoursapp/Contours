@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -48,6 +49,8 @@ public class ContoursGameView extends SurfaceView {
 
     private int congratsTextAlpha = 0;
     private int noteAlpha = 255;
+
+    private PowerManager pm;
 
     // midi-poisition mapping. For now only C major supported. Essentially this is a util to
     // figure out where on the staff each midi note should map... needs more robust implementation
@@ -118,7 +121,7 @@ public class ContoursGameView extends SurfaceView {
 
         staffPaint.setStrokeWidth(lineStrokeWidth);
         staffPaint.setColor(Color.WHITE);
-
+        staffPaint.setAlpha(222);
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ContoursGameView, 0, 0);
             topMidiNote = a.getInt(R.styleable.ContoursGameView_topNote, defaultTopNote);
@@ -141,6 +144,7 @@ public class ContoursGameView extends SurfaceView {
 
         this.contour = contours.get(contourIndex);
 
+
     }
 
 
@@ -152,7 +156,7 @@ public class ContoursGameView extends SurfaceView {
         textAnim.setDuration(transitionMilis);
         textAnim.setInterpolator(new AccelerateDecelerateInterpolator());
         transitioning = true;
-        textPaint.setColor(Color.RED);
+        textPaint.setColor(getResources().getColor(R.color.pink));
 
         textAnim.addListener(new Animator.AnimatorListener() {
             @Override
@@ -245,9 +249,8 @@ public class ContoursGameView extends SurfaceView {
      * initialize the main game loop
      */
     private void initGameLoop(){
-        gameLoopThread = new GameLoopThread(this, tweenManager);
-        gameLoopThread.setPriority(Thread.MAX_PRIORITY);
         SurfaceHolder holder = getHolder();
+        final ContoursGameView self = this;
         holder.addCallback(new SurfaceHolder.Callback() {
 
             @Override
@@ -267,8 +270,11 @@ public class ContoursGameView extends SurfaceView {
 
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
+                gameLoopThread = new GameLoopThread(self, tweenManager);
+                gameLoopThread.setPriority(Thread.MAX_PRIORITY);
                 gameLoopThread.setRunning(true);
                 gameLoopThread.start();
+
             }
 
             @Override
@@ -276,6 +282,7 @@ public class ContoursGameView extends SurfaceView {
                                        int width, int height) {
             }
         });
+
     }
 
     /**
@@ -339,6 +346,7 @@ public class ContoursGameView extends SurfaceView {
 
         List<Note> notes = contour.getNotes();
         Note first = notes.get(contour.getCursorPosition());
+
         if(first.getMidiValue() ==  midiValue){
             if((notes.size() - 1) == contour.getCursorPosition()) {
                 scoreKeeper.updateScore(ContoursScoreKeeper.CONTOUR_COMPLETE);
@@ -390,6 +398,11 @@ public class ContoursGameView extends SurfaceView {
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        //To prevent the case where surface is destroyed in the middle of the game loop
+        if(canvas == null) {
+            return;
+        }
+
         canvas.drawARGB(0xFF,0 ,0 ,0);
 
         drawOctaveDividers(canvas);
@@ -419,7 +432,7 @@ public class ContoursGameView extends SurfaceView {
         int staffLoc = midiValToStaffLoc.get(midiValue);
         int keySelectorX = getKeyXCoordinate(staffLoc);
         int arrowWidth = spaceHeight;
-        int arrowHeight = spaceHeight/2;
+        int arrowHeight = spaceHeight / 2;
         DrawingUtils.drawArrow(canvas,
                 keySelectorX,
                 getHeight(),
