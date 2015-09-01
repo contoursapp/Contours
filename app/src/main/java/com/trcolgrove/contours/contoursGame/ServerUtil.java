@@ -66,7 +66,7 @@ public class ServerUtil {
         NameValuePair userId, totalScore, elapsedTime, notesHit, notesMissed, longestStreak, averageStreak, date;
         if (isConnected()) {
             try {
-                userId = new BasicNameValuePair("user_id", "android_man");
+                userId = new BasicNameValuePair("user_id", dm.getUserAlias());
                 totalScore = new BasicNameValuePair("total_score", Integer.toString(scoreSet.getTotal_score()));
                 elapsedTime = new BasicNameValuePair("elapsed_time", Long.toString(scoreSet.getElapsed_time()));
                 notesHit = new BasicNameValuePair("notes_hit", Integer.toString(scoreSet.getNotes_hit()));
@@ -111,7 +111,7 @@ public class ServerUtil {
         openDataManagerIfClosed();
 
         if(isConnected()) {
-            NameValuePair userId = new BasicNameValuePair("user_id", "android_man");
+            NameValuePair userId = new BasicNameValuePair("user_id", dm.getUserAlias());
             NameValuePair question = new BasicNameValuePair("question", surveyResponse.getQuestion());
             NameValuePair response = new BasicNameValuePair("response", surveyResponse.getResponse().toString());
             NameValuePair date = new BasicNameValuePair("date", surveyResponse.getDate().toString());
@@ -187,6 +187,7 @@ public class ServerUtil {
             openDataManagerIfClosed();
             QueryBuilder qb = dm.scoreSetDao.queryBuilder().where(ScoreSetDao.Properties.Uploaded.eq(false));
             List<ScoreSet> scPendingUpload = qb.list();
+
             qb = dm.surveyResponseDao.queryBuilder().where(SurveyResponseDao.Properties.Uploaded.eq(false));
             List<SurveyResponse> srPendingUpload = qb.list();
             closeDataManagerIfFinished();

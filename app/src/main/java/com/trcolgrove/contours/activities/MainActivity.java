@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.trcolgrove.contours.R;
 import com.trcolgrove.contours.contoursGame.DataManager;
@@ -28,8 +29,19 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         difficultyMenu = (LinearLayout) findViewById(R.id.difficulty_menu);
+        TextView aliasText = (TextView) findViewById(R.id.alias_text);
+
         DataManager dm = new DataManager(getApplicationContext());
+        String alias = dm.getUserAlias();
+        if(alias == null) {
+            Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(i);
+            this.finish();
+        }
+
+        aliasText.setText("Alias: " + alias);
         ServerUtil serverUtil = new ServerUtil(getApplicationContext());
         serverUtil.uploadPendingData();
     }
@@ -78,7 +90,6 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

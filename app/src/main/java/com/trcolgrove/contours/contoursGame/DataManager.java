@@ -1,6 +1,7 @@
 package com.trcolgrove.contours.contoursGame;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.trcolgrove.daoentries.DaoMaster;
@@ -30,12 +31,13 @@ public class DataManager {
     private DaoMaster.DevOpenHelper helper;
     private Context context;
     private Integer activeRequests;
-    private final Semaphore available = new Semaphore(1);
 
+    private final Semaphore available = new Semaphore(1);
 
     public ScoreSetDao scoreSetDao;
     public SurveyResponseDao surveyResponseDao;
 
+    public static final String PREFS_NAME = "PrefsFile";
 
     public DataManager(Context context) {
         this.context = context;
@@ -69,10 +71,23 @@ public class DataManager {
         daoSession = daoMaster.newSession();
         scoreSetDao = daoSession.getScoreSetDao();
         surveyResponseDao = daoSession.getSurveyResponseDao();
+
     }
 
     public boolean isOpen() {
         return (db != null);
+    }
+
+    public String getUserAlias() {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+        return preferences.getString("alias", null);
+    }
+
+    public void setUserAlias(String alias) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("alias", alias);
+        editor.apply();
     }
 
     //Functions for concurrent access

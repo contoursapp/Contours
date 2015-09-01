@@ -89,7 +89,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@id/total_time_label"
                 android:layout_toEndOf="@id/total_time_label" />
-        </RelativeLayout>
         <RelativeLayout android:id="@+id/notes_hit_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"

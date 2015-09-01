@@ -36,4 +36,10 @@
     <string name="contours_logo_img_desc">contours logo</string>
     <string name="footer_text">Developed by Thomas Colgrove</string>
     <string name="tufts_logo_description">tufts logo</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="select_alias_text">Welcome! Since this is your first time using the Contours
+    application, please provide an alphanumeric alias of 5-12 characters. This alias will be used to identify
+        you in test results.</string>
+    <string name="alias_text">Alias:</string>
+    <string name="login_done_text">DONE</string>
 </resources>
