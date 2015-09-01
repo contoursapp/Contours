@@ -28,8 +28,11 @@ import com.trcolgrove.daoentries.ScoreSet;
 import com.trcolgrove.daoentries.SurveyResponse;
 
 import java.math.RoundingMode;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 
 public class EndReportActivity extends ActionBarActivity {
@@ -136,7 +139,10 @@ public class EndReportActivity extends ActionBarActivity {
 
         long totalTime = getIntent().getLongExtra("total_time", -1);
         TextView totalTimeValue = (TextView) findViewById(R.id.total_time_value);
-        totalTimeValue.setText(Long.toString(totalTime));
+        Date date = new Date(totalTime);
+        DateFormat formatter = new SimpleDateFormat("mm:ss:SSS", Locale.ENGLISH);
+        String dateFormatted = formatter.format(date);
+        totalTimeValue.setText(dateFormatted);
 
         int notesHit = getIntent().getIntExtra("notes_hit", -1);
         TextView notesHitValue = (TextView) findViewById(R.id.notes_hit_value);

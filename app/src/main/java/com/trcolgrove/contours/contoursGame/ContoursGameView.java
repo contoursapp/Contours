@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -24,6 +25,7 @@ import com.trcolgrove.contours.accessors.NoteAccessor;
 import com.trcolgrove.contours.events.GameCompleteEvent;
 import com.trcolgrove.contours.util.DrawingUtils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +70,7 @@ public class ContoursGameView extends SurfaceView {
     private int spaceHeight; //the height of space between each staff line
     private Contour contour;
 
+    private String difficulty;
 
     //default staff values
     private static final int defaultBottomNote = 48;
@@ -135,8 +138,28 @@ public class ContoursGameView extends SurfaceView {
         initGameLoop();
         initStaff();
 
-        String[] contourStrings = getResources().getStringArray(R.array.easy_contours);
+        String difficulty = ((Activity) context).getIntent().getStringExtra("difficulty");
+        String[] contourStrings;
+
+        switch(difficulty) {
+            case "easy":
+                contourStrings = getResources().getStringArray(R.array.easy_contours);
+                break;
+            case "medium":
+                contourStrings = getResources().getStringArray(R.array.medium_contours);
+                break;
+            case "hard":
+                contourStrings = getResources().getStringArray(R.array.hard_contours);
+                break;
+            default:
+                contourStrings = getResources().getStringArray(R.array.easy_contours);
+                Log.e(TAG, "invalid difficulty, automatically setting to easy");
+        }
+
         contours = ContourFactory.getContoursFromStringArray(contourStrings, context);
+        Collections.shuffle(contours);
+        contours.subList(25, contours.size()).clear();
+
 
         scoreKeeper = new ContoursScoreKeeper(SystemClock.elapsedRealtime());
         this.setDrawingCacheEnabled(true);
@@ -351,6 +374,7 @@ public class ContoursGameView extends SurfaceView {
             if((notes.size() - 1) == contour.getCursorPosition()) {
                 scoreKeeper.updateScore(ContoursScoreKeeper.CONTOUR_COMPLETE);
                 if(contourIndex < contours.size()-1) {
+                    first.hit(tweenManager);
                     nextContour();
                 } else {
                     gameLoopThread.setRunning(false);

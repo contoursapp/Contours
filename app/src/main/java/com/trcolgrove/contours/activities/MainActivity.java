@@ -63,18 +63,21 @@ public class MainActivity extends ActionBarActivity {
 
     public void easyButtonClicked(View view) {
         Intent i = new Intent(getApplicationContext(), TrainingActivity.class);
+        i.putExtra("difficulty", "easy");
         startActivity(i);
         this.finish();
     }
 
     public void mediumButtonClicked(View view) {
         Intent i = new Intent(getApplicationContext(), TrainingActivity.class);
+        i.putExtra("difficulty", "medium");
         startActivity(i);
         this.finish();
     }
 
     public void hardButtonClicked(View view) {
         Intent i = new Intent(getApplicationContext(), TrainingActivity.class);
+        i.putExtra("difficulty", "hard");
         startActivity(i);
         this.finish();
     }
