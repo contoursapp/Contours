@@ -121,9 +121,6 @@
         <item>A4,E4,B3,B3,B3</item>
         <item>B4,F4,C4,C4,C4</item>
         <item>C5,G4,D4,D4,D4</item>
-
-
-
     </string-array>
 
     <string-array name="medium_contours">

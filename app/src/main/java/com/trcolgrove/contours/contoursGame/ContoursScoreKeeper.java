@@ -26,7 +26,7 @@ public class ContoursScoreKeeper implements ScoreKeeper {
 
     private int streak = 0;
     private int longestStreak = 0;
-    private int averageStreak = 0;
+    private int numStreaks = 1;
 
     @IntDef({NOTE_HIT, NOTE_MISS, CONTOUR_COMPLETE})
     @Retention(RetentionPolicy.SOURCE)
@@ -113,7 +113,7 @@ public class ContoursScoreKeeper implements ScoreKeeper {
     }
 
     public int getAverageStreak() {
-        return averageStreak;
+        return ((notesHit+notesMissed)/(notesMissed+1));
     }
 
     /**
@@ -126,6 +126,7 @@ public class ContoursScoreKeeper implements ScoreKeeper {
     public Bundle getScoreBundle() {
         Bundle scoreBundle = new Bundle();
 
+        scoreBundle.putInt("average_streak", getAverageStreak());
         scoreBundle.putInt("total_score", score);
         scoreBundle.putLong("total_time", SystemClock.elapsedRealtime() - baseTime);
         scoreBundle.putInt("longest_streak", longestStreak);

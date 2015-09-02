@@ -63,7 +63,7 @@ public class ServerUtil {
 
         openDataManagerIfClosed();
 
-        NameValuePair userId, totalScore, elapsedTime, notesHit, notesMissed, longestStreak, averageStreak, date;
+        NameValuePair userId, totalScore, elapsedTime, notesHit, notesMissed, longestStreak, averageStreak, difficulty, date;
         if (isConnected()) {
             try {
                 userId = new BasicNameValuePair("user_id", dm.getUserAlias());
@@ -72,6 +72,7 @@ public class ServerUtil {
                 notesHit = new BasicNameValuePair("notes_hit", Integer.toString(scoreSet.getNotes_hit()));
                 notesMissed = new BasicNameValuePair("notes_missed", Integer.toString(scoreSet.getNotes_missed()));
                 longestStreak = new BasicNameValuePair("longest_streak", Integer.toString(scoreSet.getLongest_streak()));
+                difficulty = new BasicNameValuePair("difficulty", scoreSet.getDifficulty());
                 averageStreak = new BasicNameValuePair("average_streak", Integer.toString(scoreSet.getAverage_streak()));
                 date = new BasicNameValuePair("date", scoreSet.getDate().toString());
             } catch (NullPointerException ne) {
@@ -93,7 +94,7 @@ public class ServerUtil {
                 }
             });
             request.execute(userId, totalScore, elapsedTime, notesHit, notesMissed, longestStreak,
-                    averageStreak, date);
+                    averageStreak, difficulty, date);
         } else {
             scoreSet.setUploaded(false);
             dm.scoreSetDao.insertOrReplace(scoreSet);

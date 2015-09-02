@@ -11,6 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.AttributeSet;
@@ -158,7 +159,9 @@ public class ContoursGameView extends SurfaceView {
 
         contours = ContourFactory.getContoursFromStringArray(contourStrings, context);
         Collections.shuffle(contours);
-        contours.subList(25, contours.size()).clear();
+        if(contours.size() > 25) {
+            contours.subList(25, contours.size()).clear();
+        }
 
 
         scoreKeeper = new ContoursScoreKeeper(SystemClock.elapsedRealtime());
@@ -379,8 +382,10 @@ public class ContoursGameView extends SurfaceView {
                 } else {
                     gameLoopThread.setRunning(false);
                     gameLoopThread.interrupt();
+                    Bundle scoreBundle = scoreKeeper.getScoreBundle();
+                    scoreBundle.putString("difficulty", difficulty);
                     EventBus.getDefault().post(
-                            new GameCompleteEvent(scoreKeeper.getScoreBundle()));
+                            new GameCompleteEvent(scoreBundle));
                     return true;
                 }
             } else {
