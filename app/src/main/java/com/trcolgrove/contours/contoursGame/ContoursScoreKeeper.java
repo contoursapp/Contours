@@ -75,6 +75,7 @@ public class ContoursScoreKeeper implements ScoreKeeper {
     }
 
     private int contourComplete() {
+        noteHit();
         int scoreIncrement = Math.max(0, ((int)(((10000)) -
                 ((SystemClock.elapsedRealtime() - timeSinceContourStart)/1000)*250) * multiplier));
         incrementMultiplier();
