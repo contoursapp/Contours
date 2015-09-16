@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.os.BatteryManager;
-import android.util.Log;
 
 import aurelienribon.tweenengine.TweenManager;
 
@@ -58,7 +57,7 @@ public class GameLoopThread extends Thread {
             Canvas c = null;
             startTime = System.currentTimeMillis();
             if(startTime > lastSec + 1000) {
-                Log.i("FPS:", Integer.toString(frames));
+                //Log.i("FPS:", Integer.toString(frames));
                 frames = 0;
                 lastSec = startTime;
             }

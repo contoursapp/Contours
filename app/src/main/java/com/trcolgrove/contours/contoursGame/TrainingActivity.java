@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -237,7 +236,6 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         protected Void doInBackground(File... dirs) {
 
             for(File dir : dirs) {
-                Log.i(TAG, "UNZIPPING BIETCH: " + dir);
                 try {
                     IoUtils.extractZipResource(getResources().openRawResource(R.raw.testpatch), dir, true);
                 } catch (IOException e) {
@@ -324,7 +322,10 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
             int srate = Math.max(MIN_SAMPLE_RATE, AudioParameters.suggestSampleRate());
             PdAudio.initAudio(srate, 0, 2, 1, true);
             File dir = getFilesDir();
-            File patchFile = new File(dir, "base_sampler.pd");
+
+            //File patchFile = new File(dir, "base_sampler.pd");
+            File patchFile = new File(dir, "thereminpatch.pd");
+
             new resourcesLoader().execute(dir);
             PdDispatcher dispatcher = new PdUiDispatcher();
             PdBase.setReceiver(dispatcher);
