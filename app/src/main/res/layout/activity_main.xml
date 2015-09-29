@@ -25,48 +25,51 @@
             android:layout_height="0dp"
             android:layout_weight="60"
             android:orientation="vertical"
+            android:visibility="visible"
             android:gravity="center_horizontal">
-            <Button
+            <Button android:id="@+id/play_button"
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/play_button"
                 android:textColor="@color/white"
                 android:textSize="60sp"
                 android:text="@string/play_button_text"
                 android:onClick="playButtonClicked"
                 android:textAllCaps="false"
-                android:clickable="true"
-                android:id="@+id/play_button" />
-            <LinearLayout
+                android:clickable="true" />
+            <RelativeLayout android:id="@+id/difficulty_menu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:gravity="center_horizontal"
-                android:visibility="invisible"
-                android:orientation="horizontal"
-                android:id="@+id/difficulty_menu">
-                <Button
+                android:visibility="gone"
+                android:orientation="horizontal">
+                <Button android:id="@+id/easy_button"
                     android:layout_width="180dp"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
                     android:layout_marginTop="16dp"
                     android:layout_marginRight="24dp"
                     android:layout_marginEnd="24dp"
                     android:layout_marginLeft="24dp"
                     android:layout_marginStart="24dp"
+                    android:layout_marginBottom="4dp"
                     android:textSize="38sp"
                     android:textColor="@color/white"
                     android:background="@drawable/easy_button"
                     android:text="@string/easy_difficulty_text"
                     android:textAllCaps="false"
                     android:elevation="10dp"
-                    android:onClick="easyButtonClicked" />
-                <View
+                    android:onClick="difficultyButtonClicked" />
+                <View android:id="@+id/div1"
                     android:layout_width="1dp"
-                    android:layout_height="fill_parent"
-                    android:layout_marginTop="16dp"
+                    android:layout_height="0dp"
+                    android:layout_toRightOf="@id/easy_button"
+                    android:layout_alignTop="@id/easy_button"
+                    android:layout_alignBottom="@id/easy_button"
                     android:background="@android:color/white"/>
-                <Button
+                <Button android:id="@+id/medium_button"
                     android:layout_width="180dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -75,18 +78,22 @@
                     android:layout_marginEnd="24dp"
                     android:layout_marginLeft="24dp"
                     android:layout_marginStart="24dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_toRightOf="@id/div1"
                     android:textColor="@color/white"
                     android:background="@drawable/medium_button"
                     android:text="@string/medium_difficulty_text"
                     android:textAllCaps="false"
                     android:elevation="10dp"
-                    android:onClick="mediumButtonClicked" />
-                <View
+                    android:onClick="difficultyButtonClicked" />
+                <View android:id="@+id/div2"
                     android:layout_width="1dp"
                     android:layout_height="fill_parent"
-                    android:layout_marginTop="16dp"
-                    android:background="@android:color/white"/>
-                <Button
+                    android:background="@android:color/white"
+                    android:layout_toRightOf="@id/medium_button"
+                    android:layout_alignTop="@id/medium_button"
+                    android:layout_alignBottom="@id/medium_button"/>
+                <Button android:id="@+id/hard_button"
                     android:layout_width="180dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -96,14 +103,75 @@
                     android:layout_marginEnd="24dp"
                     android:layout_marginLeft="24dp"
                     android:layout_marginStart="24dp"
+                    android:layout_marginBottom="4dp"
                     android:background="@drawable/hard_button"
                     android:text="@string/hard_difficulty_text"
                     android:textAllCaps="false"
                     android:elevation="10dp"
-                    android:onClick="hardButtonClicked" />
-            </LinearLayout>
+                    android:onClick="difficultyButtonClicked"
+                    android:layout_toRightOf="@id/div2" />
+                <LinearLayout android:id="@+id/intervals"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:gravity="center"
+                    android:layout_below="@id/easy_button">
+                    <Button
+                        style="@style/SelectIntervalBtn"
+                        android:text="large interval"
+                        android:onClick="intervalButtonClicked"/>
+                    <Button
+                        style="@style/SelectIntervalBtn"
+                        android:text="medium interval"
+                        android:onClick="intervalButtonClicked"/>
+                    <Button
+                        style="@style/SelectIntervalBtn"
+                        android:text="small interval"
+                        android:onClick="intervalButtonClicked"/>
+                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
+        <RelativeLayout android:id="@+id/sound_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <TextView android:id="@+id/instrument_header"
+                style="@style/SoundSelect"
+                android:text="select a sound"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="64dp"/>
+            <View android:id="@+id/sound_div"
+                style="@style/ListDivider"
+                android:layout_below="@id/instrument_header"
+                android:layout_alignLeft="@id/instrument_header"
+                android:layout_alignRight="@id/instrument_header"
+                android:layout_marginBottom="24dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                android:layout_centerInParent="true"
+                android:layout_below="@id/sound_div">
+                <Button
+                    style="@style/SelectInstrumentBtn"
+                    android:text="sine"
+                    android:onClick="selectSoundBtnPress"/>
+                <Button
+                    style="@style/SelectInstrumentBtn"
+                    android:text="triangle"
+                    android:onClick="selectSoundBtnPress"/>
+                <Button
+                    style="@style/SelectInstrumentBtn"
+                    android:text="piano"
+                    android:onClick="selectSoundBtnPress"/>
+            </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
@@ -124,21 +192,12 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:text="Alias: Bob"
+            android:text="No Alias Found"
             android:id="@+id/alias_text"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:text="@string/footer_text"
-            android:id="@+id/dev_text"
+            android:layout_centerHorizontal="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            />
-    </RelativeLayout>
+            android:layout_alignParentBottom="true"/>
 
+    </RelativeLayout>
 </RelativeLayout>

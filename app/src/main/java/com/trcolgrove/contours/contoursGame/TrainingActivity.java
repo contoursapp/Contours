@@ -324,7 +324,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
             File dir = getFilesDir();
 
             //File patchFile = new File(dir, "base_sampler.pd");
-            File patchFile = new File(dir, "thereminpatch.pd");
+            File patchFile = new File(dir, "contours_patch.pd");
 
             new resourcesLoader().execute(dir);
             PdDispatcher dispatcher = new PdUiDispatcher();

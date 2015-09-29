@@ -153,9 +153,10 @@ public abstract class PianoKey {
         _press(midiVal);
     }
 
-    public void unpress() {
+    public void unpress(int midiVal) {
         midiKeyPressed = false;
         this.piano.postInvalidate();
+        _unpress(midiVal);
     }
 
     private void _press(int midiVal) {
@@ -165,7 +166,7 @@ public abstract class PianoKey {
     }
 
     private void _unpress(int midiVal) {
-       // PdBase.sendList("note", midiVal, 0);
+        PdBase.sendList("note", 0, midiVal, 0);
     }
 
     public int getNoteValue() {

@@ -14,7 +14,6 @@ import com.trcolgrove.contours.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -43,8 +42,6 @@ public class Piano extends View {
     private TreeMap<Integer, Touch> touches;
     private int keyCount;
 
-    private Map<Integer, MotionEvent> simulatedTouches; //lol
-
     private Rect drawingRect;
     private static final int bottom_note = 48;
 
@@ -72,7 +69,6 @@ public class Piano extends View {
 
         drawingRect = new Rect();
         pianoKeys = new PianoKey[keyCount];
-
         drawKeys = new ArrayList<>();
         ArrayList<PianoKey> blackKeys = new ArrayList<>();
 
@@ -90,8 +86,6 @@ public class Piano extends View {
             }
         }
         drawKeys.addAll(blackKeys);
-
-        simulatedTouches = new TreeMap<>();
     }
 
     private boolean isBlackKey(int note_val){
@@ -134,8 +128,7 @@ public class Piano extends View {
 
     public void noteOff(int midiVal, int velocity){
         PianoKey key = getPianoKeyByMidiVal(midiVal);
-
-        key.unpress();
+        key.unpress(midiVal);
     }
 
 
