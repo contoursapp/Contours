@@ -32,12 +32,9 @@ import com.trcolgrove.contours.events.GameCompleteEvent;
 import com.trcolgrove.contours.events.NoteEvent;
 import com.trcolgrove.contours.events.ScoreEvent;
 
-import org.puredata.android.io.AudioParameters;
 import org.puredata.android.io.PdAudio;
-import org.puredata.android.utils.PdUiDispatcher;
 import org.puredata.core.PdBase;
 import org.puredata.core.utils.IoUtils;
-import org.puredata.core.utils.PdDispatcher;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +51,6 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
                                             R.drawable.multiplierbg_5, R.drawable.multiplierbg_6,
                                             R.drawable.multiplierbg_7, R.drawable.multiplierbg_8};
 
-    private static final int MIN_SAMPLE_RATE = 44100;
     private Piano pianoView;
     private ContoursGameView gameView;
     private ProgressBar progressBar;
@@ -62,8 +58,10 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     private TextSwitcher scoreSwitcher;
     private TextSwitcher multiplierSwitcher;
     private TextView scoreIncrementText;
-    private String patchFilePath;
     private MidiInputDevice midiIn;
+    private Synth synth;
+    private String patchName;
+    private String sound;
 
     private PowerManager pm;
     PowerManager.WakeLock cpuLock;
@@ -168,7 +166,6 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     protected void onStart() {
         super.onStart();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         PdAudio.startAudio(this);
         EventBus.getDefault().register(this);
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -187,18 +184,25 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     public void onEvent(final NoteEvent event) {
         this.runOnUiThread(new Runnable() {
             public void run() {
-                boolean isFinished = gameView.processMidiInput(event.midiNote);
+                if (event.velocity == 0) {
+                    synth.noteOff(event.midiNote);
+                } else {
+                    synth.noteOn(event.midiNote, event.velocity);
+                    gameView.processMidiInput(event.midiNote);
+                }
             }
         });
     }
 
     public void onEvent(ScoreEvent event) {
-        scoreSwitcher.setText(Integer.toString(event.totalScore));
         multiplierSwitcher.setText("x" + Integer.toString(event.multiplier));
         if(android.os.Build.VERSION.SDK_INT > 16) {
             multiplierSwitcher.setBackground(getResources().getDrawable(multiplierBackgrounds[event.multiplier - 1]));
         }
-        displayScoreIncrement(event.scoreIncrement);
+        if(event.scoreIncrement != 0) {
+            scoreSwitcher.setText(Integer.toString(event.totalScore));
+            displayScoreIncrement(event.scoreIncrement);
+        }
     }
 
     public void onEvent(GameCompleteEvent gce) {
@@ -247,11 +251,11 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         }
 
         protected void onPostExecute(Void v) {
-
-            try {
-                PdBase.openPatch(patchFilePath);
-            } catch (IOException e) {
-                e.printStackTrace();
+            ((PdSynth) synth).init();
+            if(synth instanceof SubtractiveSynth) {
+                ((SubtractiveSynth) synth).setOsc(1, sound);
+            } else if(synth instanceof SamplerSynth) {
+                ((SamplerSynth) synth).setSound(sound);
             }
             progressBar.setVisibility(View.GONE);
             chronometer.setBase(SystemClock.elapsedRealtime());
@@ -267,7 +271,6 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         setContentView(R.layout.activity_training);
 
         pianoView = (Piano) findViewById(R.id.piano);
-        //staffScroller = (ScrollView) findViewById(R.id.staffScroller);
         gameView = (ContoursGameView) findViewById(R.id.staff);
         progressBar = (ProgressBar) findViewById(R.id.training_loader);
         chronometer = (Chronometer) findViewById(R.id.chronometer);
@@ -291,6 +294,9 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         multiplierSwitcher.setCurrentText("x1");
         scoreSwitcher.setCurrentText("0");
 
+        patchName = getIntent().getStringExtra("synth");
+        sound = getIntent().getStringExtra("sound");
+
         try {
             initPd();
         } catch (IOException e) {
@@ -302,37 +308,14 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         PdBase.sendList("soundfont", "set", "piano_1");
     }
 
-    public void setAnalogAge(View view) {
-        PdBase.sendMessage("soundfont", "set", "analog_age");
-    }
-
-    public void setEnigma(View view) {
-        PdBase.sendMessage("soundfont", "set", "enigma_flute");
-    }
-
-    public void setStrings(View view) {
-    }
-
-    public void setBanjo(View view) {
-        PdBase.sendMessage("soundfont", "set", "banjo_1");
-    }
-
     private void initPd() throws IOException {
-            AudioParameters.init(this);
-            int srate = Math.max(MIN_SAMPLE_RATE, AudioParameters.suggestSampleRate());
-            PdAudio.initAudio(srate, 0, 2, 1, true);
-            File dir = getFilesDir();
-
-            //File patchFile = new File(dir, "base_sampler.pd");
-            File patchFile = new File(dir, "contours_patch.pd");
-
-            new resourcesLoader().execute(dir);
-            PdDispatcher dispatcher = new PdUiDispatcher();
-            PdBase.setReceiver(dispatcher);
-            patchFilePath = patchFile.getAbsolutePath();
-
+        if(patchName.equals("contours_patch.pd")) {
+            synth = new SubtractiveSynth(patchName, this);
+        } else if(patchName.equals("base_sampler.pd")) {
+            synth = new SamplerSynth(patchName, this);
+        }
+        new resourcesLoader().execute(this.getFilesDir());
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

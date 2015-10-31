@@ -5,8 +5,10 @@ package com.trcolgrove.contours.events;
  */
 public class NoteEvent {
     public int midiNote;
+    public int velocity;
 
-    public NoteEvent(int midiNote) {
+    public NoteEvent(int midiNote, int velocity) {
         this.midiNote = midiNote;
+        this.velocity = velocity;
     }
 }

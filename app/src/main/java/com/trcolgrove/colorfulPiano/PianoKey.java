@@ -5,11 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
-import com.trcolgrove.contours.events.NoteEvent;
 import com.trcolgrove.contours.R;
-
-import org.puredata.core.PdBase;
+import com.trcolgrove.contours.events.NoteEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +31,6 @@ import de.greenrobot.event.EventBus;
  * Created by Thomas on 5/19/15.
  */
 public abstract class PianoKey {
-
 
     protected static final Map<Integer, Integer> key_positions;
     static {
@@ -67,6 +65,7 @@ public abstract class PianoKey {
     protected Rect colorRect;
     protected Rect mainRect;
 
+    private String synth;
     // Objects for subclasses to use for painting, just so they don't have to reallocate every time.
     protected Paint fillPaint;
     protected Paint strokePaint;
@@ -133,10 +132,15 @@ public abstract class PianoKey {
         return colorRect;
     }
 
+    public void setSynth(String synth) {
+        this.synth = synth;
+    }
+
+
     public void press(Touch touch, int midiVal) {
         this.touches.add(touch);
         this.piano.invalidate();
-        _press(midiVal);
+        _press(midiVal, 95);
     }
 
     public void unpress(Touch touch, int midiVal) {
@@ -144,13 +148,14 @@ public abstract class PianoKey {
         if (!getTouches()) {
             this.piano.invalidate();
         }
+        Log.d("PianoKey", "midival: " + midiVal);
         _unpress(midiVal);
     }
 
-    public void press(int midiVal) {
+    public void press(int midiVal, int velocity) {
         midiKeyPressed = true;
         this.piano.postInvalidate();
-        _press(midiVal);
+        _press(midiVal, velocity);
     }
 
     public void unpress(int midiVal) {
@@ -159,14 +164,13 @@ public abstract class PianoKey {
         _unpress(midiVal);
     }
 
-    private void _press(int midiVal) {
-        PdBase.sendList("note", 0, midiVal, 95);
-        //PdBase.sendList("note", midiVal, 95);
-        EventBus.getDefault().post(new NoteEvent(midiVal));
+    private void _press(int midiVal, int velocity) {
+        EventBus.getDefault().post(new NoteEvent(midiVal, velocity));
     }
 
     private void _unpress(int midiVal) {
-        PdBase.sendList("note", 0, midiVal, 0);
+        EventBus.getDefault().post(new NoteEvent(midiVal, 0));
+
     }
 
     public int getNoteValue() {

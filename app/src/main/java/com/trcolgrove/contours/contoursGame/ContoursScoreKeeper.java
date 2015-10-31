@@ -21,6 +21,8 @@ public class ContoursScoreKeeper implements ScoreKeeper {
     private long baseTime;
     private long timeSinceContourStart;
 
+    private static final int BASE_SCORE = 100;
+
     private int notesHit = 0;
     private int notesMissed = 0;
 
@@ -45,42 +47,34 @@ public class ContoursScoreKeeper implements ScoreKeeper {
     public void updateScore(@GameEvent int gameInfo) {
         int scoreIncrement = 0;
         if(gameInfo == NOTE_HIT) {
-            scoreIncrement = noteHit();
-            score += scoreIncrement;
+            noteHit();
         } else if(gameInfo == NOTE_MISS) {
-            scoreIncrement = noteMiss();
-            score += scoreIncrement;
+            noteMiss();
         } else if(gameInfo == CONTOUR_COMPLETE) {
-            scoreIncrement = contourComplete();
-            score += scoreIncrement;
+            contourComplete();
         }
-        EventBus.getDefault().post(new ScoreEvent(score, multiplier, scoreIncrement));
     }
 
-    private int noteMiss() {
+    private void noteMiss() {
         multiplier = 1;
         notesMissed++;
         streak = 0;
-        return -100;
+        EventBus.getDefault().post(new ScoreEvent(score, multiplier, 0));
     }
 
-    private int noteHit() {
-        int scoreIncrement = (100 * multiplier);
+    private void noteHit() {
         notesHit++;
         streak++;
-        if(streak > longestStreak) {
-            longestStreak = streak;
-        }
-        return scoreIncrement;
     }
 
-    private int contourComplete() {
+    private void contourComplete() {
         noteHit();
-        int scoreIncrement = Math.max(0, ((int)(((10000)) -
-                ((SystemClock.elapsedRealtime() - timeSinceContourStart)/1000)*250) * multiplier));
+        int timeBonus = BASE_SCORE - (int)((SystemClock.elapsedRealtime() - timeSinceContourStart)/250);
+        int scoreIncrement = Math.max(0, BASE_SCORE + timeBonus) * multiplier;
         incrementMultiplier();
         timeSinceContourStart = SystemClock.elapsedRealtime();
-        return scoreIncrement;
+        score += scoreIncrement;
+        EventBus.getDefault().post(new ScoreEvent(score, multiplier, scoreIncrement));
     }
 
     private void incrementMultiplier() {

@@ -168,6 +168,14 @@
                     style="@style/SelectInstrumentBtn"
                     android:text="piano"
                     android:onClick="selectSoundBtnPress"/>
+                <Button
+                    style="@style/SelectInstrumentBtn"
+                    android:text="square"
+                    android:onClick="selectSoundBtnPress"/>
+                <Button
+                    style="@style/SelectInstrumentBtn"
+                    android:text="sawtooth"
+                    android:onClick="selectSoundBtnPress"/>
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

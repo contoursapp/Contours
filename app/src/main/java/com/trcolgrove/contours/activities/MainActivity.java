@@ -16,6 +16,9 @@ import com.trcolgrove.contours.contoursGame.DataManager;
 import com.trcolgrove.contours.contoursGame.ServerUtil;
 import com.trcolgrove.contours.contoursGame.TrainingActivity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * MainActivity
  *
@@ -30,6 +33,16 @@ public class MainActivity extends ActionBarActivity {
     private Intent trainingIntent;
     private int difficultyButton;
     RelativeLayout soundMenu;
+
+    protected static final Map<String, String> soundMenuToPdName;
+    static {
+        soundMenuToPdName = new HashMap<>();
+        soundMenuToPdName.put("piano", "piano_1");
+        soundMenuToPdName.put("sine", "sine_table");
+        soundMenuToPdName.put("triangle", "triangle_table");
+        soundMenuToPdName.put("square", "square_table");
+        soundMenuToPdName.put("sawtooth", "sawtooth_table");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,10 +152,19 @@ public class MainActivity extends ActionBarActivity {
 
     public void selectSoundBtnPress(View view) {
         String sound = ((Button)view).getText().toString();
-        trainingIntent.putExtra("sound", sound);
+        String synth = "";
+
+        if(sound.equals("piano")) {
+            synth = "base_sampler.pd";
+        } else {
+            synth = "contours_patch.pd";
+        }
+
+        trainingIntent.putExtra("sound", soundMenuToPdName.get(sound));
+        trainingIntent.putExtra("synth", synth);
+
         startActivity(trainingIntent);
         this.finish();
     }
-
 
 }

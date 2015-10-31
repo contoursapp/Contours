@@ -25,9 +25,11 @@ import java.util.TreeMap;
  * One can extend the WhitePianoKey or BlackPianoKey
  * classes and change the draw methods to change how it looks!
  *
- * This class heavily references an implementation
+ * This class references/is inspired by an implementation
  * by 2bard
  * {link https://github.com/2bard/AndroidPianoView}
+ * I should note that this implementation was seriously
+ * flawed, and the multi-touch implementation crashed
  *
  * @author Thomas Colgrove
  */
@@ -43,7 +45,7 @@ public class Piano extends View {
     private int keyCount;
 
     private Rect drawingRect;
-    private static final int bottom_note = 48;
+    private static final int BOTTOM_NOTE = 48;
 
     ArrayList<Integer> blackKeyIndexes = new ArrayList<>(Arrays.asList(1, 3, 6, 8, 10));
 
@@ -93,7 +95,7 @@ public class Piano extends View {
     }
 
     private PianoKey getPianoKeyByMidiVal(int midiVal) {
-        int keyIndex = midiVal - bottom_note;
+        int keyIndex = midiVal - BOTTOM_NOTE;
         PianoKey key;
         try{
             key = pianoKeys[keyIndex];
@@ -123,7 +125,7 @@ public class Piano extends View {
     public void noteOn(int midiVal, int velocity) {
         PianoKey key = getPianoKeyByMidiVal(midiVal);
 
-        key.press(midiVal);
+        key.press(midiVal, velocity);
     }
 
     public void noteOff(int midiVal, int velocity){
@@ -172,7 +174,7 @@ public class Piano extends View {
 
             int pointer_index = event.getPointerId(event.getActionIndex());
             if (touches.containsKey(pointer_index)) {
-                touches.get(pointer_index).lift(bottom_note);
+                touches.get(pointer_index).lift(BOTTOM_NOTE);
                 touches.remove(pointer_index);
             }
         }
@@ -188,7 +190,7 @@ public class Piano extends View {
 
             if (!touches.containsKey(pointerId) && key != null) {
                 Touch touch = new Touch();
-                touch.press(key, bottom_note + key.getNoteValue());
+                touch.press(key, BOTTOM_NOTE + key.getNoteValue());
                 touches.put(pointerId, touch);
             }
         }
@@ -225,10 +227,10 @@ public class Piano extends View {
             PianoKey key = isPressingKey(event.getX(index), event.getY(index));
             Touch touch = touches.get(pointer_id);
             if(key == null && touch != null){
-                touch.lift(60);
+                touch.lift(BOTTOM_NOTE);
             } else if(touch != null && !touch.isPressing(key)){
-                touch.lift(60);
-                touch.press(key, bottom_note + key.getNoteValue());
+                touch.lift(BOTTOM_NOTE);
+                touch.press(key, BOTTOM_NOTE + key.getNoteValue());
             }
 
         }
