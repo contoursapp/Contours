@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -53,8 +52,6 @@ public class ContoursGameView extends SurfaceView {
     private int congratsTextAlpha = 0;
     private int noteAlpha = 255;
 
-    private PowerManager pm;
-
     // midi-poisition mapping. For now only C major supported. Essentially this is a util to
     // figure out where on the staff each midi note should map... needs more robust implementation
     // if we decide to support accidentals
@@ -80,7 +77,6 @@ public class ContoursGameView extends SurfaceView {
     //Staff properties
     private static final int notesDisplayedOnScreen = 22; //number of notes displayed by one screen w/o scroll
     private int staffPositionCount;
-    private int scrollOffsetY;
     private int contourIndex = 0;
     private int bottomMidiNote;
     private int topMidiNote;
@@ -114,8 +110,6 @@ public class ContoursGameView extends SurfaceView {
         setZOrderOnTop(true);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
-        scrollOffsetY = 0;
-
         keySelectPaint.setColor(getResources().getColor(R.color.pink));
         keySelectPaint.setAlpha(noteAlpha);
         keySelectPaint.setStyle(Paint.Style.FILL);
@@ -139,7 +133,7 @@ public class ContoursGameView extends SurfaceView {
         initGameLoop();
         initStaff();
 
-        String difficulty = ((Activity) context).getIntent().getStringExtra("difficulty");
+        difficulty = ((Activity) context).getIntent().getStringExtra("difficulty");
         String[] contourStrings;
 
         switch(difficulty) {
@@ -339,22 +333,6 @@ public class ContoursGameView extends SurfaceView {
     public void setContour(Contour contour) {
 
         this.contour = contour;
-    }
-
-    /**
-     * Scroll the staff to the offset defined by newScrollOffsetY
-     * While the new ui does not scroll, Im keeping this method for possible future use.
-     * @param newScrollOffsetY the offset to which the staff must be scrolled
-     */
-    private void scrollStaff(int newScrollOffsetY, boolean animate) {
-        if(animate) {
-            ValueAnimator scrollAnimator = ObjectAnimator.ofInt(this, "scrollOffsetY", scrollOffsetY, newScrollOffsetY);
-            int duration = Math.abs(newScrollOffsetY - scrollOffsetY);
-            scrollAnimator.setDuration(duration);
-            scrollAnimator.start();
-        } else {
-            this.scrollOffsetY = newScrollOffsetY;
-        }
     }
 
     /**

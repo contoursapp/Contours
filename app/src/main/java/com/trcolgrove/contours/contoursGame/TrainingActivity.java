@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.Chronometer;
 import android.widget.ProgressBar;
 import android.widget.TextSwitcher;
@@ -63,7 +62,6 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     private String patchName;
     private String sound;
 
-    private PowerManager pm;
     PowerManager.WakeLock cpuLock;
 
     private String TAG = "TrainingActivity";
@@ -153,9 +151,6 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     public void onMidiCableEvents(@NonNull final MidiInputDevice sender, int cable, int byte1, int byte2, int byte3) {
     }
 
-    ArrayAdapter<String> midiInputEventAdapter;
-    ArrayAdapter<String> midiOutputEventAdapter;
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -168,7 +163,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         PdAudio.startAudio(this);
         EventBus.getDefault().register(this);
-        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         cpuLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "wake lock");
         cpuLock.acquire();
     }

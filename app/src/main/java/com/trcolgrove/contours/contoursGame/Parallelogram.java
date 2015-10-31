@@ -9,7 +9,6 @@ import android.graphics.drawable.ShapeDrawable;
 public class Parallelogram extends ShapeDrawable {
 
     private Paint paint = new Paint();
-
     public Parallelogram (int color) {
 
     }

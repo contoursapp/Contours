@@ -5,6 +5,8 @@ import android.content.Context;
 import org.puredata.core.PdBase;
 
 /**
+ * Basic wrapper for autosampler PdClass used for sampled instruments
+ *
  * Created by Thomas on 10/5/15.
  */
 public class SamplerSynth extends PdSynth {
@@ -26,6 +28,5 @@ public class SamplerSynth extends PdSynth {
     public void noteOff(int midiNum) {
         PdBase.sendList("note", midiNum, 0);
     }
-
 
 }

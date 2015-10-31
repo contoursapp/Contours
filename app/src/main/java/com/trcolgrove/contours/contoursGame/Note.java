@@ -206,18 +206,6 @@ public class Note {
         rippleRadius = radius;
         Tween.to(this, NoteAccessor.RIPPLE_ALPHA, 1.5f).target(0).ease(Circ.OUT).start(tweenManager);
         Tween.to(this, NoteAccessor.RIPPLE_RADIUS, 1.5f).target(300).ease(Circ.OUT).start(tweenManager);
-
-
-        /*
-        ValueAnimator rippleRadiusAnim = ObjectAnimator.ofInt(this, "rippleRadius", radius, 300);
-        rippleRadiusAnim.setInterpolator(new LinearInterpolator());
-        rippleRadiusAnim.setDuration(500);
-        rippleRadiusAnim.start();
-        ValueAnimator rippleAlphaAnim = ObjectAnimator.ofInt(this, "rippleAlpha", 255, 0);
-        rippleAlphaAnim.setInterpolator(new LinearInterpolator());
-        rippleAlphaAnim.setDuration(500);
-        rippleAlphaAnim.start();
-        */
     }
 
     /**
@@ -229,7 +217,7 @@ public class Note {
         canvas.drawCircle(xPos, yPos, rippleRadius, ripplePaint);
     }
 
-    /* Maintain a bitmap of the note for optomization
+    /* Maintain a bitmap of the note for optimization
      * avoid expensive anti-alias calls */
     private Bitmap getNoteBitMap(int radius) {
         final Bitmap output = Bitmap.createBitmap(radius*2,

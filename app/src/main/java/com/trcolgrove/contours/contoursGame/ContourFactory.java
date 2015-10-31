@@ -7,29 +7,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Utility class to create contours from not objects, or from strings of
+ * note names delimited by contours.
+ *
  * Created by Thomas on 7/11/15.
  */
 public class ContourFactory {
     private static final String TAG = "ContourFactory" ;
 
-    //TODO: implement this class, allow for easy definition of contours
-
-    public static Contour createContour(String noteNames) {
-        String[] noteStrings = noteNames.split(",");
-        for(String noteString : noteStrings) {
-        }
-        return null;
-    }
-
-    public static Contour createContour(Note... notes) {
-        return null;
-    }
-
+    /**
+     * Given an array of Strings specifying notes, delimited by commas, return a list of
+     * contour objects corresponding to the given note sequences.
+     *
+     * @param contourStrings An array of strings representing note contours eg. "A,B,C,F,G"
+     * @param context The context of the activity where the contours are being created
+     * @return a List of contour objects representing the given note sequences
+     * @throws InvalidNoteException
+     */
     public static List<Contour> getContoursFromStringArray(String[] contourStrings, Context context) throws InvalidNoteException {
         List<Contour> contours = new ArrayList<>();
+
         for(String contourString : contourStrings) {
+
             String[] noteStrings = contourString.split(",");
             List<Note> notes = new ArrayList<>();
+
             for(String noteString : noteStrings) {
                 String letter = noteString.substring(0,1);
                 int noteValue = 0;

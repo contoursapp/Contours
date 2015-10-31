@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.os.BatteryManager;
+import android.util.Log;
 
 import aurelienribon.tweenengine.TweenManager;
 
@@ -20,7 +21,6 @@ public class GameLoopThread extends Thread {
     private boolean running = false;
     static long FPS = 60;
     private TweenManager tweenManager;
-    private boolean dropNextFrame;
 
     public GameLoopThread(ContoursGameView contoursGameView, TweenManager tweenManager) {
         this.contoursGameView = contoursGameView;
@@ -86,7 +86,9 @@ public class GameLoopThread extends Thread {
                 } else {
                     sleep(10);
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                Log.e(this.getClass().getSimpleName(), "unexpected failure in game loop");
+            }
             lastTime = startTime;
         }
     }

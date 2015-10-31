@@ -21,6 +21,12 @@ public abstract class PdSynth implements Synth {
     private String TAG = "PdSynth";
     private static final int MIN_SAMPLE_RATE = 44100;
 
+    /**
+     * Construct an instance of a pure data synthesizer given the file name of the patch
+     * and the context
+     * @param pdPatchName the file name of the patch
+     * @param context the application context in which the synth is being created
+     */
     PdSynth(String pdPatchName, Context context) {
         AudioParameters.init(context);
         int srate = Math.max(MIN_SAMPLE_RATE, AudioParameters.suggestSampleRate());

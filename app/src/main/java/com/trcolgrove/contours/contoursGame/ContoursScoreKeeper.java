@@ -28,7 +28,6 @@ public class ContoursScoreKeeper implements ScoreKeeper {
 
     private int streak = 0;
     private int longestStreak = 0;
-    private int numStreaks = 1;
 
     @IntDef({NOTE_HIT, NOTE_MISS, CONTOUR_COMPLETE})
     @Retention(RetentionPolicy.SOURCE)

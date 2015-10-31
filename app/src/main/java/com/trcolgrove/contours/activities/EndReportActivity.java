@@ -92,9 +92,7 @@ public class EndReportActivity extends ActionBarActivity {
         nextButton.setEnabled(false);
 
         performIntroAnimations();
-
     }
-
 
     private void performIntroAnimations() {
         RelativeLayout totalScoreLayout = (RelativeLayout) findViewById(R.id.total_score_layout);

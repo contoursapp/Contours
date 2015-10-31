@@ -91,7 +91,6 @@ public class DataManager {
     }
 
     //Functions for concurrent access
-
     public void incrementActiveRequests() {
         activeRequests++;
     }

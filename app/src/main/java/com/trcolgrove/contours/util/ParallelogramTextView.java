@@ -1,4 +1,4 @@
-package com.trcolgrove.contours;
+package com.trcolgrove.contours.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.trcolgrove.contours.R;
 import com.trcolgrove.contours.util.DrawingUtils;
 
 /**

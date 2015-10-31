@@ -38,7 +38,8 @@
                 android:src="@drawable/purple_note"
                 android:scaleType="fitStart"
                 />
-            <com.trcolgrove.contours.ParallelogramTextView android:id="@+id/total_score_label"
+            <com.trcolgrove.contours.util.ParallelogramTextView
+                android:id="@+id/total_score_label"
                 android:layout_width="275dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
@@ -74,7 +75,8 @@
                 android:src="@drawable/blue_note"
                 android:scaleType="fitStart"
                 />
-            <com.trcolgrove.contours.ParallelogramTextView android:id="@+id/total_time_label"
+            <com.trcolgrove.contours.util.ParallelogramTextView
+                android:id="@+id/total_time_label"
                 android:layout_width="275dp"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/blue_note"
@@ -110,7 +112,8 @@
                 android:src="@drawable/green_note"
                 android:scaleType="fitStart"
                 />
-                <com.trcolgrove.contours.ParallelogramTextView android:id="@+id/notes_hit_label"
+                <com.trcolgrove.contours.util.ParallelogramTextView
+                    android:id="@+id/notes_hit_label"
                     android:layout_width="275dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
@@ -146,7 +149,8 @@
                 android:src="@drawable/red_note"
                 android:scaleType="fitStart"
                 />
-            <com.trcolgrove.contours.ParallelogramTextView  android:id="@+id/accuracy_label"
+            <com.trcolgrove.contours.util.ParallelogramTextView
+                android:id="@+id/accuracy_label"
                 android:layout_width="275dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
