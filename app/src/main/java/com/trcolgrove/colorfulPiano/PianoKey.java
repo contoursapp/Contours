@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.trcolgrove.contours.R;
 import com.trcolgrove.contours.events.NoteEvent;
@@ -148,7 +147,6 @@ public abstract class PianoKey {
         if (!getTouches()) {
             this.piano.invalidate();
         }
-        Log.d("PianoKey", "midival: " + midiVal);
         _unpress(midiVal);
     }
 

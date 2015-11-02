@@ -52,16 +52,19 @@ public class ContoursGameView extends SurfaceView {
     private int congratsTextAlpha = 0;
     private int noteAlpha = 255;
 
-    // midi-poisition mapping. For now only C major supported. Essentially this is a util to
+    // midi-poisition mapping. Essentially this is a utility to
     // figure out where on the staff each midi note should map... needs more robust implementation
-    // if we decide to support accidentals
+    // if we decide to support accidentals in the future
     private static final int[] noteValToPosition = {0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6};
     private static final String[] congratsMessages = {"Good Job!", "Rock On!", "Excellent!",
             "BOOM", "Awesome!" , "Woo!", "Great Work!", "SUCCESS!"};
     private static final String[] failureMessages = {"Try Again", "Whoops!", "Oops"};
 
+
+
     private static final int transitionMilis = 2500;
-    private String gameUpdateText = "dope";
+    private String gameUpdateText = "";
+
     // a direct map from midiValue to staff location, with the bottom line being position 0,
     // this is important because often multiple notes map to the same staff location, ie C and Csharp
     protected static Map<Integer, Integer> midiValToStaffLoc;
@@ -69,6 +72,7 @@ public class ContoursGameView extends SurfaceView {
     private Contour contour;
 
     private String difficulty;
+    private int intervalSize;
 
     //default staff values
     private static final int defaultBottomNote = 48;
@@ -134,29 +138,14 @@ public class ContoursGameView extends SurfaceView {
         initStaff();
 
         difficulty = ((Activity) context).getIntent().getStringExtra("difficulty");
-        String[] contourStrings;
-
-        switch(difficulty) {
-            case "easy":
-                contourStrings = getResources().getStringArray(R.array.easy_contours);
-                break;
-            case "medium":
-                contourStrings = getResources().getStringArray(R.array.medium_contours);
-                break;
-            case "hard":
-                contourStrings = getResources().getStringArray(R.array.hard_contours);
-                break;
-            default:
-                contourStrings = getResources().getStringArray(R.array.easy_contours);
-                Log.e(TAG, "invalid difficulty, automatically setting to easy");
-        }
+        intervalSize = ((Activity) context).getIntent().getIntExtra("interval_size", 0);
+        String[] contourStrings = generateContours(difficulty, intervalSize);
 
         contours = ContourFactory.getContoursFromStringArray(contourStrings, context);
         Collections.shuffle(contours);
         if(contours.size() > 25) {
             contours.subList(25, contours.size()).clear();
         }
-
 
         scoreKeeper = new ContoursScoreKeeper(SystemClock.elapsedRealtime());
         this.setDrawingCacheEnabled(true);
@@ -165,6 +154,35 @@ public class ContoursGameView extends SurfaceView {
         this.contour = contours.get(contourIndex);
 
 
+    }
+
+    private String[] generateContours(String difficulty, int intervalSize) {
+        String contourSetName = difficulty + intervalSize;
+        String[] contourStrings;
+        Log.d(TAG, contourSetName);
+
+        switch(contourSetName) {
+            case "easy0":
+                contourStrings = getResources().getStringArray(R.array.easy_contours0);
+                break;
+            case "easy1":
+                contourStrings = getResources().getStringArray(R.array.easy_contours1);
+                break;
+            case "easy2":
+                contourStrings = getResources().getStringArray(R.array.easy_contours2);
+                break;
+            case "medium0":
+                contourStrings = getResources().getStringArray(R.array.medium_contours0);
+                break;
+            case "hard":
+                contourStrings = getResources().getStringArray(R.array.hard_contours);
+                break;
+            default:
+                contourStrings = getResources().getStringArray(R.array.easy_contours0);
+                Log.e(TAG, "invalid difficulty, automatically setting to easy");
+        }
+
+        return contourStrings;
     }
 
 

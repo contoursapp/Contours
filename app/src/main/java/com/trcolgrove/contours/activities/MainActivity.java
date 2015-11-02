@@ -137,7 +137,21 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void intervalButtonClicked(View view) {
-        String intervalSize = ((Button)view).getText().toString();
+        int id = ((Button)view).getId();
+        int intervalSize;
+        switch(id) {
+            case R.id.wideintervalbutton:
+                intervalSize = 2;
+                break;
+            case R.id.mediumintervalbutton:
+                intervalSize = 1;
+                break;
+            case R.id.smallintervalbutton:
+                intervalSize = 0;
+                break;
+            default:
+                intervalSize = 0;
+        }
         trainingIntent.putExtra("interval_size", intervalSize);
         showSoundMenu();
     }

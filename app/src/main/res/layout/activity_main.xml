@@ -117,15 +117,15 @@
                     android:visibility="gone"
                     android:gravity="center"
                     android:layout_below="@id/easy_button">
-                    <Button
+                    <Button android:id="@+id/wideintervalbutton"
                         style="@style/SelectIntervalBtn"
-                        android:text="large interval"
+                        android:text="wide interval"
                         android:onClick="intervalButtonClicked"/>
-                    <Button
+                    <Button android:id="@+id/mediumintervalbutton"
                         style="@style/SelectIntervalBtn"
                         android:text="medium interval"
                         android:onClick="intervalButtonClicked"/>
-                    <Button
+                    <Button android:id="@+id/smallintervalbutton"
                         style="@style/SelectIntervalBtn"
                         android:text="small interval"
                         android:onClick="intervalButtonClicked"/>

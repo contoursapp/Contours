@@ -56,7 +56,6 @@ public class SubtractiveSynth extends PdSynth {
 
     @Override
     public void noteOff(int midiNum) {
-        Log.d(TAG ,"midiNum2 " + midiNum);
         int chan = midiNoteToChannel.get(midiNum);
         PdBase.sendList("note", chan, midiNum, 0);
         midiNoteToChannel.remove(midiNum);
