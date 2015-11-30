@@ -51,18 +51,19 @@ public class ContoursGameView extends SurfaceView {
 
     private int congratsTextAlpha = 0;
     private int noteAlpha = 255;
+    private static int contourCount = 50;
 
     // midi-poisition mapping. Essentially this is a utility to
     // figure out where on the staff each midi note should map... needs more robust implementation
     // if we decide to support accidentals in the future
     private static final int[] noteValToPosition = {0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6};
     private static final String[] congratsMessages = {"Good Job!", "Rock On!", "Excellent!",
-            "BOOM", "Awesome!" , "Woo!", "Great Work!", "SUCCESS!"};
+            "BOOM", "Awesome!" , "Woo!", "Great Work!", "Success!"};
     private static final String[] failureMessages = {"Try Again", "Whoops!", "Oops"};
 
-
-
     private static final int transitionMilis = 2500;
+    private static final int failureTransitionMilis = 1250;
+
     private String gameUpdateText = "";
 
     // a direct map from midiValue to staff location, with the bottom line being position 0,
@@ -140,11 +141,12 @@ public class ContoursGameView extends SurfaceView {
         difficulty = ((Activity) context).getIntent().getStringExtra("difficulty");
         intervalSize = ((Activity) context).getIntent().getIntExtra("interval_size", 0);
         String[] contourStrings = generateContours(difficulty, intervalSize);
-
         contours = ContourFactory.getContoursFromStringArray(contourStrings, context);
+        contours = Transposer.transposeContours(context, contours);
+
         Collections.shuffle(contours);
-        if(contours.size() > 25) {
-            contours.subList(25, contours.size()).clear();
+        if(contours.size() > contourCount) {
+            contours.subList(contourCount, contours.size()).clear();
         }
 
         scoreKeeper = new ContoursScoreKeeper(SystemClock.elapsedRealtime());
@@ -174,8 +176,20 @@ public class ContoursGameView extends SurfaceView {
             case "medium0":
                 contourStrings = getResources().getStringArray(R.array.medium_contours0);
                 break;
-            case "hard":
-                contourStrings = getResources().getStringArray(R.array.hard_contours);
+            case "medium1":
+                contourStrings = getResources().getStringArray(R.array.medium_contours1);
+                break;
+            case "medium2":
+                contourStrings = getResources().getStringArray(R.array.medium_contours2);
+                break;
+            case "hard0":
+                contourStrings = getResources().getStringArray(R.array.hard_contours0);
+                break;
+            case "hard1":
+                contourStrings = getResources().getStringArray(R.array.hard_contours1);
+                break;
+            case "hard2":
+                contourStrings = getResources().getStringArray(R.array.hard_contours2);
                 break;
             default:
                 contourStrings = getResources().getStringArray(R.array.easy_contours0);
@@ -191,7 +205,7 @@ public class ContoursGameView extends SurfaceView {
         int msgIndex = rand.nextInt(failureMessages.length);
         gameUpdateText = failureMessages[msgIndex];
         ValueAnimator textAnim = ObjectAnimator.ofInt(this, "congratsTextAlpha", 0, 255, 0);
-        textAnim.setDuration(transitionMilis);
+        textAnim.setDuration(failureTransitionMilis);
         textAnim.setInterpolator(new AccelerateDecelerateInterpolator());
         transitioning = true;
         textPaint.setColor(getResources().getColor(R.color.pink));

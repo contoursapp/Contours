@@ -19,6 +19,10 @@ public class SamplerSynth extends PdSynth {
         PdBase.sendList("soundfont", "set", soundName);
     }
 
+    public void setAdsr(int attack, int decay, int sustain, int release) {
+        PdBase.sendList("soundfount", "adsr", decay, sustain, release);
+    }
+
     @Override
     public void noteOn(int midiNum, int velocity) {
         PdBase.sendList("note", midiNum, velocity);

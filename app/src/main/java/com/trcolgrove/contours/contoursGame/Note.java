@@ -77,8 +77,12 @@ public class Note {
     private Paint cursorPaint = new Paint();
     private Rect noteRect;
 
+    private static final int[] C_MAJOR = {C,D,E,F,G,A,B};
+
     private int color;
     private Bitmap noteBitmap;
+
+    private Context context;
 
     private static final Map<Integer, Integer> noteScaleDegs = Collections.unmodifiableMap(
             new TreeMap<Integer, Integer>() {{
@@ -99,10 +103,10 @@ public class Note {
                 put(G_SHARP, 4);
                 put(A_FLAT, 5);
                 put(A, 5);
-                put(A_SHARP, 6);
+                put(A_SHARP, 5);
                 put(B_FLAT, 6);
                 put(B, 6);
-                put(B_SHARP, 7);
+                put(B_SHARP, 6);
             }});
 
     private static final Map<Integer, Integer> noteScalePosition = Collections.unmodifiableMap(
@@ -131,7 +135,14 @@ public class Note {
             }});
 
 
-    public Note(Context context, @NoteName int noteName, int octave) throws InvalidNoteException {
+    public Note transposeBy(int amount) throws InvalidNoteException {
+        int sd = (this.scaleDegree + amount) % 7;
+        int octave = this.octave + (this.scaleDegree + amount) / 7;
+        return new Note(context, C_MAJOR[sd], octave);
+    }
+
+
+    public Note(Context context, int noteName, int octave) throws InvalidNoteException {
         if(octave < -2 || octave > 8) {
             throw new InvalidNoteException("note falls outside of acceptable octave range");
         }
@@ -152,6 +163,8 @@ public class Note {
         ripplePaint.setStrokeWidth(2);
         ripplePaint.setStyle(Paint.Style.STROKE);
         ripplePaint.setColor(color);
+
+        this.context = context;
     }
 
     public void layout(int x, int y, int radius) {
@@ -240,11 +253,17 @@ public class Note {
         return output;
     }
 
+    public void getStringName() {
+
+    }
+
     public int getMidiValue() {
         return midiValue;
     }
 
     public int getScaleDegree() { return this.scaleDegree; }
+
+    public int getOctave() { return this.octave; }
 
     public int getxPos() {
         return xPos;

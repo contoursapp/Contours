@@ -35,7 +35,13 @@ public class ContourFactory {
             for(String noteString : noteStrings) {
                 String letter = noteString.substring(0,1);
                 int noteValue = 0;
-                int octave = Integer.parseInt(noteString.substring(1, 2));
+                int octave = 0;
+                try {
+                    octave = Integer.parseInt(noteString.substring(1, 2));
+                } catch(Exception e) {
+                    Log.e(TAG, "Malformed Note! Please fix the contour specified in Arrays.xml");
+                    continue;
+                }
 
                 switch(letter) {
                     case "C" :

@@ -1,5 +1,6 @@
 package com.trcolgrove.contours.contoursGame;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -59,6 +60,14 @@ public class Contour {
         else {
             cursorPosition = i;
         }
+    }
+
+    public Contour transposeBy(int amount) throws InvalidNoteException {
+        List<Note> transposed = new ArrayList<>();
+        for(Note n : notes) {
+            transposed.add(n.transposeBy(amount));
+        }
+        return new Contour(transposed);
     }
 
     public List<Note> getNotes() { return notes; }
