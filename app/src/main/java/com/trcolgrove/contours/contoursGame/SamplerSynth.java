@@ -20,7 +20,7 @@ public class SamplerSynth extends PdSynth {
     }
 
     public void setAdsr(int attack, int decay, int sustain, int release) {
-        PdBase.sendList("soundfount", "adsr", decay, sustain, release);
+        PdBase.sendList("soundfount", "adsr", attack, decay, sustain, release);
     }
 
     @Override

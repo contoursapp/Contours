@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/Users/Thomas/Desktop/tufts/Contours/AndroidMidi/res/values/strings.xml -->
+    <!-- From: file:/Users/Thomas/Desktop/tufts/contours/AndroidMidi/res/values/strings.xml -->
     <eat-comment/>
     <string name="none_paired">No paired devices</string>
     <string name="select_device">Select a device to connect to</string>

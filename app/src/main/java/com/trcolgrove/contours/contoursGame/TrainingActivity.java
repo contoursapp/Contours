@@ -62,6 +62,8 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     private String patchName;
     private String sound;
 
+    private static final String patchDir = "testpatch";
+
     PowerManager.WakeLock cpuLock;
 
     private String TAG = "TrainingActivity";
@@ -235,6 +237,11 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         protected Void doInBackground(File... dirs) {
 
             for(File dir : dirs) {
+
+                if(new File(dir.getAbsolutePath() + "/" + patchDir).exists()) {
+                    continue;
+                }
+
                 try {
                     IoUtils.extractZipResource(getResources().openRawResource(R.raw.testpatch), dir, true);
                 } catch (IOException e) {
@@ -251,6 +258,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
                 ((SubtractiveSynth) synth).setOsc(1, sound);
             } else if(synth instanceof SamplerSynth) {
                 ((SamplerSynth) synth).setSound(sound);
+             //   ((SamplerSynth) synth).setAdsr(9,500,0,3);
             }
             progressBar.setVisibility(View.GONE);
             chronometer.setBase(SystemClock.elapsedRealtime());
@@ -305,9 +313,9 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
 
     private void initPd() throws IOException {
         if(patchName.equals("contours_patch.pd")) {
-            synth = new SubtractiveSynth(patchName, this);
+            synth = new SubtractiveSynth(patchDir + "/" + patchName, this);
         } else if(patchName.equals("base_sampler.pd")) {
-            synth = new SamplerSynth(patchName, this);
+            synth = new SamplerSynth(patchDir + "/" + patchName, this);
         }
         new resourcesLoader().execute(this.getFilesDir());
     }

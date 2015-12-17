@@ -52,7 +52,9 @@ public abstract class PdSynth implements Synth {
         try {
             PdBase.openPatch(patchFilePath);
         } catch (IOException e) {
-            Log.e(TAG, "Failed to load synth resource");
+            e.printStackTrace();
+            Log.e(TAG, "Failed to load synth resource: " + patchFilePath + "\n");
+
         }
     }
 
