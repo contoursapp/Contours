@@ -145,8 +145,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginRight="12dp"
                 android:layout_marginEnd="12dp"
-                android:contentDescription="red note image"
-                android:src="@drawable/red_note"
+                android:contentDescription="turquoise note image"
+                android:src="@drawable/turq_note"
                 android:scaleType="fitStart"
                 />
             <com.trcolgrove.contours.util.ParallelogramTextView
@@ -157,7 +157,7 @@
                 android:text="@string/accuracy_text"
                 android:textSize="38sp"
                 android:textStyle="italic"
-                parallelogram:bg_color="@color/red"
+                parallelogram:bg_color="@color/turquoise"
                 android:paddingLeft="24dp"
                 android:paddingRight="24dp"
                 android:layout_toRightOf="@id/red_note"

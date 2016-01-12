@@ -52,7 +52,7 @@ public class ContoursGameView extends SurfaceView {
     private int congratsTextAlpha = 0;
     private int noteAlpha = 255;
 
-    private final int contourCount = 50;
+    private final int contourCount = 1;
 
     // midi-poisition mapping. Essentially this is a utility to
     // figure out where on the staff each midi note should map... needs more robust implementation
