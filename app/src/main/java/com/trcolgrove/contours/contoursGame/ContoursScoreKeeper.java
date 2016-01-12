@@ -58,7 +58,7 @@ public class ContoursScoreKeeper implements ScoreKeeper {
         multiplier = 1;
         notesMissed++;
         streak = 0;
-        EventBus.getDefault().post(new ScoreEvent(score, multiplier, 0));
+        EventBus.getDefault().post(new ScoreEvent(score, multiplier, 0, false));
     }
 
     private void noteHit() {
@@ -73,7 +73,7 @@ public class ContoursScoreKeeper implements ScoreKeeper {
         incrementMultiplier();
         timeSinceContourStart = SystemClock.elapsedRealtime();
         score += scoreIncrement;
-        EventBus.getDefault().post(new ScoreEvent(score, multiplier, scoreIncrement));
+        EventBus.getDefault().post(new ScoreEvent(score, multiplier, scoreIncrement, true));
     }
 
     private void incrementMultiplier() {

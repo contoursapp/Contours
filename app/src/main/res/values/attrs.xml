@@ -10,4 +10,7 @@
     <declare-styleable name="parallelogram">
         <attr name="bg_color" format="color" />
     </declare-styleable>
+    <declare-styleable name="ScoreBarItem">
+        <attr name="header_text" format="string" />
+    </declare-styleable>
 </resources>

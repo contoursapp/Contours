@@ -66,7 +66,6 @@ public class MainActivity extends ActionBarActivity {
             this.finish();
         }
 
-
         aliasText.setText("Alias: " + alias);
         ServerUtil serverUtil = new ServerUtil(getApplicationContext());
         serverUtil.uploadPendingData();

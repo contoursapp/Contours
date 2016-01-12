@@ -51,7 +51,8 @@ public class ContoursGameView extends SurfaceView {
 
     private int congratsTextAlpha = 0;
     private int noteAlpha = 255;
-    private static int contourCount = 50;
+
+    private final int contourCount = 50;
 
     // midi-poisition mapping. Essentially this is a utility to
     // figure out where on the staff each midi note should map... needs more robust implementation
@@ -73,7 +74,6 @@ public class ContoursGameView extends SurfaceView {
     private Contour contour;
 
     private String difficulty;
-    private int intervalSize;
 
     //default staff values
     private static final int defaultBottomNote = 48;
@@ -139,7 +139,7 @@ public class ContoursGameView extends SurfaceView {
         initStaff();
 
         difficulty = ((Activity) context).getIntent().getStringExtra("difficulty");
-        intervalSize = ((Activity) context).getIntent().getIntExtra("interval_size", 0);
+        int intervalSize = ((Activity) context).getIntent().getIntExtra("interval_size", 0);
         String[] contourStrings = generateContours(difficulty, intervalSize);
         contours = ContourFactory.getContoursFromStringArray(contourStrings, context);
         contours = Transposer.transposeContours(context, contours);
@@ -154,8 +154,6 @@ public class ContoursGameView extends SurfaceView {
         this.buildDrawingCache();
 
         this.contour = contours.get(contourIndex);
-
-
     }
 
     private String[] generateContours(String difficulty, int intervalSize) {
@@ -564,5 +562,9 @@ public class ContoursGameView extends SurfaceView {
 
     public void setNoteAlpha(int noteAlpha) {
         this.noteAlpha = noteAlpha;
+    }
+
+    public int getContourCount() {
+        return contourCount;
     }
 }

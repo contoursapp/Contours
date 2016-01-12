@@ -10,8 +10,6 @@ import android.graphics.Rect;
  */
 public class WhitePianoKey extends PianoKey {
 
-    //TODO: make a ColorfulWhiteKey to extend this....
-
     public WhitePianoKey(Context context, Piano piano, int noteValue){
         super(context, piano, noteValue);
     }

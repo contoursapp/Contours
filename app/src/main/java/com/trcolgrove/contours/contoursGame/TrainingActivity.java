@@ -15,8 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Chronometer;
 import android.widget.ProgressBar;
 import android.widget.TextSwitcher;
@@ -54,15 +52,21 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     private ContoursGameView gameView;
     private ProgressBar progressBar;
     private Chronometer chronometer;
-    private TextSwitcher scoreSwitcher;
+    private ScoreBarItem scoreText;
+    private TextSwitcher progressText;
     private TextSwitcher multiplierSwitcher;
     private TextView scoreIncrementText;
     private MidiInputDevice midiIn;
     private Synth synth;
     private String patchName;
     private String sound;
+    private int contoursCompleted = 1;
 
-    private static final String patchDir = "testpatch";
+    private ScoreTextFactory scoreTextFactory = new ScoreTextFactory();
+    private MultiplierTextFactory multiplierTextFactory = new MultiplierTextFactory();
+    private ScoreBarFactory scoreBarFactory = new ScoreBarFactory();
+
+    private final String patchDir = "testpatch";
 
     PowerManager.WakeLock cpuLock;
 
@@ -196,8 +200,12 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         if(android.os.Build.VERSION.SDK_INT > 16) {
             multiplierSwitcher.setBackground(getResources().getDrawable(multiplierBackgrounds[event.multiplier - 1]));
         }
+        if(event.contourComplete) {
+            contoursCompleted++;
+            progressText.setText(contoursCompleted + "/" + gameView.getContourCount());
+        }
         if(event.scoreIncrement != 0) {
-            scoreSwitcher.setText(Integer.toString(event.totalScore));
+            scoreText.setText(Integer.toString(event.totalScore));
             displayScoreIncrement(event.scoreIncrement);
         }
     }
@@ -273,29 +281,24 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training);
 
+        ScoreBarItem sb = (ScoreBarItem) findViewById(R.id.score_label);
+
         pianoView = (Piano) findViewById(R.id.piano);
         gameView = (ContoursGameView) findViewById(R.id.staff);
         progressBar = (ProgressBar) findViewById(R.id.training_loader);
         chronometer = (Chronometer) findViewById(R.id.chronometer);
-        scoreSwitcher = (TextSwitcher) findViewById(R.id.score_text);
-        multiplierSwitcher = (TextSwitcher) findViewById(R.id.multiplier);
+        scoreText = (ScoreBarItem) sb.findViewById(R.id.score_label);
+        multiplierSwitcher = ((ScoreBarItem) findViewById(R.id.multiplier)).getSwitcher();
         scoreIncrementText = (TextView) findViewById(R.id.score_increment);
-
-        scoreSwitcher.setFactory(scoreTextFactory);
+        progressText = ((ScoreBarItem) findViewById(R.id.completed)).getSwitcher();
+        progressText.setFactory(scoreBarFactory);
+        progressText.setText(contoursCompleted + "/" + gameView.getContourCount());
+        scoreText.setFactory(scoreTextFactory);
+        scoreText.setText("0");
         multiplierSwitcher.setFactory(multiplierTextFactory);
-
-        Animation in = AnimationUtils.loadAnimation(this,
-                android.R.anim.fade_in);
-        Animation out = AnimationUtils.loadAnimation(this,
-                android.R.anim.fade_out);
-
-        scoreSwitcher.setInAnimation(in);
-        scoreSwitcher.setOutAnimation(out);
-        multiplierSwitcher.setInAnimation(in);
-        multiplierSwitcher.setOutAnimation(out);
-
         multiplierSwitcher.setCurrentText("x1");
-        scoreSwitcher.setCurrentText("0");
+
+        multiplierSwitcher.setBackground(getResources().getDrawable(multiplierBackgrounds[0]));
 
         patchName = getIntent().getStringExtra("synth");
         sound = getIntent().getStringExtra("sound");
@@ -353,32 +356,37 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         cleanup();
     }
 
-    private ViewSwitcher.ViewFactory scoreTextFactory = new ViewSwitcher.ViewFactory() {
-
+  private class ScoreBarFactory implements ViewSwitcher.ViewFactory {
         @Override
         public View makeView() {
             // Create a new TextView
             TextView t = new TextView(TrainingActivity.this);
-            t.setGravity(Gravity.TOP | Gravity.START);
+            t.setGravity(Gravity.TOP);
             t.setTextAppearance(TrainingActivity.this, android.R.style.TextAppearance_Large);
             t.setTextColor(Color.WHITE);
-            t.setTextSize(TypedValue.COMPLEX_UNIT_SP, 45);
-            t.setMinEms(4);
-            t.setMaxEms(4);
+            t.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+            t.setIncludeFontPadding(false);
             return t;
         }
     };
 
-    private ViewSwitcher.ViewFactory multiplierTextFactory = new ViewSwitcher.ViewFactory() {
+    private class ScoreTextFactory extends ScoreBarFactory {
+        @Override
+        public View makeView() {
+            TextView t = (TextView) super.makeView();
+            t.setMaxEms(4);
+            t.setMinEms(4);
+            t.setGravity(Gravity.TOP | Gravity.START);
+            return t;
+        }
+    }
+
+    private class MultiplierTextFactory extends ScoreBarFactory {
 
         @Override
         public View makeView() {
-            // Create a new TextView
-            TextView t = new TextView(TrainingActivity.this);
+            TextView t = (TextView) super.makeView();
             t.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-            t.setTextAppearance(TrainingActivity.this, android.R.style.TextAppearance_Large);
-            t.setTextColor(Color.WHITE);
-            t.setTextSize(TypedValue.COMPLEX_UNIT_SP, 45);
             t.setMaxEms(2);
             return t;
         }
