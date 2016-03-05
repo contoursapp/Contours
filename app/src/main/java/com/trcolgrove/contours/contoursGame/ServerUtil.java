@@ -5,16 +5,26 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.android.volley.Cache;
+import com.android.volley.Network;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.Gson;
 import com.trcolgrove.contours.R;
 import com.trcolgrove.daoentries.ScoreSet;
 import com.trcolgrove.daoentries.ScoreSetDao;
 import com.trcolgrove.daoentries.SurveyResponse;
 import com.trcolgrove.daoentries.SurveyResponseDao;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -34,18 +44,29 @@ public class ServerUtil {
     protected String surveyMethod;
     protected Context context;
 
+    Cache cache;
+    Network network;
+    RequestQueue rq;
+
+    //private RequestQueue rq = new RequestQueue();
+
+    Gson gson = new Gson();
     private static String TAG = "ServerUtil";
 
     private final Semaphore available = new Semaphore(1);
 
     public ServerUtil(Context context) {
         dm = new DataManager(context);
-        servAddr = context.getResources().getString(R.string.serv_addr);
+        //servAddr = context.getResources().getString(R.string.serv_addr);
+        servAddr = context.getResources().getString(R.string.localhost);
         scoreSetMethod = context.getResources().getString(R.string.add_score_set);
         surveyMethod = context.getResources().getString(R.string.add_survey_response);
         this.context = context;
+        cache = new DiskBasedCache(context.getCacheDir(), 1024 * 1024); // 1MB cap
+        network = new BasicNetwork(new HurlStack());
+        rq = new RequestQueue(cache, network);
+        rq.start();
     }
-
 
     /**
      * Method encapsulating the procedure for storing a ScoreSet
@@ -60,9 +81,37 @@ public class ServerUtil {
      * @param scoreSet
      */
     public void postScoreSet(final ScoreSet scoreSet) {
-
         openDataManagerIfClosed();
 
+        String scoreJson = gson.toJson(scoreSet);
+        JSONObject jsonBody = null;
+
+        try {
+            jsonBody = new JSONObject(scoreJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, servAddr + "addScoreSet",
+                jsonBody, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject status) {
+                scoreSet.setUploaded(true);
+                dm.scoreSetDao.insertOrReplace(scoreSet);
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError ve) {
+                Log.e(TAG, "Failed to upload due to networking error");
+                ve.printStackTrace();
+            }
+        });
+
+        rq.add(req);
+
+        /*
         NameValuePair userId, totalScore, elapsedTime, notesHit, notesMissed, longestStreak, averageStreak, difficulty, date;
         if (isConnected()) {
             try {
@@ -100,6 +149,8 @@ public class ServerUtil {
             dm.scoreSetDao.insertOrReplace(scoreSet);
             closeDataManagerIfFinished();
         }
+        */
+
     }
 
     /**
@@ -108,7 +159,7 @@ public class ServerUtil {
      * @param surveyResponse
      */
     public void postSurveyResponse(final SurveyResponse surveyResponse) {
-
+        /*
         openDataManagerIfClosed();
 
         if(isConnected()) {
@@ -137,6 +188,7 @@ public class ServerUtil {
             dm.surveyResponseDao.insertOrReplace(surveyResponse);
             closeDataManagerIfFinished();
         }
+        */
     }
 
     public boolean isConnected() {

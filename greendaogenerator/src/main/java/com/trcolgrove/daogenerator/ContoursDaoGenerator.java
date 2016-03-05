@@ -16,6 +16,7 @@ public class ContoursDaoGenerator {
     private static void addScoreSet(Schema schema) {
         Entity scoreSet = schema.addEntity("ScoreSet");
         scoreSet.addIdProperty();
+        scoreSet.addStringProperty("user_id").notNull();
         scoreSet.addStringProperty("difficulty");
         scoreSet.addIntProperty("total_score").notNull();
         scoreSet.addLongProperty("elapsed_time");

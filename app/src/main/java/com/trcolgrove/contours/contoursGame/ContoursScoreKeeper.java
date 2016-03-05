@@ -19,7 +19,7 @@ public class ContoursScoreKeeper implements ScoreKeeper {
     private int score;
     private int multiplier;
     private long baseTime;
-    private long timeSinceContourStart;
+    private long contourStartTime;
 
     private static final int BASE_SCORE = 100;
 
@@ -28,6 +28,9 @@ public class ContoursScoreKeeper implements ScoreKeeper {
 
     private int streak = 0;
     private int longestStreak = 0;
+
+    private int currentContourAttempts = 0;
+
 
     @IntDef({NOTE_HIT, NOTE_MISS, CONTOUR_COMPLETE})
     @Retention(RetentionPolicy.SOURCE)
@@ -40,7 +43,7 @@ public class ContoursScoreKeeper implements ScoreKeeper {
         this.score = 0;
         this.multiplier = 1;
         this.baseTime = baseTime;
-        timeSinceContourStart = baseTime;
+        contourStartTime = baseTime;
     }
 
     public void updateScore(@GameEvent int gameInfo) {
@@ -68,10 +71,11 @@ public class ContoursScoreKeeper implements ScoreKeeper {
 
     private void contourComplete() {
         noteHit();
-        int timeBonus = BASE_SCORE - (int)((SystemClock.elapsedRealtime() - timeSinceContourStart)/250);
+        long totalContourTime = (SystemClock.elapsedRealtime() - contourStartTime);
+        int timeBonus = BASE_SCORE - (int)(totalContourTime/250);
         int scoreIncrement = Math.max(0, BASE_SCORE + timeBonus) * multiplier;
         incrementMultiplier();
-        timeSinceContourStart = SystemClock.elapsedRealtime();
+        contourStartTime = SystemClock.elapsedRealtime();
         score += scoreIncrement;
         EventBus.getDefault().post(new ScoreEvent(score, multiplier, scoreIncrement, true));
     }

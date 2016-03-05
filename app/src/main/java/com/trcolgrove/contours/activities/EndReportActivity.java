@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.trcolgrove.contours.R;
+import com.trcolgrove.contours.contoursGame.DataManager;
 import com.trcolgrove.contours.contoursGame.ServerUtil;
 import com.trcolgrove.daoentries.ScoreSet;
 import com.trcolgrove.daoentries.SurveyResponse;
@@ -49,6 +50,7 @@ public class EndReportActivity extends ActionBarActivity {
     private Date completionDate = new Date();
 
     private ServerUtil serverUtil;
+    private DataManager dm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +58,7 @@ public class EndReportActivity extends ActionBarActivity {
         setContentView(R.layout.activity_end_report);
 
         serverUtil = new ServerUtil(getApplicationContext());
-
+        dm = new DataManager(getApplicationContext());
         setScoreValues();
 
         surveyQuestions = getResources().getStringArray(R.array.survey_questions);
@@ -155,7 +157,7 @@ public class EndReportActivity extends ActionBarActivity {
 
         int averageStreak = getIntent().getIntExtra("average_streak", -1);
 
-        ScoreSet sc = new ScoreSet(null, difficulty, totalScore, totalTime,
+        ScoreSet sc = new ScoreSet(null, dm.getUserAlias(), difficulty, totalScore, totalTime,
                 notesHit, notesMissed, longestStreak, averageStreak, completionDate, false);
         serverUtil.postScoreSet(sc);
     }

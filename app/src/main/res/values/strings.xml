@@ -43,4 +43,5 @@
     <string name="alias_text">Alias:</string>
     <string name="login_done_text">DONE</string>
     <string name="elapsed_time_label">elapsed time</string>
+    <string name="localhost">https://trcolgrove.pagekite.me/</string>
 </resources>

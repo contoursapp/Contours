@@ -7,6 +7,8 @@ package com.trcolgrove.daoentries;
 public class ScoreSet {
 
     private Long id;
+    /** Not-null value. */
+    private String user_id;
     private String difficulty;
     private int total_score;
     private Long elapsed_time;
@@ -24,8 +26,9 @@ public class ScoreSet {
         this.id = id;
     }
 
-    public ScoreSet(Long id, String difficulty, int total_score, Long elapsed_time, Integer notes_hit, Integer notes_missed, Integer longest_streak, Integer average_streak, java.util.Date date, boolean uploaded) {
+    public ScoreSet(Long id, String user_id, String difficulty, int total_score, Long elapsed_time, Integer notes_hit, Integer notes_missed, Integer longest_streak, Integer average_streak, java.util.Date date, boolean uploaded) {
         this.id = id;
+        this.user_id = user_id;
         this.difficulty = difficulty;
         this.total_score = total_score;
         this.elapsed_time = elapsed_time;
@@ -43,6 +46,16 @@ public class ScoreSet {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /** Not-null value. */
+    public String getUser_id() {
+        return user_id;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     public String getDifficulty() {
