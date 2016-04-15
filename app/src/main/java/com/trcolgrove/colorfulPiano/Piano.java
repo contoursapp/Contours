@@ -122,6 +122,7 @@ public class Piano extends View {
         canvas.drawLine(0, 0, getWidth(), 0, new Paint(Color.WHITE));
     }
 
+
     public void noteOn(int midiVal, int velocity) {
         PianoKey key = getPianoKeyByMidiVal(midiVal);
 

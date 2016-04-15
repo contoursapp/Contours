@@ -27,6 +27,7 @@ public class ContourFactory {
     public static List<Contour> getContoursFromStringArray(String[] contourStrings, Context context) throws InvalidNoteException {
         List<Contour> contours = new ArrayList<>();
 
+        int id = 1; //TODO: make better system of assigning ids
         for(String contourString : contourStrings) {
 
             String[] noteStrings = contourString.split(",");
@@ -69,7 +70,8 @@ public class ContourFactory {
                         Log.e(TAG, "Invalid note, " + letter + ", skipping instantiation");
                 }
             }
-            contours.add(new Contour(notes));
+            contours.add(new Contour(id, notes));
+            id++;
         }
         return contours;
     }

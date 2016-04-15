@@ -13,11 +13,14 @@ public class Contour {
     private int cursorPosition;
     private int topMidiVal;
     private int bottomMidiVal;
+    private int Id;
+
     private String TAG = "Contour";
 
     private boolean isLaidOut = false;
 
-    public Contour(Note... notes) {
+    public Contour(int id, Note... notes) {
+        Id = id;
         int bottomNote = 128;
         int topNote = -1;
         for(Note note : notes) {
@@ -35,7 +38,8 @@ public class Contour {
         cursorPosition = 0;
     }
 
-    public Contour(List<Note> notes) {
+    public Contour(int id, List<Note> notes) {
+        Id = id;
         int bottomNote = 128;
         int topNote = -1;
         for(Note note : notes) {
@@ -67,7 +71,7 @@ public class Contour {
         for(Note n : notes) {
             transposed.add(n.transposeBy(amount));
         }
-        return new Contour(transposed);
+        return new Contour(Id, transposed);
     }
 
     public List<Note> getNotes() { return notes; }
@@ -96,4 +100,11 @@ public class Contour {
         this.isLaidOut = isLaidOut;
     }
 
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
+    }
 }

@@ -25,6 +25,7 @@ import com.trcolgrove.contours.accessors.NoteAccessor;
 import com.trcolgrove.contours.events.GameCompleteEvent;
 import com.trcolgrove.contours.util.DrawingUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +48,7 @@ public class ContoursGameView extends SurfaceView {
     private int staffMargin = DrawingUtils.dpToPixels(32, getContext());
 
     //object to keep track of score, multiplier and other performance data
-    private static ScoreKeeper scoreKeeper;
+    private static ContoursScoreKeeper scoreKeeper;
 
     private int congratsTextAlpha = 0;
     private int noteAlpha = 255;
@@ -62,8 +63,8 @@ public class ContoursGameView extends SurfaceView {
             "BOOM", "Awesome!" , "Woo!", "Great Work!", "Success!"};
     private static final String[] failureMessages = {"Try Again", "Whoops!", "Oops"};
 
-    private static final int transitionMilis = 2500;
-    private static final int failureTransitionMilis = 1250;
+    private static final int transitionMilis = 1500;
+    private static final int failureTransitionMilis = 700;
 
     private String gameUpdateText = "";
 
@@ -74,6 +75,7 @@ public class ContoursGameView extends SurfaceView {
     private Contour contour;
 
     private String difficulty;
+    private int intervalSize;
 
     //default staff values
     private static final int defaultBottomNote = 48;
@@ -139,17 +141,25 @@ public class ContoursGameView extends SurfaceView {
         initStaff();
 
         difficulty = ((Activity) context).getIntent().getStringExtra("difficulty");
-        int intervalSize = ((Activity) context).getIntent().getIntExtra("interval_size", 0);
-        String[] contourStrings = generateContours(difficulty, intervalSize);
-        contours = ContourFactory.getContoursFromStringArray(contourStrings, context);
-        contours = Transposer.transposeContours(context, contours);
+        intervalSize = ((Activity) context).getIntent().getIntExtra("interval_size", 0);
+        String sound = ((Activity) context).getIntent().getStringExtra("sound");
 
-        Collections.shuffle(contours);
+        String[] contourStrings = generateContours(difficulty, intervalSize);
+        List<Contour> baseContours = ContourFactory.getContoursFromStringArray(contourStrings, context);
+        contours = new ArrayList<>();
+
+        for(Contour c : baseContours) {
+            List<Contour> transposed = Transposer.transposeContours(context, c);
+            Collections.shuffle(transposed);
+            transposed.subList(5, transposed.size()).clear();
+            contours.addAll(transposed);
+        }
+
         if(contours.size() > contourCount) {
             contours.subList(contourCount, contours.size()).clear();
         }
 
-        scoreKeeper = new ContoursScoreKeeper(SystemClock.elapsedRealtime());
+        scoreKeeper = new ContoursScoreKeeper(SystemClock.elapsedRealtime(), difficulty, intervalSize, sound);
         this.setDrawingCacheEnabled(true);
         this.buildDrawingCache();
 
@@ -237,7 +247,6 @@ public class ContoursGameView extends SurfaceView {
      */
     public void nextContour() {
         transitioning = true;
-
         textPaint.setColor(Color.WHITE);
         Random rand = new Random();
         int msgIndex = rand.nextInt(congratsMessages.length);
@@ -383,7 +392,7 @@ public class ContoursGameView extends SurfaceView {
 
         if(first.getMidiValue() ==  midiValue){
             if((notes.size() - 1) == contour.getCursorPosition()) {
-                scoreKeeper.updateScore(ContoursScoreKeeper.CONTOUR_COMPLETE);
+                scoreKeeper.contourComplete(contour);
                 if(contourIndex < contours.size()-1) {
                     first.hit(tweenManager);
                     nextContour();
@@ -391,20 +400,20 @@ public class ContoursGameView extends SurfaceView {
                     gameLoopThread.setRunning(false);
                     gameLoopThread.interrupt();
                     Bundle scoreBundle = scoreKeeper.getScoreBundle();
-                    scoreBundle.putString("difficulty", difficulty);
+
                     EventBus.getDefault().post(
                             new GameCompleteEvent(scoreBundle));
                     return true;
                 }
             } else {
-                scoreKeeper.updateScore(ContoursScoreKeeper.NOTE_HIT);
+                scoreKeeper.noteHit();
                 contour.incrementCursorPosition();
                 first.hit(tweenManager);
             }
         } else {
             resetContourOnFailure();
             contour.setCursorPosition(0);
-            scoreKeeper.updateScore(ContoursScoreKeeper.NOTE_MISS);
+            scoreKeeper.noteMiss();
         }
         return false;
     }
@@ -567,4 +576,9 @@ public class ContoursGameView extends SurfaceView {
     public int getContourCount() {
         return contourCount;
     }
+
+    public List<Contour> getContours() {
+        return contours;
+    }
+
 }

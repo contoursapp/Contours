@@ -1,9 +1,9 @@
 package com.trcolgrove.contours.contoursGame;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -16,11 +16,10 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
-import com.trcolgrove.contours.R;
-import com.trcolgrove.daoentries.ScoreSet;
-import com.trcolgrove.daoentries.ScoreSetDao;
-import com.trcolgrove.daoentries.SurveyResponse;
-import com.trcolgrove.daoentries.SurveyResponseDao;
+import com.trcolgrove.daoentries.DaoMaster;
+import com.trcolgrove.daoentries.DaoSession;
+import com.trcolgrove.daoentries.StoredSet;
+import com.trcolgrove.daoentries.StoredSetDao;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,8 +39,6 @@ public class ServerUtil {
 
     protected DataManager dm;
     protected String servAddr;
-    protected String scoreSetMethod;
-    protected String surveyMethod;
     protected Context context;
 
     Cache cache;
@@ -58,9 +55,7 @@ public class ServerUtil {
     public ServerUtil(Context context) {
         dm = new DataManager(context);
         //servAddr = context.getResources().getString(R.string.serv_addr);
-        servAddr = context.getResources().getString(R.string.localhost);
-        scoreSetMethod = context.getResources().getString(R.string.add_score_set);
-        surveyMethod = context.getResources().getString(R.string.add_survey_response);
+        servAddr = "http://trcolgrove.pagekite.me";
         this.context = context;
         cache = new DiskBasedCache(context.getCacheDir(), 1024 * 1024); // 1MB cap
         network = new BasicNetwork(new HurlStack());
@@ -81,114 +76,40 @@ public class ServerUtil {
      * @param scoreSet
      */
     public void postScoreSet(final ScoreSet scoreSet) {
-        openDataManagerIfClosed();
+        final String scoreJson = gson.toJson(scoreSet);
+        final StoredSet store = new StoredSet();
+        store.setScoreSetJson(scoreJson);
+        postScoreSet(store);
+    }
 
-        String scoreJson = gson.toJson(scoreSet);
+    public void postScoreSet(final StoredSet store) {
         JSONObject jsonBody = null;
 
         try {
-            jsonBody = new JSONObject(scoreJson);
+            jsonBody = new JSONObject(store.getScoreSetJson());
+            System.out.println(jsonBody.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, servAddr + "addScoreSet",
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, servAddr + "/addScoreSet",
                 jsonBody, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject status) {
-                scoreSet.setUploaded(true);
-                dm.scoreSetDao.insertOrReplace(scoreSet);
+                store.setUploaded(true);
+                dm.storeStoredSet(store);
             }
 
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError ve) {
-                Log.e(TAG, "Failed to upload due to networking error");
+                store.setUploaded(false);
+                dm.storeStoredSet(store);
                 ve.printStackTrace();
             }
         });
-
         rq.add(req);
-
-        /*
-        NameValuePair userId, totalScore, elapsedTime, notesHit, notesMissed, longestStreak, averageStreak, difficulty, date;
-        if (isConnected()) {
-            try {
-                userId = new BasicNameValuePair("user_id", dm.getUserAlias());
-                totalScore = new BasicNameValuePair("total_score", Integer.toString(scoreSet.getTotal_score()));
-                elapsedTime = new BasicNameValuePair("elapsed_time", Long.toString(scoreSet.getElapsed_time()));
-                notesHit = new BasicNameValuePair("notes_hit", Integer.toString(scoreSet.getNotes_hit()));
-                notesMissed = new BasicNameValuePair("notes_missed", Integer.toString(scoreSet.getNotes_missed()));
-                longestStreak = new BasicNameValuePair("longest_streak", Integer.toString(scoreSet.getLongest_streak()));
-                difficulty = new BasicNameValuePair("difficulty", scoreSet.getDifficulty());
-                averageStreak = new BasicNameValuePair("average_streak", Integer.toString(scoreSet.getAverage_streak()));
-                date = new BasicNameValuePair("date", scoreSet.getDate().toString());
-            } catch (NullPointerException ne) {
-                Log.e(TAG, "one of scoresets fields was null");
-                return;
-            }
-            AsyncHttpRequest request = new AsyncHttpRequest(servAddr + File.separator + scoreSetMethod, AsyncHttpRequest.POST);
-            request.setOnComplete(new AsyncHttpRequest.HttpCallback() {
-                @Override
-                public void onFinished(int statusCode) {
-                    if (statusCode >= 200 && statusCode < 400) {
-                        scoreSet.setUploaded(true);
-                        dm.scoreSetDao.insertOrReplace(scoreSet);
-                    } else {
-                        scoreSet.setUploaded(false);
-                        dm.scoreSetDao.insertOrReplace(scoreSet);
-                    }
-                    closeDataManagerIfFinished();
-                }
-            });
-            request.execute(userId, totalScore, elapsedTime, notesHit, notesMissed, longestStreak,
-                    averageStreak, difficulty, date);
-        } else {
-            scoreSet.setUploaded(false);
-            dm.scoreSetDao.insertOrReplace(scoreSet);
-            closeDataManagerIfFinished();
-        }
-        */
-
-    }
-
-    /**
-     * Post a users "survey response" to the server
-     *
-     * @param surveyResponse
-     */
-    public void postSurveyResponse(final SurveyResponse surveyResponse) {
-        /*
-        openDataManagerIfClosed();
-
-        if(isConnected()) {
-            NameValuePair userId = new BasicNameValuePair("user_id", dm.getUserAlias());
-            NameValuePair question = new BasicNameValuePair("question", surveyResponse.getQuestion());
-            NameValuePair response = new BasicNameValuePair("response", surveyResponse.getResponse().toString());
-            NameValuePair date = new BasicNameValuePair("date", surveyResponse.getDate().toString());
-
-            AsyncHttpRequest request = new AsyncHttpRequest(servAddr + "/" + surveyMethod, AsyncHttpRequest.POST);
-            request.setOnComplete(new AsyncHttpRequest.HttpCallback() {
-                @Override
-                public void onFinished(int statusCode) {
-                    if (statusCode >= 200 && statusCode < 400) {
-                        surveyResponse.setUploaded(true);
-                        dm.surveyResponseDao.insertOrReplace(surveyResponse);
-                    } else {
-                        surveyResponse.setUploaded(false);
-                        dm.surveyResponseDao.insertOrReplace(surveyResponse);
-                    }
-                    closeDataManagerIfFinished();
-                }
-            });
-            request.execute(userId, question, response, date);
-        } else {
-            surveyResponse.setUploaded(false);
-            dm.surveyResponseDao.insertOrReplace(surveyResponse);
-            closeDataManagerIfFinished();
-        }
-        */
     }
 
     public boolean isConnected() {
@@ -197,32 +118,6 @@ public class ServerUtil {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return (activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting());
-    }
-
-    private void openDataManagerIfClosed() {
-        try {
-            available.acquire();
-        } catch (InterruptedException e) {
-            Log.e(TAG, "Interrupted!");
-        }
-        if(!dm.isOpen()) {
-            dm.open();
-        }
-        dm.incrementActiveRequests();
-        available.release();
-    }
-
-    private void closeDataManagerIfFinished() {
-        try {
-            available.acquire();
-        } catch (InterruptedException e) {
-            Log.e(TAG, "Interrupted!");
-        }
-        dm.decrementActiveRequests();
-        if(dm.getActiveRequests() == 0) {
-            dm.close();
-        }
-        available.release();
     }
 
     public boolean postUser() {
@@ -236,21 +131,18 @@ public class ServerUtil {
      * unuploaded Data and attempt to upload it
      */
     public void uploadPendingData() {
-        if(isConnected()) {
-            openDataManagerIfClosed();
-            QueryBuilder qb = dm.scoreSetDao.queryBuilder().where(ScoreSetDao.Properties.Uploaded.eq(false));
-            List<ScoreSet> scPendingUpload = qb.list();
+        if (isConnected()) {
+            DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "scores-db", null);
+            SQLiteDatabase db = helper.getWritableDatabase();
+            DaoMaster daoMaster = new DaoMaster(db);
+            DaoSession daoSession = daoMaster.newSession();
+            StoredSetDao storedSetDao = daoSession.getStoredSetDao();
 
-            qb = dm.surveyResponseDao.queryBuilder().where(SurveyResponseDao.Properties.Uploaded.eq(false));
-            List<SurveyResponse> srPendingUpload = qb.list();
-            closeDataManagerIfFinished();
+            QueryBuilder qb = storedSetDao.queryBuilder().where(StoredSetDao.Properties.Uploaded.eq(false));
+            List<StoredSet> pendingUpload = qb.list();
 
-            for (ScoreSet sc : scPendingUpload) {
-                postScoreSet(sc);
-            }
-
-            for (SurveyResponse sr : srPendingUpload) {
-                postSurveyResponse(sr);
+            for (StoredSet s : pendingUpload) {
+                postScoreSet(s);
             }
         }
     }

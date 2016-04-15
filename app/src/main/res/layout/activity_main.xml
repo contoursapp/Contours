@@ -38,6 +38,34 @@
                 android:onClick="playButtonClicked"
                 android:textAllCaps="false"
                 android:clickable="true" />
+            <LinearLayout android:id="@+id/author_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center_horizontal"
+                android:visibility="visible"
+                android:orientation="vertical">
+                <TextView android:text="@string/author_string"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:layout_marginTop="80dp">
+                </TextView>
+                <TextView android:text="@string/funding_string"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="20sp"
+                    android:gravity="center">
+                </TextView>
+                <TextView android:text="@string/version_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="20sp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center">
+                </TextView>
+            </LinearLayout>
             <RelativeLayout android:id="@+id/difficulty_menu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

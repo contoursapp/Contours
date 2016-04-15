@@ -44,4 +44,7 @@
     <string name="login_done_text">DONE</string>
     <string name="elapsed_time_label">elapsed time</string>
     <string name="localhost">https://trcolgrove.pagekite.me/</string>
+    <string name="author_string">Developed at Tufts University by Thomas Colgrove and Aniruddh D. Patel</string>
+    <string name="funding_string">with funding from the Paul S. Veneklasen Foundation</string>
+    <string name="version_text">version 1.0</string>
 </resources>

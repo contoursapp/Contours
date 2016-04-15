@@ -3,79 +3,57 @@ package com.trcolgrove.contours.contoursGame;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 
 import com.trcolgrove.daoentries.DaoMaster;
 import com.trcolgrove.daoentries.DaoSession;
-import com.trcolgrove.daoentries.ScoreSet;
-import com.trcolgrove.daoentries.ScoreSetDao;
-import com.trcolgrove.daoentries.SurveyResponse;
-import com.trcolgrove.daoentries.SurveyResponseDao;
-
-import java.util.concurrent.Semaphore;
+import com.trcolgrove.daoentries.StoredSet;
+import com.trcolgrove.daoentries.StoredSetDao;
 
 /**
  * Singleton class implementing simple localized data storage
  * through greenDao implementation.
  *
  * Handles set up of orm and basic storage needs
- * Access is provided to scoreSetDao and surveyRespose for
+ * Access is provided to scoreSetDao and surveyResponse for
  * making queries
  */
 public class DataManager {
 
     private static final String TAG = "DataManager";
-    private SQLiteDatabase db;
 
-    private DaoMaster daoMaster;
-    private DaoSession daoSession;
-    private DaoMaster.DevOpenHelper helper;
     private Context context;
-    private Integer activeRequests;
-
-    private final Semaphore available = new Semaphore(1);
-
-    public ScoreSetDao scoreSetDao;
-    public SurveyResponseDao surveyResponseDao;
+    public StoredSetDao storedSetDao;
 
     public static final String PREFS_NAME = "PrefsFile";
 
     public DataManager(Context context) {
         this.context = context;
-        activeRequests = 0;
     }
 
-
-    public void storeScoreSet(ScoreSet sc) {
-        scoreSetDao.insert(sc);
-    }
-
-    public void storeSurveyResponse(SurveyResponse sr) {
-        surveyResponseDao.insert(sr);
-    }
-
-    public void close() {
-        daoMaster.getDatabase().close();
-        daoSession.getDatabase().close();
-        db.close();
-        helper.close();
-        daoSession.clear();
-        db=null;
-        //helper=null;
-        daoSession=null;
-    }
-
-    public void open() {
-        helper = new DaoMaster.DevOpenHelper(context, "scores-db", null);
-        db = helper.getWritableDatabase();
-        daoMaster = new DaoMaster(db);
-        daoSession = daoMaster.newSession();
-        scoreSetDao = daoSession.getScoreSetDao();
-        surveyResponseDao = daoSession.getSurveyResponseDao();
-
-    }
-
-    public boolean isOpen() {
-        return (db != null);
+    public void storeStoredSet(StoredSet s) {
+        new AsyncTask<StoredSet, Void, Void> (){
+            @Override
+            protected Void doInBackground(StoredSet... params) {
+                DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "scores-db", null);
+                SQLiteDatabase db = helper.getWritableDatabase();
+                DaoMaster daoMaster = new DaoMaster(db);
+                DaoSession daoSession = daoMaster.newSession();
+                StoredSetDao storedSetDao = daoSession.getStoredSetDao();
+                try {
+                    storedSetDao.insertOrReplace(params[0]);
+                } finally {
+                    daoMaster.getDatabase().close();
+                    daoSession.getDatabase().close();
+                    db.close();
+                    helper.close();
+                    daoSession.clear();
+                    db=null;
+                    daoSession=null;
+                }
+                return null;
+            }
+        }.execute(s);
     }
 
     public String getUserAlias() {
@@ -90,15 +68,4 @@ public class DataManager {
         editor.apply();
     }
 
-    //Functions for concurrent access
-    public void incrementActiveRequests() {
-        activeRequests++;
-    }
-    public void decrementActiveRequests() {
-        activeRequests--;
-    }
-
-    public int getActiveRequests() {
-        return activeRequests;
-    }
 }

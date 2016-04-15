@@ -212,6 +212,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
 
     public void onEvent(GameCompleteEvent gce) {
         Intent i = new Intent(getApplicationContext(), EndReportActivity.class);
+        gce.scoreBundle.putString("sound", sound);
         i.putExtras(gce.scoreBundle);
         startActivity(i);
         this.finish();

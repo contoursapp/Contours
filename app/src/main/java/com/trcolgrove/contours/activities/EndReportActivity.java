@@ -20,16 +20,20 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.trcolgrove.contours.R;
+import com.trcolgrove.contours.contoursGame.ScoreSingle;
 import com.trcolgrove.contours.contoursGame.DataManager;
 import com.trcolgrove.contours.contoursGame.ServerUtil;
-import com.trcolgrove.daoentries.ScoreSet;
-import com.trcolgrove.daoentries.SurveyResponse;
+import com.trcolgrove.contours.contoursGame.SurveyResponse;
+import com.trcolgrove.contours.contoursGame.ScoreSet;
 
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -48,6 +52,8 @@ public class EndReportActivity extends ActionBarActivity {
     private Button nextButton; // Element representing the nextButton in the survey panel
 
     private Date completionDate = new Date();
+
+    private ScoreSet results;
 
     private ServerUtil serverUtil;
     private DataManager dm;
@@ -128,8 +134,6 @@ public class EndReportActivity extends ActionBarActivity {
      * Should be called in onCreate()
      */
     private void setScoreValues() {
-        String difficulty = getIntent().getStringExtra("difficulty");
-        difficulty = "easy";
 
         int totalScore = getIntent().getIntExtra("total_score", -1);
         TextView totalScoreValue = (TextView) findViewById(R.id.total_score_value);
@@ -157,9 +161,15 @@ public class EndReportActivity extends ActionBarActivity {
 
         int averageStreak = getIntent().getIntExtra("average_streak", -1);
 
-        ScoreSet sc = new ScoreSet(null, dm.getUserAlias(), difficulty, totalScore, totalTime,
-                notesHit, notesMissed, longestStreak, averageStreak, completionDate, false);
-        serverUtil.postScoreSet(sc);
+        String difficulty = getIntent().getStringExtra("difficulty");
+        int intervalSize = getIntent().getIntExtra("interval_size", -1);
+
+        String singles = getIntent().getStringExtra("indiv_contour_info");
+        ArrayList<ScoreSingle> contourSingles = new Gson().fromJson(singles,
+                new TypeToken<ArrayList<ScoreSingle>>() {}.getType());
+
+        results = new ScoreSet(dm.getUserAlias(), difficulty, intervalSize, totalScore, totalTime,
+                notesHit, notesMissed, longestStreak, averageStreak, completionDate, contourSingles);
     }
 
 
@@ -204,15 +214,15 @@ public class EndReportActivity extends ActionBarActivity {
     public void onNextButtonClicked(View view) {
         int rbId = surveyRg.getCheckedRadioButtonId();
         RadioButton selected = (RadioButton) findViewById(rbId);
-        int response = Integer.parseInt(selected.getText().toString());
-        SurveyResponse sr = new SurveyResponse(null, surveyQuestions[surveyIndex], response, completionDate, false);
-        serverUtil.postSurveyResponse(sr);
+        String response = selected.getText().toString();
+        results.getSurveyResponses().add(new SurveyResponse(surveyQuestions[surveyIndex], response));
 
         if (surveyIndex < surveyQuestions.length - 1) {
             displayNextSurveyQuestion();
             surveyRg.clearCheck();
             nextButton.setEnabled(false);
         } else {
+            serverUtil.postScoreSet(results);
             Intent i = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(i);
             this.finish();

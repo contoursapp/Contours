@@ -18,23 +18,21 @@ public class Transposer {
     /* utility class to provide transposed versions of basic contour
     * shapes
     */
-    public static List<Contour> transposeContours(Context context, List<Contour> input)
+    public static List<Contour> transposeContours(Context context, Contour input)
             throws InvalidNoteException {
 
         List<Contour> transposedContours = new ArrayList<>();
 
-        for(Contour c : input) {
-            int i = 0;
-            boolean inRange = true;
-            while(inRange) {
-                Contour transposed = c.transposeBy(i);
-                if (transposed.getTopMidiVal() <= 84) {
-                    transposedContours.add(transposed);
-                } else {
-                    inRange = false;
-                }
-                i++;
+        int i = 0;
+        boolean inRange = true;
+        while(inRange) {
+            Contour transposed = input.transposeBy(i);
+            if (transposed.getTopMidiVal() <= 84) {
+                transposedContours.add(transposed);
+            } else {
+                inRange = false;
             }
+            i++;
         }
 
         return transposedContours;

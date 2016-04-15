@@ -29,6 +29,7 @@ import java.util.Map;
 public class MainActivity extends ActionBarActivity {
 
     private RelativeLayout difficultyMenu; // Select difficulty menu
+    private LinearLayout infoText;
     private LinearLayout intervalMenu;
     private Intent trainingIntent;
     private int difficultyButton;
@@ -50,6 +51,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         difficultyMenu = (RelativeLayout) findViewById(R.id.difficulty_menu);
+        infoText = (LinearLayout) findViewById(R.id.author_info);
         intervalMenu = (LinearLayout) findViewById(R.id.intervals);
         soundMenu = (RelativeLayout) findViewById(R.id.sound_menu);
         TextView aliasText = (TextView) findViewById(R.id.alias_text);
@@ -69,6 +71,7 @@ public class MainActivity extends ActionBarActivity {
         aliasText.setText("Alias: " + alias);
         ServerUtil serverUtil = new ServerUtil(getApplicationContext());
         serverUtil.uploadPendingData();
+
     }
 
     @Override
@@ -82,6 +85,7 @@ public class MainActivity extends ActionBarActivity {
         difficultyMenu.setAlpha(0);
         difficultyMenu.setVisibility(View.VISIBLE);
         difficultyMenu.animate().alpha(1);
+        infoText.setVisibility(View.GONE);
     }
 
     /* Select Difficulty Buttons */

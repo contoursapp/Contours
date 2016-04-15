@@ -19,4 +19,4 @@
         android:stackFromBottom="true"
         android:layout_weight="1"
     />
-</LinearLayout><!-- From: file:/Users/Thomas/Desktop/tufts/contours/AndroidMidi/res/layout/device_list.xml -->
+</LinearLayout><!-- From: file:/Users/Thomas/tufts/contours/AndroidMidi/res/layout/device_list.xml -->

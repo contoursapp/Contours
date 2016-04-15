@@ -8,7 +8,6 @@
         <!-- Rising Flat no skips -->
         <item>C2,D2,E2,E2,E2</item>
 
-
         <!-- Rising Falling no skips -->
         <item>C2,D2,E2,D2,C2</item>
 
@@ -46,13 +45,11 @@
         <!-- Flat Rising one skip -->
         <item>C2,C2,C2,E2,G2</item>
 
-
         <!-- Flat one skip -->
         <item>D2,D2,D2,D2,D2</item>
 
         <!-- Flat falling one skip -->
         <item>G2,G2,G2,E2,C2</item>
-
 
         <!-- Falling Rising one skip -->
         <item>A2,F2,D2,F2,A2</item>
