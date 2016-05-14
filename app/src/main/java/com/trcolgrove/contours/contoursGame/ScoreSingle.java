@@ -11,13 +11,14 @@ public class ScoreSingle {
     private String sound;
     private int contourStartMidiNote;
     private long completionTime;
+    private int notesHit;
     private int numberOfErrors;
     private double percentError;
     private long successDuration;
     private double interOnsetIntervalStdDev;
 
     public ScoreSingle(int contourId, String difficulty, int noteGap, String sound,
-                       int contourStartMidiNote, long completionTime, int numberOfErrors,
+                       int contourStartMidiNote, long completionTime, int notesHit, int numberOfErrors,
                        double percentError, long successDuration, double interOnsetIntervalStdDev) {
         this.contourId = contourId;
         this.difficulty = difficulty;
@@ -25,6 +26,7 @@ public class ScoreSingle {
         this.sound = sound;
         this.contourStartMidiNote = contourStartMidiNote;
         this.completionTime = completionTime;
+        this.notesHit = notesHit;
         this.numberOfErrors = numberOfErrors;
         this.percentError = percentError;
         this.successDuration = successDuration;
@@ -112,4 +114,11 @@ public class ScoreSingle {
     }
 
 
+    public int getNotesHit() {
+        return notesHit;
+    }
+
+    public void setNotesHit(int notesHit) {
+        this.notesHit = notesHit;
+    }
 }

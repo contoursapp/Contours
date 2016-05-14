@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
@@ -48,12 +49,13 @@ public class ContoursGameView extends SurfaceView {
     private int staffMargin = DrawingUtils.dpToPixels(32, getContext());
 
     //object to keep track of score, multiplier and other performance data
-    private static ContoursScoreKeeper scoreKeeper;
+    private ContoursScoreKeeper scoreKeeper;
 
     private int congratsTextAlpha = 0;
     private int noteAlpha = 255;
 
-    private final int contourCount = 20;
+    private int contourCount = 0;
+    public final CountDownLatch startLock = new CountDownLatch(1);
 
     // midi-poisition mapping. Essentially this is a utility to
     // figure out where on the staff each midi note should map... needs more robust implementation
@@ -76,6 +78,8 @@ public class ContoursGameView extends SurfaceView {
 
     private String difficulty;
     private int intervalSize;
+    private String sound;
+    boolean test = false;
 
     //default staff values
     private static final int defaultBottomNote = 48;
@@ -114,6 +118,8 @@ public class ContoursGameView extends SurfaceView {
     public ContoursGameView(Context context, AttributeSet attrs, int defStyle) throws InvalidNoteException {
         super(context, attrs, defStyle);
 
+        EventBus.getDefault().register(this);
+
         setZOrderOnTop(true);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
@@ -142,7 +148,8 @@ public class ContoursGameView extends SurfaceView {
 
         difficulty = ((Activity) context).getIntent().getStringExtra("difficulty");
         intervalSize = ((Activity) context).getIntent().getIntExtra("interval_size", 0);
-        String sound = ((Activity) context).getIntent().getStringExtra("sound");
+        sound = ((Activity) context).getIntent().getStringExtra("sound");
+        test = ((Activity) context).getIntent().getBooleanExtra("test", false);
 
         String[] contourStrings = generateContours(difficulty, intervalSize);
         List<Contour> baseContours = ContourFactory.getContoursFromStringArray(contourStrings, context);
@@ -155,15 +162,17 @@ public class ContoursGameView extends SurfaceView {
             contours.addAll(transposed);
         }
 
-        if(contours.size() > contourCount) {
-            contours.subList(contourCount, contours.size()).clear();
-        }
+        contourCount = contours.size();
 
-        scoreKeeper = new ContoursScoreKeeper(SystemClock.elapsedRealtime(), difficulty, intervalSize, sound);
         this.setDrawingCacheEnabled(true);
         this.buildDrawingCache();
 
         this.contour = contours.get(contourIndex);
+    }
+
+    public void onEvent(GameStartEvent gse) {
+        startLock.countDown();
+        scoreKeeper = new ContoursScoreKeeper(SystemClock.uptimeMillis(), difficulty, intervalSize, sound);
     }
 
     private String[] generateContours(String difficulty, int intervalSize) {
@@ -226,6 +235,7 @@ public class ContoursGameView extends SurfaceView {
             @Override
             public void onAnimationEnd(Animator animation) {
                 transitioning = false;
+                scoreKeeper.contourRestart();
             }
 
             @Override
@@ -283,6 +293,7 @@ public class ContoursGameView extends SurfaceView {
             public void onAnimationRepeat(Animator animation) {
             }
         });
+
         noteAnimIn.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -291,6 +302,7 @@ public class ContoursGameView extends SurfaceView {
             @Override
             public void onAnimationEnd(Animator animation) {
                 transitioning = false;
+                scoreKeeper.contourBegin();
             }
 
             @Override
@@ -382,6 +394,10 @@ public class ContoursGameView extends SurfaceView {
      * @return true if the user has completed the activity
      */
     public boolean processMidiInput(int midiValue){
+
+        if(scoreKeeper == null) {
+            return false;
+        }
 
         if(transitioning) {
             return false;
@@ -580,5 +596,18 @@ public class ContoursGameView extends SurfaceView {
     public List<Contour> getContours() {
         return contours;
     }
+
+    public ContoursScoreKeeper getScoreKeeper() {
+        return scoreKeeper;
+    }
+
+    public static int getTransitionMilis() {
+        return transitionMilis;
+    }
+
+    public static int getFailureTransitionMilis() {
+        return failureTransitionMilis;
+    }
+
 
 }

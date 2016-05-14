@@ -28,8 +28,9 @@ import java.util.TreeMap;
  * This class references/is inspired by an implementation
  * by 2bard
  * {link https://github.com/2bard/AndroidPianoView}
- * I should note that this implementation was seriously
- * flawed, and the multi-touch implementation crashed
+ * I should note that the referenced implementation was seriously
+ * flawed, and the multi-touch implementation crashed. None of
+ * these problems persist in my implementation.
  *
  * @author Thomas Colgrove
  */
@@ -73,7 +74,6 @@ public class Piano extends View {
         pianoKeys = new PianoKey[keyCount];
         drawKeys = new ArrayList<>();
         ArrayList<PianoKey> blackKeys = new ArrayList<>();
-
 
         for (int noteVal = 0; noteVal < this.keyCount; noteVal++) {
             if(isBlackKey(noteVal)) {

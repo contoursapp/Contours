@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.v4.content.ContextCompat;
 
 import com.trcolgrove.contours.R;
 import com.trcolgrove.contours.events.NoteEvent;
@@ -31,6 +32,9 @@ import de.greenrobot.event.EventBus;
  */
 public abstract class PianoKey {
 
+    // Map midiVal mod 12 onto 7 physical positions of keyboard scale
+    // For black keys, we assign the position of the white key below it, and offset position
+    // by the approprite amount
     protected static final Map<Integer, Integer> key_positions;
     static {
         key_positions = new HashMap<>();
@@ -64,7 +68,6 @@ public abstract class PianoKey {
     protected Rect colorRect;
     protected Rect mainRect;
 
-    private String synth;
     // Objects for subclasses to use for painting, just so they don't have to reallocate every time.
     protected Paint fillPaint;
     protected Paint strokePaint;
@@ -76,7 +79,7 @@ public abstract class PianoKey {
 
         midiKeyPressed = false;
         // Set up some default objects for the key to draw itself with.
-        color = context.getResources().getColor(keyColors[key_positions.get(noteValue%12)]);
+        color = ContextCompat.getColor(context, keyColors[key_positions.get(noteValue % 12)]);
         darkColor = darker(color, 0.7);
         colorRect = new Rect();
         mainRect = new Rect();
@@ -130,11 +133,6 @@ public abstract class PianoKey {
     public Rect getBounds(){
         return colorRect;
     }
-
-    public void setSynth(String synth) {
-        this.synth = synth;
-    }
-
 
     public void press(Touch touch, int midiVal) {
         this.touches.add(touch);

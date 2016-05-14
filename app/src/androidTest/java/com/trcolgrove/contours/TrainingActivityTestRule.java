@@ -18,6 +18,9 @@ public class TrainingActivityTestRule<T extends Activity> extends ActivityTestRu
         intent.putExtra("synth", "contours_patch.pd");
         intent.putExtra("sound", "sine_table");
         intent.putExtra("difficulty", "medium");
+        intent.putExtra("interval_size", 2);
+        intent.putExtra("test", true);
+
         return intent;
     }
 }

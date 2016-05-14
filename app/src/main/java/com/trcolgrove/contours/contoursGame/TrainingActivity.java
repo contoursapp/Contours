@@ -214,8 +214,8 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         Intent i = new Intent(getApplicationContext(), EndReportActivity.class);
         gce.scoreBundle.putString("sound", sound);
         i.putExtras(gce.scoreBundle);
-        startActivity(i);
-        this.finish();
+       // startActivity(i);
+       // this.finish();
     }
 
     private void displayScoreIncrement(int scoreIncrement) {
@@ -267,11 +267,13 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
                 ((SubtractiveSynth) synth).setOsc(1, sound);
             } else if(synth instanceof SamplerSynth) {
                 ((SamplerSynth) synth).setSound(sound);
-             //   ((SamplerSynth) synth).setAdsr(9,500,0,3);
+                ((SamplerSynth) synth).setAdsr(9,400,0,3);
             }
             progressBar.setVisibility(View.GONE);
-            chronometer.setBase(SystemClock.elapsedRealtime());
+           // chronometer.setBase();
             chronometer.start();
+
+            EventBus.getDefault().post(new GameStartEvent(SystemClock.uptimeMillis()));
         }
     }
 

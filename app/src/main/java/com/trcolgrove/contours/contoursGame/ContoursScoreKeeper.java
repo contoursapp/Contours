@@ -18,7 +18,6 @@ import de.greenrobot.event.EventBus;
  */
 public class ContoursScoreKeeper {
 
-    private static final int transition_milis = 1500;
     private int score;
     private int multiplier;
     private long baseTime;
@@ -75,14 +74,11 @@ public class ContoursScoreKeeper {
         }
 
         streak = 0;
-        indivNoteTimes.clear();
-        currentAttemptStartTime = SystemClock.elapsedRealtime();
-
         EventBus.getDefault().post(new ScoreEvent(score, multiplier, 0, false));
     }
 
     public void noteHit() {
-        long currentTime = SystemClock.elapsedRealtime();
+        long currentTime = SystemClock.uptimeMillis();
         long indivNoteHitTime = currentTime - lastNoteHitTime;
         lastNoteHitTime = currentTime;
         indivNoteTimes.add(indivNoteHitTime);
@@ -92,24 +88,46 @@ public class ContoursScoreKeeper {
         streak++;
     }
 
+    public void contourBegin() {
+        indivNoteTimes.clear();
+        currentNotesHit = 0;
+        currentNotesMissed = 0;
+
+        contourStartTime = SystemClock.uptimeMillis();
+        currentAttemptStartTime = SystemClock.uptimeMillis();
+        lastNoteHitTime = SystemClock.uptimeMillis();
+    }
+
+    public void contourRestart() {
+        currentAttemptStartTime = SystemClock.uptimeMillis();
+        lastNoteHitTime = SystemClock.uptimeMillis() + ContoursGameView.getTransitionMilis();
+        indivNoteTimes.clear();
+    }
+
+
     public void contourComplete(Contour contour) {
         noteHit();
+        System.out.println("2. " + contourStartTime);
 
-        long totalContourTime = (SystemClock.elapsedRealtime() - contourStartTime - transition_milis);
+        if(streak > longestStreak) {
+            longestStreak = streak;
+        }
+
+        long totalContourTime = (SystemClock.uptimeMillis()
+                - contourStartTime - currentNotesMissed*ContoursGameView.getFailureTransitionMilis());
+        long successTime = (SystemClock.uptimeMillis() - currentAttemptStartTime);
         int timeBonus = BASE_SCORE - (int)(totalContourTime/250);
         int scoreIncrement = Math.max(0, BASE_SCORE + timeBonus) * multiplier;
         incrementMultiplier();
-        contourStartTime = SystemClock.elapsedRealtime();
+
         score += scoreIncrement;
         EventBus.getDefault().post(new ScoreEvent(score, multiplier, scoreIncrement, true));
 
         double percentError = (double)currentNotesMissed/(currentNotesHit + currentNotesMissed) * 100;
 
         scoreSingles.add(new ScoreSingle(contour.getId(), difficulty, intervalSize, sound, contour.getNotes().get(0).getMidiValue(),
-                totalContourTime, currentNotesMissed, percentError, sum(indivNoteTimes),
+                totalContourTime, currentNotesHit, currentNotesMissed, percentError, successTime,
                 calculateStandardDev(indivNoteTimes)));
-        currentNotesHit = 0;
-        currentNotesMissed = 0;
     }
 
     private void incrementMultiplier() {
@@ -119,14 +137,14 @@ public class ContoursScoreKeeper {
     }
 
     private double calculateStandardDev(ArrayList<Long> values) {
-        long avg = 0;
+        double avg = 0;
         for (Long value : values) {
             avg += value;
         }
         avg /= values.size();
-        long variance = 0;
+        double variance = 0;
         for (Long value : values) {
-            variance += Math.pow(value - avg, 2);
+            variance += Math.pow((double)value - avg, 2);
         }
         variance /= (values.size() - 1);
 
@@ -166,7 +184,7 @@ public class ContoursScoreKeeper {
     }
 
     public int getAverageStreak() {
-        return ((totalNotesHit + totalNotesMissed)/(totalNotesMissed +1));
+        return ((totalNotesHit)/(totalNotesMissed + 1));
     }
 
     /**
@@ -182,16 +200,20 @@ public class ContoursScoreKeeper {
 
         scoreBundle.putInt("average_streak", getAverageStreak());
         scoreBundle.putInt("total_score", score);
-        scoreBundle.putLong("total_time", SystemClock.elapsedRealtime() - baseTime);
+        scoreBundle.putLong("total_time", SystemClock.uptimeMillis() - baseTime);
         scoreBundle.putInt("longest_streak", longestStreak);
         scoreBundle.putInt("notes_hit", totalNotesHit);
         scoreBundle.putInt("notes_missed", totalNotesMissed);
         scoreBundle.putString("indiv_contour_info", gson.toJson(scoreSingles));
         scoreBundle.putInt("interval_size", intervalSize);
         scoreBundle.putString("difficulty", difficulty);
-        scoreBundle.putInt("intervalSize", intervalSize);
         scoreBundle.putString("sound", sound);
         return scoreBundle;
     }
+
+    public long getBaseTime() {
+        return baseTime;
+    }
+
 
 }
