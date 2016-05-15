@@ -87,11 +87,12 @@ exist compressed in app/res/raw/synthpatch.zip. Unzipping this file will give
 access to the source .pd files. A good place to start would be to modify the
 provided fully featured subtractive synth. The requirement in the current
 version is that all patches receive midi note data in the following format:
-note midiNum velocity
+note midiNum velocity.
  
   <pre><code> [note 60 94] </code></pre>
 
-would be a midi on command for midi note 60 at a velocity of 94.
+would be a midi on command for midi note 60 at a velocity of 94. Following modification of pd files,
+you must rezip them into a file called synthpatch.zip (this is where the app looks for patch files to use)
 For more information  on the pure data visual programming language see:
 https://puredata.info/
 
