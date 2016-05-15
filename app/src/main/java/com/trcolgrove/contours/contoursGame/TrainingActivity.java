@@ -66,7 +66,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     private MultiplierTextFactory multiplierTextFactory = new MultiplierTextFactory();
     private ScoreBarFactory scoreBarFactory = new ScoreBarFactory();
 
-    private final String patchDir = "testpatch";
+    private final String patchDir = "synthpatch";
 
     PowerManager.WakeLock cpuLock;
 
@@ -252,7 +252,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
                 }
 
                 try {
-                    IoUtils.extractZipResource(getResources().openRawResource(R.raw.testpatch), dir, true);
+                    IoUtils.extractZipResource(getResources().openRawResource(R.raw.synthpatch), dir, true);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

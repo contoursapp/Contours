@@ -16,6 +16,7 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
+import com.trcolgrove.contours.R;
 import com.trcolgrove.daoentries.DaoMaster;
 import com.trcolgrove.daoentries.DaoSession;
 import com.trcolgrove.daoentries.StoredSet;
@@ -54,8 +55,7 @@ public class ServerUtil {
 
     public ServerUtil(Context context) {
         dm = new DataManager(context);
-        //servAddr = context.getResources().getString(R.string.serv_addr);
-        servAddr = "http://trcolgrove.pagekite.me";
+        servAddr = context.getResources().getString(R.string.external_server_url);
         this.context = context;
         cache = new DiskBasedCache(context.getCacheDir(), 1024 * 1024); // 1MB cap
         network = new BasicNetwork(new HurlStack());
@@ -84,10 +84,8 @@ public class ServerUtil {
 
     public void postScoreSet(final StoredSet store) {
         JSONObject jsonBody = null;
-
         try {
             jsonBody = new JSONObject(store.getScoreSetJson());
-            System.out.println(jsonBody.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

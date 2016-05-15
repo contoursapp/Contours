@@ -30,7 +30,6 @@
     <string name="accuracy_text">Accuracy&#160;</string>
     <string name="success_text">Success!</string>
     <string name="survey_next_text"><![CDATA[next>]]></string>
-    <string name="serv_addr">http://contours.herokuapp.com</string>
     <string name="add_score_set">addScoreSet</string>
     <string name="add_survey_response">addSurveyResponse</string>
     <string name="contours_logo_img_desc">contours logo</string>
@@ -47,4 +46,5 @@
     <string name="author_string">Developed at Tufts University by Thomas Colgrove and Aniruddh D. Patel</string>
     <string name="funding_string">with funding from the Paul S. Veneklasen Foundation</string>
     <string name="version_text">version 1.0</string>
+    <string name="external_server_url">unspecified</string>
 </resources>
