@@ -12,4 +12,4 @@
 		android:entryValues="@array/outchannels_values" android:entries="@array/outchannels_labels"
 		android:title="@string/pref_title_outchannels" android:summary="@string/pref_sum_outchannels"></ListPreference>
 </PreferenceScreen>
-<!-- From: file:/Users/Thomas/Desktop/tufts/contours/PdCore/res/xml/preferences.xml --><!-- From: file:/Users/Thomas/Desktop/tufts/contours/PdCore/build/intermediates/bundles/debug/res/xml/preferences.xml -->
+<!-- From: file:/Users/Thomas/tufts/contours/PdCore/res/xml/preferences.xml --><!-- From: file:/Users/Thomas/tufts/contours/PdCore/build/intermediates/bundles/debug/res/xml/preferences.xml -->

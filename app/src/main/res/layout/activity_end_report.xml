@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:background="@color/background_material_dark"
-    tools:context="com.trcolgrove.contours.activities.EndReportActivity"
+    tools:context="edu.tufts.contours.activities.EndReportActivity"
     android:orientation="vertical">
 
     <TextView android:id="@+id/success_text"
@@ -38,7 +38,7 @@
                 android:src="@drawable/purple_note"
                 android:scaleType="fitStart"
                 />
-            <com.trcolgrove.contours.util.ParallelogramTextView
+            <edu.tufts.contours.util.ParallelogramTextView
                 android:id="@+id/total_score_label"
                 android:layout_width="275dp"
                 android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                 android:src="@drawable/blue_note"
                 android:scaleType="fitStart"
                 />
-            <com.trcolgrove.contours.util.ParallelogramTextView
+            <edu.tufts.contours.util.ParallelogramTextView
                 android:id="@+id/total_time_label"
                 android:layout_width="275dp"
                 android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
                 android:src="@drawable/green_note"
                 android:scaleType="fitStart"
                 />
-                <com.trcolgrove.contours.util.ParallelogramTextView
+                <edu.tufts.contours.util.ParallelogramTextView
                     android:id="@+id/notes_hit_label"
                     android:layout_width="275dp"
                     android:layout_height="wrap_content"
@@ -149,7 +149,7 @@
                 android:src="@drawable/turq_note"
                 android:scaleType="fitStart"
                 />
-            <com.trcolgrove.contours.util.ParallelogramTextView
+            <edu.tufts.contours.util.ParallelogramTextView
                 android:id="@+id/accuracy_label"
                 android:layout_width="275dp"
                 android:layout_height="wrap_content"
