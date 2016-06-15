@@ -6,7 +6,7 @@
     android:paddingRight="8dp"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
-    tools:context="com.trcolgrove.contours.activities.MainActivity">
+    tools:context="edu.tufts.contours.activities.MainActivity">
 
     <LinearLayout
         android:layout_height="match_parent"

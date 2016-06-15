@@ -13,12 +13,12 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".contoursGame.TrainingActivity"
+            android:name="edu.tufts.contours.activities.TrainingActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape">
         </activity>
         <activity
-            android:name=".activities.MainActivity"
+            android:name="edu.tufts.contours.activities.MainActivity"
             android:label="@string/title_activity_main"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat" >
@@ -28,13 +28,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.EndReportActivity"
+            android:name="edu.tufts.contours.activities.EndReportActivity"
             android:label="@string/title_activity_end_report"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat" >
         </activity>
         <activity
-            android:name=".activities.LoginActivity"
+            android:name="edu.tufts.contours.activities.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat">

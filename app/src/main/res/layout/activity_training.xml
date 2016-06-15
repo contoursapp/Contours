@@ -44,7 +44,7 @@
             android:layout_marginRight="0dp"
             android:orientation="horizontal">
 
-            <com.trcolgrove.contours.contoursGame.ScoreBarItem
+            <edu.tufts.contours.contoursGame.ScoreBarItem
                 ScoreBarItem:header_text="score"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
@@ -80,7 +80,7 @@
                 android:layout_margin="8dp"
                 android:id="@+id/score_bar_divider" />
 
-            <com.trcolgrove.contours.contoursGame.ScoreBarItem
+            <edu.tufts.contours.contoursGame.ScoreBarItem
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="64dp"
                 android:layout_marginEnd="64dp"
@@ -129,7 +129,7 @@
                     android:layout_below="@id/elapsed_time_header"/>
             </RelativeLayout>
 
-            <com.trcolgrove.contours.contoursGame.ScoreBarItem
+            <edu.tufts.contours.contoursGame.ScoreBarItem
                 android:layout_marginLeft="32dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginRight="0dp"
@@ -157,7 +157,7 @@
                 android:src="@drawable/clock" />
         </RelativeLayout>
 
-        <com.trcolgrove.contours.contoursGame.ContoursGameView
+        <edu.tufts.contours.contoursGame.ContoursGameView
             android:id="@+id/staff"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -171,7 +171,7 @@
             Staff:topNote="84"
         />
         <View style="@style/KeyboardDivider"/>
-        <com.trcolgrove.colorfulPiano.Piano
+        <edu.tufts.contours.colorfulPiano.Piano
             android:id="@+id/piano"
             android:layout_width="match_parent"
             android:layout_height="0dip"

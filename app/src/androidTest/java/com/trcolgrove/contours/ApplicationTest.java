@@ -5,13 +5,13 @@ import android.os.SystemClock;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.trcolgrove.colorfulPiano.Piano;
-import com.trcolgrove.contours.contoursGame.Contour;
-import com.trcolgrove.contours.contoursGame.ContoursGameView;
-import com.trcolgrove.contours.contoursGame.ContoursScoreKeeper;
-import com.trcolgrove.contours.contoursGame.Note;
-import com.trcolgrove.contours.contoursGame.ScoreSingle;
-import com.trcolgrove.contours.contoursGame.TrainingActivity;
+import edu.tufts.contours.colorfulPiano.Piano;
+import edu.tufts.contours.contoursGame.Contour;
+import edu.tufts.contours.contoursGame.ContoursGameView;
+import edu.tufts.contours.contoursGame.ContoursScoreKeeper;
+import edu.tufts.contours.contoursGame.Note;
+import edu.tufts.contours.contoursGame.ScoreSingle;
+import edu.tufts.contours.activities.TrainingActivity;
 
 import junit.framework.Assert;
 
