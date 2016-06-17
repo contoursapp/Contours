@@ -1,0 +1,42 @@
+[
+  {
+    "synthName" : "sine wave",
+    "patchFileName" : "polyphonic_subtractive_synth.pd",
+    "soundName" : "sine_table",
+    "oscOn" : [1, 0, 0],
+    "adsr" : {"attack" : 50,
+              "decay" : 400,
+              "sustain": 0.3,
+              "release": 50}
+
+  },
+  {
+    "synthName" : "square wave",
+    "patchFileName" : "polyphonic_subtractive_synth.pd",
+    "soundName" : "square_table",
+    "oscOn" : [1, 0, 0],
+    "adsr" : {"attack" : 50,
+              "decay" : 400,
+              "sustain": 0.3,
+              "release": 50}
+  },
+  {
+    "synthName" : "triangle wave",
+    "patchFileName" : "polyphonic_subtractive_synth.pd",
+    "soundName" : "triangle_table",
+    "oscOn" : [1, 0, 0],
+    "adsr" : {"attack" : 50,
+              "decay" : 400,
+              "sustain": 0.3,
+              "release": 50}
+  },
+  {
+    "synthName" : "piano tone",
+    "patchFileName" : "base_sampler.pd",
+    "soundName" : "piano_1",
+    "adsr" : {"attack" : 75,
+      "decay" : 400,
+      "sustain": 0.3,
+      "release": 50}
+  }
+]

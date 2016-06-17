@@ -170,41 +170,50 @@
                 android:text="select a sound"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="64dp"/>
+                android:layout_marginTop="32dp"/>
             <View android:id="@+id/sound_div"
                 style="@style/ListDivider"
                 android:layout_below="@id/instrument_header"
                 android:layout_alignLeft="@id/instrument_header"
                 android:layout_alignRight="@id/instrument_header"
                 android:layout_marginBottom="24dp"/>
-            <LinearLayout
+            <ListView
+                android:id="@+id/sound_list"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="visible"
+                android:layout_below="@id/sound_div"
                 android:layout_centerInParent="true"
-                android:layout_below="@id/sound_div">
-                <Button
-                    style="@style/SelectInstrumentBtn"
-                    android:text="sine"
-                    android:onClick="selectSoundBtnPress"/>
-                <Button
-                    style="@style/SelectInstrumentBtn"
-                    android:text="triangle"
-                    android:onClick="selectSoundBtnPress"/>
-                <Button
-                    style="@style/SelectInstrumentBtn"
-                    android:text="piano"
-                    android:onClick="selectSoundBtnPress"/>
-                <Button
-                    style="@style/SelectInstrumentBtn"
-                    android:text="square"
-                    android:onClick="selectSoundBtnPress"/>
-                <Button
-                    style="@style/SelectInstrumentBtn"
-                    android:text="sawtooth"
-                    android:onClick="selectSoundBtnPress"/>
-            </LinearLayout>
+            />
+            <!--<LinearLayout-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:visibility="visible"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:layout_below="@id/sound_div">-->
+                <!--<Button-->
+                    <!--style="@style/SelectInstrumentBtn"-->
+                    <!--android:text="sine"-->
+                    <!--android:onClick="selectSoundBtnPress"/>-->
+                <!--<Button-->
+                    <!--style="@style/SelectInstrumentBtn"-->
+                    <!--android:text="triangle"-->
+                    <!--android:onClick="selectSoundBtnPress"/>-->
+                <!--<Button-->
+                    <!--style="@style/SelectInstrumentBtn"-->
+                    <!--android:text="piano"-->
+                    <!--android:onClick="selectSoundBtnPress"/>-->
+                <!--<Button-->
+                    <!--style="@style/SelectInstrumentBtn"-->
+                    <!--android:text="square"-->
+                    <!--android:onClick="selectSoundBtnPress"/>-->
+                <!--<Button-->
+                    <!--style="@style/SelectInstrumentBtn"-->
+                    <!--android:text="sawtooth"-->
+                    <!--android:onClick="selectSoundBtnPress"/>-->
+            <!--</LinearLayout>-->
         </RelativeLayout>
     </LinearLayout>
 

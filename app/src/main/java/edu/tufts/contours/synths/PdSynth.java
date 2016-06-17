@@ -15,11 +15,11 @@ import java.io.IOException;
 /**
  * Created by Thomas on 9/29/15.
  */
-public abstract class PdSynth implements Synth {
+public class PdSynth implements Synth {
 
     private String patchFilePath;
-    private String TAG = "PdSynth";
     private static final int MIN_SAMPLE_RATE = 44100;
+    private static final String TAG = "PdSynth";
 
     /**
      * Construct an instance of a pure data synthesizer given the file name of the patch
@@ -27,7 +27,7 @@ public abstract class PdSynth implements Synth {
      * @param pdPatchName the file name of the patch
      * @param context the application context in which the synth is being created
      */
-    PdSynth(String pdPatchName, Context context) {
+    public PdSynth(String pdPatchName, Context context) {
         AudioParameters.init(context);
         int srate = Math.max(MIN_SAMPLE_RATE, AudioParameters.suggestSampleRate());
         try {
@@ -44,17 +44,64 @@ public abstract class PdSynth implements Synth {
         patchFilePath = patchFile.getAbsolutePath();
     }
 
+    public void setMix(Float[] mix) {
+        Object[] args = new Object[mix.length + 1];
+
+        args[0] = "mix";
+        for(int i = 1; i < args.length; i ++) {
+            args[i] = mix[i-1];
+        }
+
+        PdBase.sendList("set_mix", args);
+    }
+
+    public void setSound(String soundName) {
+        Log.d(TAG, soundName);
+        PdBase.sendList("set_sound", "set", soundName);
+    }
+
+    public void setOscSound(String soundName, int osc) {
+        PdBase.sendList("set_osc_sound", "osc" + 1, "set", soundName);
+    }
+
+    public void setOscOn(int on, int osc) {
+        PdBase.sendList("set_osc_on", "osc" + osc, "on", on);
+    }
+
+    public void setAdsr(int attack, int decay, float sustain, int release) {
+        PdBase.sendList("set_adsr", "adsr", attack, decay, sustain, release);
+    }
+
     /**
      * Initialize the synthesizer by opening the patch
      * Sould not be called until resources are loaded.
      */
-    public void init() {
+    public void init(SynthInfo synthInfo) {
         try {
             PdBase.openPatch(patchFilePath);
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e(TAG, "Failed to load synth resource: " + patchFilePath + "\n");
+        }
 
+        if(synthInfo.soundName != null) {
+            setSound(synthInfo.soundName);
+        }
+        if(synthInfo.oscSounds != null) {
+            for(int i = 0; i < synthInfo.oscSounds.length; i++) {
+                setOscSound(synthInfo.oscSounds[i], i + 1);
+            }
+        }
+        if(synthInfo.oscMix != null) {
+            setMix(synthInfo.oscMix);
+        }
+        if(synthInfo.oscOn != null) {
+            for(int i = 0; i < synthInfo.oscOn.length; i++) {
+               setOscOn(synthInfo.oscOn[i], i+1);
+            }
+        }
+        if(synthInfo.adsr != null) {
+            setAdsr(synthInfo.adsr.attack, synthInfo.adsr.decay,
+                    synthInfo.adsr.sustain, synthInfo.adsr.release);
         }
     }
 
@@ -63,13 +110,10 @@ public abstract class PdSynth implements Synth {
      * @param midiNum The midi number for the pitch to be playerd
      * @param velocity the velocity of the note being played
      */
-    public abstract void noteOn(int midiNum, int velocity);
+    public void noteOn(int midiNum, int velocity) {
+        PdBase.sendList("note", midiNum, velocity);
+    }
 
-
-    /**
-     * Function representing the basic midiOff behavior for a pd synth module
-     * @param midiNum The midi number for the pitch to be playerd
-     */
-    public abstract void noteOff(int midiNum);
+    public void noteOff(int midiNum) { PdBase.sendList("note", midiNum, 0); }
 
 }

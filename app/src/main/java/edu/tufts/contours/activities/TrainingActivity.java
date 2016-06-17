@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.google.gson.Gson;
 import com.trcolgrove.contours.R;
 
 import org.puredata.android.io.PdAudio;
@@ -41,9 +42,8 @@ import edu.tufts.contours.events.GameStartEvent;
 import edu.tufts.contours.events.NoteEvent;
 import edu.tufts.contours.events.ScoreEvent;
 import edu.tufts.contours.synths.PdSynth;
-import edu.tufts.contours.synths.SamplerSynth;
-import edu.tufts.contours.synths.SubtractiveSynth;
 import edu.tufts.contours.synths.Synth;
+import edu.tufts.contours.synths.SynthInfo;
 import jp.kshoji.driver.midi.activity.AbstractSingleMidiActivity;
 import jp.kshoji.driver.midi.device.MidiInputDevice;
 import jp.kshoji.driver.midi.device.MidiOutputDevice;
@@ -71,6 +71,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     private MidiInputDevice midiIn;
 
     // synth stuff
+    private SynthInfo synthInfo;
     private Synth synth;
     private String patchName;
     private String sound;
@@ -120,8 +121,8 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
 
         setMultiplierBackground(multiplierBackgrounds[0]);
 
-        patchName = getIntent().getStringExtra("synth");
-        sound = getIntent().getStringExtra("sound");
+        String synthJson = getIntent().getStringExtra("synth");
+        synthInfo = new Gson().fromJson(synthJson, SynthInfo.class);
 
         try {
             initPd();
@@ -196,7 +197,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
 
     public void onEvent(GameCompleteEvent gce) {
         Intent i = new Intent(getApplicationContext(), EndReportActivity.class);
-        gce.scoreBundle.putString("sound", sound);
+        gce.scoreBundle.putString("sound", synthInfo.soundName);
         i.putExtras(gce.scoreBundle);
         startActivity(i);
         this.finish();
@@ -230,7 +231,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         protected Void doInBackground(File... dirs) {
 
             for(File dir : dirs) {
-                String patchDir = "testpatch";
+                String patchDir = "synthpatch";
                 if(new File(dir.getAbsolutePath() + "/" + patchDir).exists()) {
                     continue;
                 }
@@ -245,13 +246,8 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
         }
 
         protected void onPostExecute(Void v) {
-            ((PdSynth) synth).init();
-            if(synth instanceof SubtractiveSynth) {
-                ((SubtractiveSynth) synth).setOsc(1, sound);
-            } else if(synth instanceof SamplerSynth) {
-                ((SamplerSynth) synth).setSound(sound);
-                ((SamplerSynth) synth).setAdsr(9,400,0,3);
-            }
+            PdSynth pdSynth = (PdSynth) synth;
+            pdSynth.init(synthInfo);
             progressBar.setVisibility(View.GONE);
             chronometer.start();
 
@@ -264,11 +260,7 @@ public class TrainingActivity extends AbstractSingleMidiActivity {
     }
 
     private void initPd() throws IOException {
-        if(patchName.equals("contours_patch.pd")) {
-            synth = new SubtractiveSynth(patchName, this);
-        } else if(patchName.equals("base_sampler.pd")) {
-            synth = new SamplerSynth(patchName, this);
-        }
+        synth = new PdSynth("synthpatch/" + synthInfo.patchFileName, this);
         new resourcesLoader().execute(this.getFilesDir());
     }
 

@@ -1,5 +1,6 @@
 package edu.tufts.contours.contoursGame;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -9,20 +10,16 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.annotation.IntDef;
 
-import edu.tufts.contours.accessors.NoteAccessor;
-import edu.tufts.contours.exceptions.InvalidNoteException;
-import edu.tufts.contours.exceptions.LayoutException;
-import edu.tufts.contours.util.DrawingUtils;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
-import aurelienribon.tweenengine.equations.Circ;
+import edu.tufts.contours.exceptions.InvalidNoteException;
+import edu.tufts.contours.exceptions.LayoutException;
+import edu.tufts.contours.util.DrawingUtils;
 
 /**
  * Class representing a single note instance
@@ -65,11 +62,11 @@ public class Note {
     private int octave;
 
     private int rippleRadius = 0;
+    private int rippleAlpha = 0xFF;
 
     private int midiValue;
     private int scaleDegree;
 
-    private int rippleAlpha = 0xFF;
     private int alpha = 0x00;
     private int xPos = -1;
     private int yPos = -1;
@@ -216,11 +213,13 @@ public class Note {
     }
 
     private void startRipple(TweenManager tweenManager) {
+        ObjectAnimator.ofInt(rippleRadius, 0, 300).setDuration(1500).start();
+        ObjectAnimator.ofInt(rippleAlpha, 255, 0).setDuration(1500).start();
 
-        rippleAlpha = 255;
-        rippleRadius = radius;
-        Tween.to(this, NoteAccessor.RIPPLE_ALPHA, 1.5f).target(0).ease(Circ.OUT).start(tweenManager);
-        Tween.to(this, NoteAccessor.RIPPLE_RADIUS, 1.5f).target(300).ease(Circ.OUT).start(tweenManager);
+//        rippleAlpha = 255;
+//        rippleRadius = radius;
+//        Tween.to(this, NoteAccessor.RIPPLE_ALPHA, 1.5f).target(0).ease(Circ.OUT).start(tweenManager);
+//        Tween.to(this, NoteAccessor.RIPPLE_RADIUS, 1.5f).target(300).ease(Circ.OUT).start(tweenManager);
     }
 
     /**

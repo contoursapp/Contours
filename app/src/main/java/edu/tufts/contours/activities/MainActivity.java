@@ -6,18 +6,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.trcolgrove.contours.R;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import edu.tufts.contours.data.DataManager;
 import edu.tufts.contours.data.ServerUtil;
+import edu.tufts.contours.synths.SynthInfo;
+import edu.tufts.contours.util.FileIO;
 
 /**
  * MainActivity
@@ -34,16 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private Intent trainingIntent;
     private int difficultyButton;
     RelativeLayout soundMenu;
+    ListView soundList;
 
-    protected static final Map<String, String> soundMenuToPdName;
-    static {
-        soundMenuToPdName = new HashMap<>();
-        soundMenuToPdName.put("piano", "piano_1");
-        soundMenuToPdName.put("sine", "sine_table");
-        soundMenuToPdName.put("triangle", "triangle_table");
-        soundMenuToPdName.put("square", "square_table");
-        soundMenuToPdName.put("sawtooth", "sawtooth_table");
-    }
+    private ArrayList<String> synthNames = new ArrayList<>();
+    private Map<String, SynthInfo> synthInfoMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +56,34 @@ public class MainActivity extends AppCompatActivity {
         intervalMenu = (LinearLayout) findViewById(R.id.intervals);
         soundMenu = (RelativeLayout) findViewById(R.id.sound_menu);
         TextView aliasText = (TextView) findViewById(R.id.alias_text);
+        soundList = (ListView)(findViewById(R.id.sound_list));
+
+        ArrayList<SynthInfo> synths = FileIO.getAvailableSynths(this);
+
+        for(SynthInfo s : synths) {
+            synthNames.add(s.synthName);
+            synthInfoMap.put(s.synthName, s);
+        }
+
+        soundList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.list_item, synthNames));
+
+        soundList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                SynthInfo si = synthInfoMap.get(synthNames.get(i));
+                String synthJson = new Gson().toJson(si);
+                trainingIntent.putExtra("synth", synthJson);
+                startActivity(trainingIntent);
+                finish();
+            }
+        });
+
 
         DataManager dm = new DataManager(getApplicationContext());
         String alias = dm.getUserAlias();
 
         trainingIntent = new Intent(getApplicationContext(), TrainingActivity.class);
-
 
         if(alias == null) {
             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
@@ -73,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
         serverUtil.uploadPendingData();
 
     }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -166,22 +192,4 @@ public class MainActivity extends AppCompatActivity {
         soundMenu.setVisibility(View.VISIBLE);
         soundMenu.animate().alpha(1);
     }
-
-    public void selectSoundBtnPress(View view) {
-        String sound = ((Button)view).getText().toString();
-        String synth = "";
-
-        if(sound.equals("piano")) {
-            synth = "base_sampler.pd";
-        } else {
-            synth = "contours_patch.pd";
-        }
-
-        trainingIntent.putExtra("sound", soundMenuToPdName.get(sound));
-        trainingIntent.putExtra("synth", synth);
-
-        startActivity(trainingIntent);
-        this.finish();
-    }
-
 }
