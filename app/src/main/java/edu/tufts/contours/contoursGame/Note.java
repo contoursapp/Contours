@@ -1,6 +1,7 @@
 package edu.tufts.contours.contoursGame;
 
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -16,7 +17,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-import aurelienribon.tweenengine.TweenManager;
 import edu.tufts.contours.exceptions.InvalidNoteException;
 import edu.tufts.contours.exceptions.LayoutException;
 import edu.tufts.contours.util.DrawingUtils;
@@ -208,18 +208,17 @@ public class Note {
      * i.e. a Note "hit"
      * @param tweenManager
      */
-    public void hit(TweenManager tweenManager) {
-        startRipple(tweenManager);
+    public void hit() {
+        startRipple();
     }
 
-    private void startRipple(TweenManager tweenManager) {
-        ObjectAnimator.ofInt(rippleRadius, 0, 300).setDuration(1500).start();
-        ObjectAnimator.ofInt(rippleAlpha, 255, 0).setDuration(1500).start();
-
-//        rippleAlpha = 255;
-//        rippleRadius = radius;
-//        Tween.to(this, NoteAccessor.RIPPLE_ALPHA, 1.5f).target(0).ease(Circ.OUT).start(tweenManager);
-//        Tween.to(this, NoteAccessor.RIPPLE_RADIUS, 1.5f).target(300).ease(Circ.OUT).start(tweenManager);
+    private void startRipple() {
+        ObjectAnimator rad = ObjectAnimator.ofInt(this, "rippleRadius", radius, 300).setDuration(1500);
+        ObjectAnimator alph = ObjectAnimator.ofInt(this, "rippleAlpha", 255, 0).setDuration(1500);
+        rad.setInterpolator(circ);
+        alph.setInterpolator(circ);
+        rad.start();
+        alph.start();
     }
 
     /**
@@ -297,4 +296,11 @@ public class Note {
     public void setRippleAlpha(int rippleAlpha) {
         this.rippleAlpha = rippleAlpha;
     }
+
+    TimeInterpolator circ = new TimeInterpolator() {
+        @Override
+        public float getInterpolation(float v) {
+            return (float) Math.sqrt(1 - (v-=1)*v);
+        }
+    };
 }

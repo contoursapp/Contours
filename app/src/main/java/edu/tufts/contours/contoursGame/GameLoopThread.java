@@ -8,8 +8,6 @@ import android.graphics.Canvas;
 import android.os.BatteryManager;
 import android.util.Log;
 
-import aurelienribon.tweenengine.TweenManager;
-
 /**
  * Main game loop for contours game
  *
@@ -20,11 +18,9 @@ public class GameLoopThread extends Thread {
     private ContoursGameView contoursGameView;
     private boolean running = false;
     static long FPS = 60;
-    private TweenManager tweenManager;
 
-    public GameLoopThread(ContoursGameView contoursGameView, TweenManager tweenManager) {
+    public GameLoopThread(ContoursGameView contoursGameView) {
         this.contoursGameView = contoursGameView;
-        this.tweenManager = tweenManager;
         if(!connectedToPower(contoursGameView.getContext())) {
             FPS = 40;
         }
@@ -67,7 +63,6 @@ public class GameLoopThread extends Thread {
                 c = contoursGameView.getHolder().lockCanvas();
 
                 synchronized (contoursGameView.getHolder()) {
-                    tweenManager.update(delta);
                     if(contoursGameView != null) {
                         contoursGameView.onDraw(c);
                     } else {

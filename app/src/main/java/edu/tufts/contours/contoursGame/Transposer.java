@@ -22,7 +22,6 @@ public class Transposer {
     */
     public static List<Contour> transposeContours(Context context, Contour input)
             throws InvalidNoteException {
-
         List<Contour> transposedContours = new ArrayList<>();
 
         int i = 0;
@@ -39,7 +38,4 @@ public class Transposer {
 
         return transposedContours;
     }
-
-
-
 }

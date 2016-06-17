@@ -21,12 +21,6 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.trcolgrove.contours.R;
-import edu.tufts.contours.accessors.NoteAccessor;
-import edu.tufts.contours.events.GameCompleteEvent;
-import edu.tufts.contours.events.GameStartEvent;
-import edu.tufts.contours.exceptions.InvalidNoteException;
-import edu.tufts.contours.exceptions.LayoutException;
-import edu.tufts.contours.util.DrawingUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,9 +30,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenManager;
 import de.greenrobot.event.EventBus;
+import edu.tufts.contours.events.GameCompleteEvent;
+import edu.tufts.contours.events.GameStartEvent;
+import edu.tufts.contours.exceptions.InvalidNoteException;
+import edu.tufts.contours.exceptions.LayoutException;
+import edu.tufts.contours.util.DrawingUtils;
 
 /**
  * Main Game View for an instance of the Contours training application
@@ -101,9 +98,6 @@ public class ContoursGameView extends SurfaceView {
     private final Rect textBounds = new Rect();
     private Paint octavePaint;
 
-    private TweenManager tweenManager;
-    //using the tween library instead of animators so I dont have to invoke the uithread?
-
     private List<Contour> contours; //The contours for this particular game activity
 
     private GameLoopThread gameLoopThread; //Game Loop
@@ -142,9 +136,6 @@ public class ContoursGameView extends SurfaceView {
             bottomMidiNote = a.getInt(R.styleable.ContoursGameView_bottomNote, defaultBottomNote);
             a.recycle();
         }
-
-        tweenManager = new TweenManager();
-        Tween.registerAccessor(Note.class, new NoteAccessor());
 
         initGameLoop();
         initStaff();
@@ -344,7 +335,7 @@ public class ContoursGameView extends SurfaceView {
 
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                gameLoopThread = new GameLoopThread(self, tweenManager);
+                gameLoopThread = new GameLoopThread(self);
                 gameLoopThread.setPriority(Thread.MAX_PRIORITY);
                 gameLoopThread.setRunning(true);
                 gameLoopThread.start();
@@ -413,7 +404,7 @@ public class ContoursGameView extends SurfaceView {
             if((notes.size() - 1) == contour.getCursorPosition()) {
                 scoreKeeper.contourComplete(contour);
                 if(contourIndex < contours.size()-1) {
-                    first.hit(tweenManager);
+                    first.hit();
                     nextContour();
                 } else {
                     gameLoopThread.setRunning(false);
@@ -427,7 +418,7 @@ public class ContoursGameView extends SurfaceView {
             } else {
                 scoreKeeper.noteHit();
                 contour.incrementCursorPosition();
-                first.hit(tweenManager);
+                first.hit();
             }
         } else {
             resetContourOnFailure();
