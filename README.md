@@ -40,7 +40,7 @@ presented to the user in the application.
 
 ### Server
 An example server written in Python/Flask/MongoDB is available for download
-at https://github.com/contoursapp/ContoursServer. It is not required that you
+at https://github.com/trcolgrove/ContoursServer. It is not required that you
 use this server code, but it is fully functional and may  be a good starting
 point.
 If you host a server that receives data logged from the contours application
