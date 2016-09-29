@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="easy_contours0">
+
+        <!-- Rising no skips -->
+        <item>C2,D2,E2,F2,G2</item>
+
+        <!-- Rising Flat no skips -->
+        <item>C2,D2,E2,E2,E2</item>
+
+        <!-- Rising Falling no skips -->
+        <item>C2,D2,E2,D2,C2</item>
+
+        <!-- Flat Rising no skips -->
+        <item>D2,D2,D2,E2,F2</item>
+
+        <!-- Flat no skips -->
+        <item>D2,D2,D2,D2,D2</item>
+
+        <!-- Flat Falling no skips -->
+        <item>E2,E2,E2,D2,C2</item>
+
+        <!-- Falling Rising no skips -->
+        <item>F2,E2,D2,E2,F2</item>
+
+        <!-- Falling Flat no skips -->
+        <item>E2,D2,C2,C2,C2</item>
+
+        <!-- Falling no skips -->
+        <item>G2,F2,E2,D2,C2</item>
+
+    </string-array>
+
+    <string-array name="easy_contours1">
+
+        <!--Rising one skip -->
+        <item>C2,E2,G2,B2,D3</item>
+
+        <!-- Rising Flat one skip -->
+        <item>D2,F2,A2,A2,A2</item>
+
+        <!-- Rising Falling one skip -->
+        <item>C2,E2,G2,E2,C2</item>
+
+        <!-- Flat Rising one skip -->
+        <item>C2,C2,C2,E2,G2</item>
+
+        <!-- Flat one skip -->
+        <item>D2,D2,D2,D2,D2</item>
+
+        <!-- Flat falling one skip -->
+        <item>G2,G2,G2,E2,C2</item>
+
+        <!-- Falling Rising one skip -->
+        <item>A2,F2,D2,F2,A2</item>
+
+        <!-- Falling Flat one skip -->
+        <item>A2,F2,D2,D2,D2</item>
+
+
+        <!-- Falling one skip -->
+        <item>D3,B2,G2,E2,C2</item>
+
+    </string-array>
+
+
+
+    <string-array name="easy_contours2">
+
+        <!-- Rising 2skips -->
+        <item>C2,F2,B2,E3,A3</item>
+
+        <!-- Rising Flat 2skips -->
+        <item>C2,F2,B2,B2,B2</item>
+
+        <!-- Rising Falling 2skips -->
+        <item>C2,F2,B2,F2,C2</item>
+
+        <!-- Flat Rising 2skips -->
+        <item>C2,C2,C2,F2,B2</item>
+
+        <!-- Flat 2skips -->
+        <item>C2,C2,C2,C2,C2</item>
+
+        <!-- Flat-Falling 2skips -->
+        <item>B2,B2,B2,F2,C2</item>
+
+        <!-- Falling 2skips -->
+        <item>A3,E3,B2,F2,C2</item>
+
+        <!-- Falling-Rising 2skips -->
+        <item>B2,F2,C2,F2,B2</item>
+
+        <!-- Falling-Flat 2skips -->
+        <item>B2,F2,C2,C2,C2</item>
+
+    </string-array>
+
+
+    <string-array name="medium_contours0">
+
+        <!-- Medium A no skips -->
+        <item>C2,D2,E2,D2,C2,D2</item>
+
+        <!-- Medium C no skips -->
+        <item>D2,C2,D2,E2,D2,C2</item>
+
+        <!-- Medium H no skips -->
+        <item>E2,F2,E2,D2,C2,D2</item>
+
+        <!-- Medium D no skips -->
+        <item>D2,C2,D2,E2,F2,E2</item>
+
+        <!-- Medium G no skips -->
+        <item>E2,D2,C2,D2,E2,D2</item>
+
+        <!-- Medium E no skips -->
+        <item>D2,E2,D2,C2,D2,E2</item>
+
+        <!-- Medium B no skips -->
+        <item>C2,D2,E2,E2,D2,C2</item>
+
+        <!-- Medium F no skips -->
+        <item>E2,D2,C2,C2,D2,E2</item>
+
+        <!-- Medium I no skips -->
+        <item>E2,E2,D2,C2,D2,E2</item>
+
+        <!-- Medium J no skips -->
+        <item>C2,D2,E2,D2,C2,C2</item>
+
+    </string-array>
+
+    <string-array name="medium_contours1">
+
+        <!-- Medium A one skip -->
+        <item>C2,E2,G2,E2,C2,E2</item>
+
+        <!-- Medium C one skip -->
+        <item>E2,C2,E2,G2,E2,C2</item>
+
+        <!-- Medium H one skip -->
+        <item>G2,B2,G2,E2,C2,E2</item>
+
+        <!-- Medium D one skip -->
+        <item>E2,C2,E2,G2,B2,G2</item>
+
+        <!-- Medium G one skip -->
+        <item>G2,E2,C2,E2,G2,E2</item>
+
+        <!-- Medium E one skip -->
+        <item>E2,G2,E2,C2,E2,G2</item>
+
+        <!-- Medium B one skip -->
+        <item>C2,E2,G2,G2,E2,C2</item>
+
+        <!-- Medium F one skip -->
+        <item>G2,E2,C2,C2,E2,G2</item>
+
+        <!-- Medium I one skip -->
+        <item>G2,G2,E2,C2,E2,G2</item>
+
+        <!-- Medium J one skip -->
+        <item>C2,E2,G2,E2,C2,C2</item>
+
+    </string-array>
+
+    <string-array name="medium_contours2">
+
+        <!-- Medium A two skips -->
+        <item>C2,F2,B2,F2,C2,F2</item>
+
+        <!-- Medium C two skips -->
+        <item>F2,C2,F2,B2,F2,C2</item>
+
+        <!-- Medium H two skips -->
+        <item>B2,E3,B2,F2,C2,F2</item>
+
+        <!-- Medium D two skips -->
+        <item>F2,C2,F2,B2,E3,B2</item>
+
+        <!-- Medium G two skips -->
+        <item>B2,F2,C2,F2,B2,F2</item>
+
+        <!-- Medium E two skips -->
+        <item>F2,B2,F2,C2,F2,B2</item>
+
+        <!-- Medium B two skips -->
+        <item>C2,F2,B2,B2,F2,C2</item>
+
+        <!-- Medium F two skips -->
+        <item>B2,F2,C2,C2,F2,B2</item>
+
+        <!-- Medium I two skips -->
+        <item>B2,B2,F2,C2,F2,B2</item>
+
+        <!-- Medium J two skips -->
+        <item>C2,F2,B2,F2,C2,C2</item>
+
+    </string-array>
+
+    <string-array name="hard_contours0">
+
+        <!-- Hard Z no skips -->
+        <item>C2,D2,E2,D2,E2,D2,C2</item>
+
+        <!-- Hard X no skips -->
+        <item>D2,E2,D2,C2,D2,E2,D2</item>
+
+        <!-- Hard S no skips -->
+        <item>C2,D2,E2,D2,E2,F2,E2</item>
+
+        <!-- Hard W no skips -->
+        <item>E2,F2,E2,D2,E2,D2,C2</item>
+
+        <!-- Hard T no skips -->
+        <item>E2,D2,C2,D2,C2,D2,E2</item>
+
+        <!-- Hard V no skips -->
+        <item>D2,C2,D2,E2,D2,C2,D2</item>
+
+        <!-- Hard Y no skips -->
+        <item>D2,C2,D2,E2,D2,E2,F2</item>
+
+        <!-- Hard U no skips -->
+        <item>F2,E2,D2,E2,D2,C2,D2</item>
+
+        <!-- Hard R no skips -->
+        <item>D2,E2,E2,D2,C2,D2,E2</item>
+
+        <!-- Hard Q no skips -->
+        <item>E2,D2,C2,D2,E2,E2,D2</item>
+
+    </string-array>
+
+
+    <string-array name="hard_contours1">
+
+        <!-- Hard Z one skip -->
+        <item>C2,E2,G2,E2,G2,E2,C2</item>
+
+        <!-- Hard X one skip -->
+        <item>E2,G2,E2,C2,E2,G2,E2</item>
+
+        <!-- Hard S one skip -->
+        <item>C2,E2,G2,E2,G2,B2,G2</item>
+
+        <!-- Hard W one skip -->
+        <item>G2,B2,G2,E2,G2,E2,C2</item>
+
+        <!-- Hard T one skip -->
+        <item>G2,E2,C2,E2,C2,E2,G2</item>
+
+        <!-- Hard V one skip -->
+        <item>E2,C2,E2,G2,E2,C2,E2</item>
+
+        <!-- Hard Y one skip -->
+        <item>E2,C2,E2,G2,E2,G2,B2</item>
+
+        <!-- Hard U one skip -->
+        <item>B2,G2,E2,G2,E2,C2,E2</item>
+
+        <!-- Hard R one skip -->
+        <item>E2,G2,G2,E2,C2,E2,G2</item>
+
+        <!-- Hard Q one skip -->
+        <item>G2,E2,C2,E2,G2,G2,E2</item>
+
+    </string-array>
+
+
+    <string-array name="hard_contours2">
+
+
+        <!-- Hard Z two skips -->
+        <item>C2,F2,B2,F2,B2,F2,C2</item>
+
+        <!-- Hard X two skips -->
+        <item>F2,B2,F2,C2,F2,B2,F2</item>
+
+        <!-- Hard S two skips -->
+        <item>C2,F2,B2,F2,B2,E3,B2</item>
+
+        <!-- Hard W two skips -->
+        <item>B2,E3,B2,F2,B2,F2,C2</item>
+
+        <!-- Hard T two skips -->
+        <item>B2,F2,C2,F2,C2,F2,B2</item>
+
+        <!-- Hard V two skips -->
+        <item>F2,C2,F2,B2,F2,C2,F2</item>
+
+        <!-- Hard Y two skips -->
+        <item>F2,C2,F2,B2,F2,B2,E3</item>
+
+        <!-- Hard U two skips -->
+        <item>E3,B2,F2,B2,F2,C2,F2</item>
+
+        <!-- Hard R two skips -->
+        <item>F2,B2,B2,F2,C2,F2,B2</item>
+
+        <!-- Hard Q two skips -->
+        <item>B2,F2,C2,F2,B2,B2,F2</item>
+
+    </string-array>
+
+
+<string-array name="survey_questions">
+<item>How difficult was the task?</item>
+<item>How different do the contours sound from each other?</item>
+<item>Do you feel you are improving at the task?</item>
+</string-array>
+
+    </resources>
